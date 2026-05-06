@@ -250,12 +250,8 @@ and Rob Schapire.
   : Compute Permutation Importance
 - [`compute_response_curve()`](https://alrobles.github.io/maxentcpp/reference/compute_response_curve.md)
   : Compute Java-compatible Marginal Response Curve
-- [`compute_response_curve_deprecated()`](https://alrobles.github.io/maxentcpp/reference/compute_response_curve_deprecated.md)
-  : Compute Marginal Response Curve
 - [`compute_response_curve_fixed()`](https://alrobles.github.io/maxentcpp/reference/compute_response_curve_fixed.md)
   : Compute Java-compatible Response Curve with Fixed Values
-- [`compute_response_curve_fixed_deprecated()`](https://alrobles.github.io/maxentcpp/reference/compute_response_curve_fixed_deprecated.md)
-  : Compute Marginal Response Curve with Fixed Values
 - [`compute_variable_ranges()`](https://alrobles.github.io/maxentcpp/reference/compute_variable_ranges.md)
   : Compute Variable Ranges from Grids
 - [`coords_to_rowcol()`](https://alrobles.github.io/maxentcpp/reference/coords_to_rowcol.md)
@@ -315,8 +311,6 @@ and Rob Schapire.
   after download and clean from GBIF. This is a hummingbird example. A
   dataset with three variables. Contains scientific name, longitude and
   latitude.
-- [`extract_predictions_deprecated()`](https://alrobles.github.io/maxentcpp/reference/extract_predictions_deprecated.md)
-  : Extract Predictions at Sample Locations
 - [`extract_predictions_raw()`](https://alrobles.github.io/maxentcpp/reference/extract_predictions_raw.md)
   : Extract Java-compatible Raw Predictions at Sample Locations
 - [`feature_eval()`](https://alrobles.github.io/maxentcpp/reference/feature_eval.md)
@@ -539,16 +533,10 @@ and Rob Schapire.
   : Print Sample Information
 - [`project_cloglog()`](https://alrobles.github.io/maxentcpp/reference/project_cloglog.md)
   : Project Model onto Grids (Java-compatible cloglog output)
-- [`project_cloglog_deprecated()`](https://alrobles.github.io/maxentcpp/reference/project_cloglog_deprecated.md)
-  : Project Model onto Grids (cloglog output)
 - [`project_logistic()`](https://alrobles.github.io/maxentcpp/reference/project_logistic.md)
   : Project Model onto Grids (Java-compatible logistic output)
-- [`project_logistic_deprecated()`](https://alrobles.github.io/maxentcpp/reference/project_logistic_deprecated.md)
-  : Project Model onto Grids (logistic output)
 - [`project_raw()`](https://alrobles.github.io/maxentcpp/reference/project_raw.md)
   : Project Model onto Grids (Java-compatible raw output)
-- [`project_raw_deprecated()`](https://alrobles.github.io/maxentcpp/reference/project_raw_deprecated.md)
-  : Project Model onto Grids (raw output)
 - [`sample_get_feature()`](https://alrobles.github.io/maxentcpp/reference/sample_get_feature.md)
   : Get feature value from a sample
 - [`sample_set_feature()`](https://alrobles.github.io/maxentcpp/reference/sample_set_feature.md)
