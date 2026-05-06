@@ -59,54 +59,6 @@ maxent_percent_contribution <- function(model, feature_names) {
     compute_percent_contribution(model, as.character(feature_names))
 }
 
-#' Compute Marginal Response Curve (deprecated)
-#'
-#' Generates a response curve by varying one environmental variable from its
-#' minimum to maximum value while holding all other variables at their mean.
-#' Predictions are cloglog-transformed ([0, 1]).
-#'
-#' @param model         External pointer to a FeaturedSpace object.
-#' @param env_grids     List of external pointers to Grid<float> objects.
-#' @param feature_names Character vector of environment variable names.
-#' @param var_index     0-based index of the variable to vary.
-#' @param n_steps       Number of steps across the variable range (default 100).
-#' @return A data.frame with columns:
-#'   \describe{
-#'     \item{value}{Environmental variable value}
-#'     \item{prediction}{Cloglog-transformed prediction}
-#'   }
-#' @keywords internal
-maxent_response_curve_deprecated <- function(model, env_grids, feature_names,
-                                             var_index, n_steps = 100L) {
-    compute_response_curve_deprecated(
-        model, env_grids, as.character(feature_names),
-        as.integer(var_index), as.integer(n_steps))
-}
-
-#' Compute Response Curve with Fixed Values (deprecated)
-#'
-#' Like \code{maxent_response_curve_deprecated} but the user supplies explicit
-#' fixed values for the non-target variables.
-#'
-#' @param model         External pointer to a FeaturedSpace object.
-#' @param fixed_values  Numeric vector of fixed values for each variable.
-#' @param feature_names Character vector of environment variable names.
-#' @param var_index     0-based index of the variable to vary.
-#' @param var_min       Minimum value of the target variable.
-#' @param var_max       Maximum value of the target variable.
-#' @param n_steps       Number of steps (default 100).
-#' @return A data.frame with columns: value, prediction.
-#' @keywords internal
-maxent_response_curve_fixed_deprecated <- function(model, fixed_values,
-                                                   feature_names,
-                                                   var_index, var_min, var_max,
-                                                   n_steps = 100L) {
-    compute_response_curve_fixed_deprecated(
-        model, as.numeric(fixed_values), as.character(feature_names),
-        as.integer(var_index), as.numeric(var_min), as.numeric(var_max),
-        as.integer(n_steps))
-}
-
 #' Compute Marginal Response Curve
 #'
 #' Generates a response curve by varying one environmental variable from its

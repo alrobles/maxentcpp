@@ -115,64 +115,6 @@ maxent_evaluate <- function(presence, absence) {
     eval_model(as.numeric(presence), as.numeric(absence))
 }
 
-#' Project Model onto Grids (Raw Output, deprecated)
-#'
-#' Applies a trained FeaturedSpace model to environmental grids to produce
-#' raw Gibbs scores for every cell.
-#'
-#' @param model         External pointer to a FeaturedSpace object.
-#' @param env_grids     List of external pointers to Grid<float> objects.
-#' @param feature_names Character vector of environment variable names,
-#'   matching the order of env_grids.
-#' @return External pointer to a Grid<float> with raw prediction scores.
-#' @keywords internal
-maxent_project_raw_deprecated <- function(model, env_grids, feature_names) {
-    project_raw_deprecated(model, env_grids, as.character(feature_names))
-}
-
-#' Project Model onto Grids (Cloglog Output, deprecated)
-#'
-#' cloglog(x) = 1 - exp(-x). Produces values in [0, 1].
-#'
-#' @param model         External pointer to a FeaturedSpace object.
-#' @param env_grids     List of external pointers to Grid<float> objects.
-#' @param feature_names Character vector of environment variable names.
-#' @return External pointer to a Grid<float> with cloglog scores.
-#' @keywords internal
-maxent_project_cloglog_deprecated <- function(model, env_grids, feature_names) {
-    project_cloglog_deprecated(model, env_grids, as.character(feature_names))
-}
-
-#' Project Model onto Grids (Logistic Output, deprecated)
-#'
-#' logistic(x) = x / (1 + x). Produces values in [0, 1].
-#'
-#' @param model         External pointer to a FeaturedSpace object.
-#' @param env_grids     List of external pointers to Grid<float> objects.
-#' @param feature_names Character vector of environment variable names.
-#' @return External pointer to a Grid<float> with logistic scores.
-#' @keywords internal
-maxent_project_logistic_deprecated <- function(model, env_grids, feature_names) {
-    project_logistic_deprecated(model, env_grids, as.character(feature_names))
-}
-
-#' Extract Predictions at Sample Locations (deprecated)
-#'
-#' Gets model predictions at specific grid cell locations.
-#'
-#' @param model         External pointer to a FeaturedSpace object.
-#' @param env_grids     List of external pointers to Grid<float> objects.
-#' @param feature_names Character vector of environment variable names.
-#' @param rows          Integer vector of row indices.
-#' @param cols          Integer vector of column indices.
-#' @return Numeric vector of raw prediction scores. NaN for NODATA cells.
-#' @keywords internal
-maxent_extract_predictions_deprecated <- function(model, env_grids, feature_names,
-                                                   rows, cols) {
-    extract_predictions_deprecated(model, env_grids, as.character(feature_names),
-                                   as.integer(rows), as.integer(cols))
-}
-
 # ---------------------------------------------------------------------------
 # Java-compatible prediction APIs (match Java Maxent / dismo output)
 # These are now the default implementations.
