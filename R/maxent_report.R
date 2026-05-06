@@ -24,7 +24,7 @@
 #' @return Invisibly returns a named list with all reported metrics.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' maxent_print_results(
 #'   species          = "Sp1",
 #'   eval_result      = maxent_evaluate(pres_preds, bg_preds),

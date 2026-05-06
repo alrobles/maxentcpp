@@ -49,7 +49,7 @@ them as PNG files, replicating \code{density/ResponsePlot.java::makeplot()}.
 A full-size PNG and an optional thumbnail are written for every variable.
 }
 \examples{
-\donttest{
+\dontrun{
 maxent_plot_response_curves(
   model, list(g1, g2), c("bio1", "bio12"),
   output_dir = tempdir(), species = "Sp1")

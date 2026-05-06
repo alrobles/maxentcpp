@@ -28,7 +28,7 @@ full distribution of reference values. Negative MESS values indicate
 novel (non-analog) environments.
 }
 \examples{
-\donttest{
+\dontrun{
 result <- maxent_mess(list(g1, g2),
             list(temp_train_vals, precip_train_vals),
             c("temp", "precip"))

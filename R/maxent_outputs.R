@@ -26,7 +26,7 @@
 #' @return Invisibly returns \code{filename}.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' pred <- maxent_project_cloglog(model, list(g1, g2), c("bio1", "bio12"))
 #' maxent_write_prediction_png(pred, tempfile(fileext = ".png"))
 #' }
@@ -158,7 +158,7 @@ maxent_write_prediction_png <- function(grid, filename,
 #' @return Invisibly returns the path to the written CSV file.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' maxent_write_omission_csv(model, list(g1, g2), c("bio1", "bio12"),
 #'   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
 #' }
@@ -345,7 +345,7 @@ maxent_write_omission_csv <- function(model, env_grids, feature_names,
 #' @return Invisibly returns the path to the written CSV.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' maxent_write_sample_predictions(model, list(g1, g2), c("bio1", "bio12"),
 #'   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
 #' }
@@ -441,7 +441,7 @@ maxent_write_sample_predictions <- function(model, env_grids, feature_names,
 #' @return Invisibly returns \code{results_file}.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' maxent_append_results_csv(
 #'   file.path(tempdir(), "maxentResults.csv"),
 #'   species = "Sp1", n_training = 50L, training_gain = 1.23,

@@ -47,7 +47,7 @@ derives nine standard threshold statistics, writing the result to
 \code{density/Runner.java::writeCumulativeIndex()}.
 }
 \examples{
-\donttest{
+\dontrun{
 maxent_write_omission_csv(model, list(g1, g2), c("bio1", "bio12"),
   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
 }

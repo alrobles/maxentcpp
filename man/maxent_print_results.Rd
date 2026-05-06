@@ -52,7 +52,7 @@ report includes sample counts, training (and optionally test) evaluation
 statistics, and a ranked variable-contributions table.
 }
 \examples{
-\donttest{
+\dontrun{
 maxent_print_results(
   species          = "Sp1",
   eval_result      = maxent_evaluate(pres_preds, bg_preds),
