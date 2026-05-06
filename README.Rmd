@@ -1,14 +1,14 @@
+---
+output: github_document
+---
 
 # maxentcpp
 
-Maximum Entropy Species Distribution Modeling - C++ Implementation with
-R Interface
+Maximum Entropy Species Distribution Modeling - C++ Implementation with R Interface
 
 ## Overview
 
-`maxentcpp` is a high-performance C++ implementation of the Maxent
-species distribution modeling algorithm, with seamless R integration
-through Rcpp. This package aims to provide:
+`maxentcpp` is a high-performance C++ implementation of the Maxent species distribution modeling algorithm, with seamless R integration through Rcpp. This package aims to provide:
 
 - **Performance**: Faster execution through optimized C++ code
 - **Compatibility**: File format compatibility with the Java Maxent
@@ -19,13 +19,13 @@ through Rcpp. This package aims to provide:
 
 ### Prerequisites
 
-- R \>= 4.0.0
+- R >= 4.0.0
 - C++17 compatible compiler
 - Eigen3 library (usually installed via Rcpp/RcppEigen)
 
 ### From Source
 
-``` r
+```r
 # Install dependencies
 install.packages(c("Rcpp", "RcppEigen", "testthat"))
 
@@ -33,13 +33,14 @@ install.packages(c("Rcpp", "RcppEigen", "testthat"))
 devtools::install("path/to/R-package")
 ```
 
+
 ## Quick Start
 
 The package ships with a complete reproducible example in
-[`inst/examples/quickstart.R`](inst/examples/quickstart.R). After
-installing the package you can run the full workflow with:
+[`inst/examples/quickstart.R`](inst/examples/quickstart.R).
+After installing the package you can run the full workflow with:
 
-``` r
+```r
 source(system.file("examples", "quickstart.R", package = "maxentcpp"))
 ```
 
@@ -50,7 +51,7 @@ species.
 
 ### Condensed walkthrough
 
-``` r
+```r
 library(maxentcpp)
 library(terra)
 
@@ -110,31 +111,34 @@ analysis, and clamping.
 
 ### Complete workflow functions
 
-    maxent_grid_from_terra()        --- Load raster layers (terra SpatRaster)
-    maxent_read_occurrences()       --- Ingest presence records (data frame / CSV)
-    maxent_background_indices()     --- Sample background points
-    maxent_generate_features()      --- Build feature set
-    maxent_featured_space()         --- Create model object
-    maxent_fit()                    --- Train the MaxEnt model
-    maxent_save_lambdas()           --- Persist model to disk
-    maxent_project_cloglog()        --- Spatial prediction (cloglog output)
-    maxent_grid_to_terra()          --- Convert output to terra SpatRaster
-    maxent_evaluate()               --- Compute AUC + metrics
-    maxent_response_curve()         --- Variable response plots
-    maxent_permutation_importance() --- Variable ranking
-    maxent_mess()                   --- Environmental novelty (MESS)
-    maxent_clamp()                  --- Safe extrapolation
+```
+maxent_grid_from_terra()        --- Load raster layers (terra SpatRaster)
+maxent_read_occurrences()       --- Ingest presence records (data frame / CSV)
+maxent_background_indices()     --- Sample background points
+maxent_generate_features()      --- Build feature set
+maxent_featured_space()         --- Create model object
+maxent_fit()                    --- Train the MaxEnt model
+maxent_save_lambdas()           --- Persist model to disk
+maxent_project_cloglog()        --- Spatial prediction (cloglog output)
+maxent_grid_to_terra()          --- Convert output to terra SpatRaster
+maxent_evaluate()               --- Compute AUC + metrics
+maxent_response_curve()         --- Variable response plots
+maxent_permutation_importance() --- Variable ranking
+maxent_mess()                   --- Environmental novelty (MESS)
+maxent_clamp()                  --- Safe extrapolation
 
-    --- Output layer (report / file artifacts) ---
-    maxent_color_ramp()             --- Canonical Java-compatible colour ramp
-    maxent_write_prediction_png()   --- Prediction map PNG with legend + dots
-    maxent_plot_response_curves()   --- Response curve PNGs (full + thumbnail)
-    maxent_plot_variable_importance()--- Variable importance bar chart PNG
-    maxent_write_omission_csv()     --- Omission/threshold CSV (9 thresholds)
-    maxent_write_sample_predictions()--- Sample predictions CSV
-    maxent_print_results()          --- Print dismo-style performance metrics to console
-    maxent_append_results_csv()     --- Append row to maxentResults.csv
-    maxent_run()                    --- One-click full pipeline wrapper
+--- Output layer (report / file artifacts) ---
+maxent_color_ramp()             --- Canonical Java-compatible colour ramp
+maxent_write_prediction_png()   --- Prediction map PNG with legend + dots
+maxent_plot_response_curves()   --- Response curve PNGs (full + thumbnail)
+maxent_plot_variable_importance()--- Variable importance bar chart PNG
+maxent_write_omission_csv()     --- Omission/threshold CSV (9 thresholds)
+maxent_write_sample_predictions()--- Sample predictions CSV
+maxent_print_results()          --- Print dismo-style performance metrics to console
+maxent_append_results_csv()     --- Append row to maxentResults.csv
+maxent_run()                    --- One-click full pipeline wrapper
+```
+
 
 ## License
 
@@ -142,12 +146,9 @@ MIT License - See LICENSE file for details
 
 ## Related Projects
 
-- [Java Maxent](https://github.com/alrobles/Maxent) - Original Java
-  implementation
-- [maxnet](https://CRAN.R-project.org/package=maxnet) - R implementation
-  using glmnet
+- [Java Maxent](https://github.com/alrobles/Maxent) - Original Java implementation
+- [maxnet](https://CRAN.R-project.org/package=maxnet) - R implementation using glmnet
 
 ## Acknowledgments
 
-Based on the original Maxent software by Steven Phillips, Miro Dudík,
-and Rob Schapire.
+Based on the original Maxent software by Steven Phillips, Miro Dudík, and Rob Schapire.
