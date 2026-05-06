@@ -33,24 +33,6 @@ install.packages(c("Rcpp", "RcppEigen", "testthat"))
 devtools::install("path/to/R-package")
 ```
 
-## Testing
-
-Local test execution requires an R installation available on `PATH`.
-
-``` r
-
-# Run the package test suite
-testthat::test_dir("tests/testthat", reporter = "summary")
-
-# Run the full package check
-rcmdcheck::rcmdcheck(args = c("--no-manual"), error_on = "warning")
-```
-
-GitHub Actions already runs `R CMD check` for pushes and pull requests
-via
-[.github/workflows/test-r-package.yml](https://alrobles.github.io/maxentcpp/.github/workflows/test-r-package.yml),
-which exercises the `testthat` suite on Ubuntu, Windows, and macOS.
-
 ## Quick Start
 
 The package ships with a complete reproducible example in
@@ -111,10 +93,10 @@ features <- maxent_generate_features(
 fs     <- maxent_featured_space(n_total, as.integer(sample_indices), features)
 result <- maxent_fit(fs, max_iter = 500, convergence = 1e-5)
 cat("AUC:", maxent_evaluate(
-    maxent_extract_predictions_raw(fs, list(g_bio1, g_bio12),
-                                   c("bio1", "bio12"), occ$rows, occ$cols),
-    maxent_extract_predictions_raw(fs, list(g_bio1, g_bio12),
-                                   c("bio1", "bio12"), bg$rows,  bg$cols))$auc, "\n")
+    maxent_extract_predictions(fs, list(g_bio1, g_bio12),
+                               c("bio1", "bio12"), occ$rows, occ$cols),
+    maxent_extract_predictions(fs, list(g_bio1, g_bio12),
+                               c("bio1", "bio12"), bg$rows,  bg$cols))$auc, "\n")
 
 # --- 6. Project and visualise ------------------------------------------------
 pred_raster <- maxent_grid_to_terra(
@@ -131,92 +113,33 @@ curves, MESS analysis, and clamping.
 
 ### Complete workflow functions
 
-    maxent_grid_from_terra()        --- Load raster layers (terra SpatRaster)
-    maxent_read_occurrences()       --- Ingest presence records (data frame / CSV)
-    maxent_background_indices()     --- Sample background points
-    maxent_generate_features()      --- Build feature set
-    maxent_featured_space()         --- Create model object
-    maxent_fit()                    --- Train the MaxEnt model
-    maxent_save_lambdas()           --- Persist model to disk
-    maxent_project_cloglog()        --- Spatial prediction (cloglog output)
-    maxent_grid_to_terra()          --- Convert output to terra SpatRaster
-    maxent_evaluate()               --- Compute AUC + metrics
-    maxent_response_curve()         --- Variable response plots
-    maxent_permutation_importance() --- Variable ranking
-    maxent_mess()                   --- Environmental novelty (MESS)
-    maxent_clamp()                  --- Safe extrapolation
+``` R
+maxent_grid_from_terra()        --- Load raster layers (terra SpatRaster)
+maxent_read_occurrences()       --- Ingest presence records (data frame / CSV)
+maxent_background_indices()     --- Sample background points
+maxent_generate_features()      --- Build feature set
+maxent_featured_space()         --- Create model object
+maxent_fit()                    --- Train the MaxEnt model
+maxent_save_lambdas()           --- Persist model to disk
+maxent_project_cloglog()        --- Spatial prediction (cloglog output)
+maxent_grid_to_terra()          --- Convert output to terra SpatRaster
+maxent_evaluate()               --- Compute AUC + metrics
+maxent_response_curve()         --- Variable response plots
+maxent_permutation_importance() --- Variable ranking
+maxent_mess()                   --- Environmental novelty (MESS)
+maxent_clamp()                  --- Safe extrapolation
 
-    --- Output layer (report / file artifacts) ---
-    maxent_color_ramp()             --- Canonical Java-compatible colour ramp
-    maxent_write_prediction_png()   --- Prediction map PNG with legend + dots
-    maxent_plot_response_curves()   --- Response curve PNGs (full + thumbnail)
-    maxent_plot_variable_importance()--- Variable importance bar chart PNG
-    maxent_write_omission_csv()     --- Omission/threshold CSV (9 thresholds)
-    maxent_write_sample_predictions()--- Sample predictions CSV
-    maxent_print_results()          --- Print dismo-style performance metrics to console
-    maxent_append_results_csv()     --- Append row to maxentResults.csv
-    maxent_run()                    --- One-click full pipeline wrapper
-
-## Development Status
-
-This package is under active development. Current status:
-
-Core data structures (Sample, Grid, GridDimension)
-
-R bindings for core structures
-
-Feature classes (Linear, Quadratic, Product, Threshold, Hinge)
-
-Model training (FeaturedSpace, sequential coordinate ascent)
-
-Lambda file I/O (model persistence)
-
-Spatial data I/O (ESRI ASCII .asc read/write)
-
-CSV reader/writer (occurrence data, SWD files)
-
-Environmental layer metadata (Layer class)
-
-Model evaluation (AUC, kappa, correlation, log-loss, metrics)
-
-Spatial projection (raw, cloglog, logistic output)
-
-Complete end-to-end workflow examples (`inst/examples/quickstart.R`)
-
-Canonical color ramp
-([`maxent_color_ramp()`](https://alrobles.github.io/maxentcpp/reference/maxent_color_ramp.md))
-matching Java Maxent
-
-Prediction map PNG writer
-([`maxent_write_prediction_png()`](https://alrobles.github.io/maxentcpp/reference/maxent_write_prediction_png.md))
-
-Response curve PNG writer
-([`maxent_plot_response_curves()`](https://alrobles.github.io/maxentcpp/reference/maxent_plot_response_curves.md))
-
-Variable importance bar chart
-([`maxent_plot_variable_importance()`](https://alrobles.github.io/maxentcpp/reference/maxent_plot_variable_importance.md))
-
-Omission/threshold CSV
-([`maxent_write_omission_csv()`](https://alrobles.github.io/maxentcpp/reference/maxent_write_omission_csv.md))
-
-Sample predictions CSV
-([`maxent_write_sample_predictions()`](https://alrobles.github.io/maxentcpp/reference/maxent_write_sample_predictions.md))
-
-Console results printer replicating dismo output
-([`maxent_print_results()`](https://alrobles.github.io/maxentcpp/reference/maxent_print_results.md))
-
-`maxentResults.csv` appender
-([`maxent_append_results_csv()`](https://alrobles.github.io/maxentcpp/reference/maxent_append_results_csv.md))
-
-High-level one-click wrapper
-([`maxent_run()`](https://alrobles.github.io/maxentcpp/reference/maxent_run.md))
-
-CRAN release
-
-## Contributing
-
-Contributions are welcome! This is a community-driven migration from the
-Java implementation.
+--- Output layer (report / file artifacts) ---
+maxent_color_ramp()             --- Canonical Java-compatible colour ramp
+maxent_write_prediction_png()   --- Prediction map PNG with legend + dots
+maxent_plot_response_curves()   --- Response curve PNGs (full + thumbnail)
+maxent_plot_variable_importance()--- Variable importance bar chart PNG
+maxent_write_omission_csv()     --- Omission/threshold CSV (9 thresholds)
+maxent_write_sample_predictions()--- Sample predictions CSV
+maxent_print_results()          --- Print dismo-style performance metrics to console
+maxent_append_results_csv()     --- Append row to maxentResults.csv
+maxent_run()                    --- One-click full pipeline wrapper
+```
 
 ## License
 

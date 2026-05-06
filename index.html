@@ -89,28 +89,16 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="testing">Testing<a class="anchor" aria-label="anchor" href="#testing"></a>
-</h2>
-<p>Local test execution requires an R installation available on <code>PATH</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Run the package test suite</span></span>
-<span><span class="fu">testthat</span><span class="fu">::</span><span class="fu"><a href="https://testthat.r-lib.org/reference/test_dir.html" class="external-link">test_dir</a></span><span class="op">(</span><span class="st">"tests/testthat"</span>, reporter <span class="op">=</span> <span class="st">"summary"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Run the full package check</span></span>
-<span><span class="fu">rcmdcheck</span><span class="fu">::</span><span class="fu"><a href="http://r-lib.github.io/rcmdcheck/reference/rcmdcheck.html" class="external-link">rcmdcheck</a></span><span class="op">(</span>args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"--no-manual"</span><span class="op">)</span>, error_on <span class="op">=</span> <span class="st">"warning"</span><span class="op">)</span></span></code></pre></div>
-<p>GitHub Actions already runs <code>R CMD check</code> for pushes and pull requests via <a href=".github/workflows/test-r-package.yml">.github/workflows/test-r-package.yml</a>, which exercises the <code>testthat</code> suite on Ubuntu, Windows, and macOS.</p>
-</div>
-<div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <p>The package ships with a complete reproducible example in <a href="inst/examples/quickstart.R"><code>inst/examples/quickstart.R</code></a>. After installing the package you can run the full workflow with:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html" class="external-link">source</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"examples"</span>, <span class="st">"quickstart.R"</span>, package <span class="op">=</span> <span class="st">"maxentcpp"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>The example uses two bundled bioclimatic layers (bio1 – Annual Mean Temperature, bio12 – Annual Precipitation, cropped to the distribution range of <em>Abeillia abeillei</em>) and GBIF occurrence records for the same species.</p>
 <div class="section level3">
 <h3 id="condensed-walkthrough">Condensed walkthrough<a class="anchor" aria-label="anchor" href="#condensed-walkthrough"></a>
 </h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/alrobles/maxentcpp" class="external-link">maxentcpp</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/" class="external-link">terra</a></span><span class="op">)</span></span>
 <span></span>
@@ -151,10 +139,10 @@
 <span><span class="va">fs</span>     <span class="op">&lt;-</span> <span class="fu"><a href="reference/maxent_featured_space.html">maxent_featured_space</a></span><span class="op">(</span><span class="va">n_total</span>, <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">sample_indices</span><span class="op">)</span>, <span class="va">features</span><span class="op">)</span></span>
 <span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/maxent_fit.html">maxent_fit</a></span><span class="op">(</span><span class="va">fs</span>, max_iter <span class="op">=</span> <span class="fl">500</span>, convergence <span class="op">=</span> <span class="fl">1e-5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"AUC:"</span>, <span class="fu"><a href="reference/maxent_evaluate.html">maxent_evaluate</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="reference/maxent_extract_predictions_raw.html">maxent_extract_predictions_raw</a></span><span class="op">(</span><span class="va">fs</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g_bio1</span>, <span class="va">g_bio12</span><span class="op">)</span>,</span>
-<span>                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bio1"</span>, <span class="st">"bio12"</span><span class="op">)</span>, <span class="va">occ</span><span class="op">$</span><span class="va">rows</span>, <span class="va">occ</span><span class="op">$</span><span class="va">cols</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="reference/maxent_extract_predictions_raw.html">maxent_extract_predictions_raw</a></span><span class="op">(</span><span class="va">fs</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g_bio1</span>, <span class="va">g_bio12</span><span class="op">)</span>,</span>
-<span>                                   <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bio1"</span>, <span class="st">"bio12"</span><span class="op">)</span>, <span class="va">bg</span><span class="op">$</span><span class="va">rows</span>,  <span class="va">bg</span><span class="op">$</span><span class="va">cols</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">auc</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span>    <span class="fu">maxent_extract_predictions</span><span class="op">(</span><span class="va">fs</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g_bio1</span>, <span class="va">g_bio12</span><span class="op">)</span>,</span>
+<span>                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bio1"</span>, <span class="st">"bio12"</span><span class="op">)</span>, <span class="va">occ</span><span class="op">$</span><span class="va">rows</span>, <span class="va">occ</span><span class="op">$</span><span class="va">cols</span><span class="op">)</span>,</span>
+<span>    <span class="fu">maxent_extract_predictions</span><span class="op">(</span><span class="va">fs</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g_bio1</span>, <span class="va">g_bio12</span><span class="op">)</span>,</span>
+<span>                               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bio1"</span>, <span class="st">"bio12"</span><span class="op">)</span>, <span class="va">bg</span><span class="op">$</span><span class="va">rows</span>,  <span class="va">bg</span><span class="op">$</span><span class="va">cols</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">auc</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># --- 6. Project and visualise ------------------------------------------------</span></span>
 <span><span class="va">pred_raster</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/maxent_grid_to_terra.html">maxent_grid_to_terra</a></span><span class="op">(</span></span>
@@ -167,65 +155,32 @@
 <div class="section level3">
 <h3 id="complete-workflow-functions">Complete workflow functions<a class="anchor" aria-label="anchor" href="#complete-workflow-functions"></a>
 </h3>
-<pre><code>maxent_grid_from_terra()        --- Load raster layers (terra SpatRaster)
-maxent_read_occurrences()       --- Ingest presence records (data frame / CSV)
-maxent_background_indices()     --- Sample background points
-maxent_generate_features()      --- Build feature set
-maxent_featured_space()         --- Create model object
-maxent_fit()                    --- Train the MaxEnt model
-maxent_save_lambdas()           --- Persist model to disk
-maxent_project_cloglog()        --- Spatial prediction (cloglog output)
-maxent_grid_to_terra()          --- Convert output to terra SpatRaster
-maxent_evaluate()               --- Compute AUC + metrics
-maxent_response_curve()         --- Variable response plots
-maxent_permutation_importance() --- Variable ranking
-maxent_mess()                   --- Environmental novelty (MESS)
-maxent_clamp()                  --- Safe extrapolation
-
---- Output layer (report / file artifacts) ---
-maxent_color_ramp()             --- Canonical Java-compatible colour ramp
-maxent_write_prediction_png()   --- Prediction map PNG with legend + dots
-maxent_plot_response_curves()   --- Response curve PNGs (full + thumbnail)
-maxent_plot_variable_importance()--- Variable importance bar chart PNG
-maxent_write_omission_csv()     --- Omission/threshold CSV (9 thresholds)
-maxent_write_sample_predictions()--- Sample predictions CSV
-maxent_print_results()          --- Print dismo-style performance metrics to console
-maxent_append_results_csv()     --- Append row to maxentResults.csv
-maxent_run()                    --- One-click full pipeline wrapper</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">maxent_grid_from_terra</span>()        <span class="sc">---</span> Load raster <span class="fu">layers</span> (terra SpatRaster)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">maxent_read_occurrences</span>()       <span class="sc">---</span> Ingest presence <span class="fu">records</span> (data frame <span class="sc">/</span> CSV)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">maxent_background_indices</span>()     <span class="sc">---</span> Sample background points</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">maxent_generate_features</span>()      <span class="sc">---</span> Build feature set</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="fu">maxent_featured_space</span>()         <span class="sc">---</span> Create model object</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">maxent_fit</span>()                    <span class="sc">---</span> Train the MaxEnt model</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="fu">maxent_save_lambdas</span>()           <span class="sc">---</span> Persist model to disk</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="fu">maxent_project_cloglog</span>()        <span class="sc">---</span> Spatial <span class="fu">prediction</span> (cloglog output)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="fu">maxent_grid_to_terra</span>()          <span class="sc">---</span> Convert output to terra SpatRaster</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">maxent_evaluate</span>()               <span class="sc">---</span> Compute AUC <span class="sc">+</span> metrics</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="fu">maxent_response_curve</span>()         <span class="sc">---</span> Variable response plots</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="fu">maxent_permutation_importance</span>() <span class="sc">---</span> Variable ranking</span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="fu">maxent_mess</span>()                   <span class="sc">---</span> Environmental <span class="fu">novelty</span> (MESS)</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="fu">maxent_clamp</span>()                  <span class="sc">---</span> Safe extrapolation</span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="sc">---</span> Output <span class="fu">layer</span> (report <span class="sc">/</span> file artifacts) <span class="sc">---</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="fu">maxent_color_ramp</span>()             <span class="sc">---</span> Canonical Java<span class="sc">-</span>compatible colour ramp</span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="fu">maxent_write_prediction_png</span>()   <span class="sc">---</span> Prediction map PNG with legend <span class="sc">+</span> dots</span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="fu">maxent_plot_response_curves</span>()   <span class="sc">---</span> Response curve <span class="fu">PNGs</span> (full <span class="sc">+</span> thumbnail)</span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="fu">maxent_plot_variable_importance</span>()<span class="sc">---</span> Variable importance bar chart PNG</span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a><span class="fu">maxent_write_omission_csv</span>()     <span class="sc">---</span> Omission<span class="sc">/</span>threshold <span class="fu">CSV</span> (<span class="dv">9</span> thresholds)</span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="fu">maxent_write_sample_predictions</span>()<span class="sc">---</span> Sample predictions CSV</span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a><span class="fu">maxent_print_results</span>()          <span class="sc">---</span> Print dismo<span class="sc">-</span>style performance metrics to console</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="fu">maxent_append_results_csv</span>()     <span class="sc">---</span> Append row to maxentResults.csv</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="fu">maxent_run</span>()                    <span class="sc">---</span> One<span class="sc">-</span>click full pipeline wrapper</span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="development-status">Development Status<a class="anchor" aria-label="anchor" href="#development-status"></a>
-</h2>
-<p>This package is under active development. Current status:</p>
-<ul class="task-list">
-<li><label><input type="checkbox" checked>Core data structures (Sample, Grid, GridDimension)</label></li>
-<li><label><input type="checkbox" checked>R bindings for core structures</label></li>
-<li><label><input type="checkbox" checked>Feature classes (Linear, Quadratic, Product, Threshold, Hinge)</label></li>
-<li><label><input type="checkbox" checked>Model training (FeaturedSpace, sequential coordinate ascent)</label></li>
-<li><label><input type="checkbox" checked>Lambda file I/O (model persistence)</label></li>
-<li><label><input type="checkbox" checked>Spatial data I/O (ESRI ASCII .asc read/write)</label></li>
-<li><label><input type="checkbox" checked>CSV reader/writer (occurrence data, SWD files)</label></li>
-<li><label><input type="checkbox" checked>Environmental layer metadata (Layer class)</label></li>
-<li><label><input type="checkbox" checked>Model evaluation (AUC, kappa, correlation, log-loss, metrics)</label></li>
-<li><label><input type="checkbox" checked>Spatial projection (raw, cloglog, logistic output)</label></li>
-<li><label><input type="checkbox" checked>Complete end-to-end workflow examples (<code>inst/examples/quickstart.R</code>)</label></li>
-<li><label><input type="checkbox" checked>Canonical color ramp (<code><a href="reference/maxent_color_ramp.html">maxent_color_ramp()</a></code>) matching Java Maxent</label></li>
-<li><label><input type="checkbox" checked>Prediction map PNG writer (<code><a href="reference/maxent_write_prediction_png.html">maxent_write_prediction_png()</a></code>)</label></li>
-<li><label><input type="checkbox" checked>Response curve PNG writer (<code><a href="reference/maxent_plot_response_curves.html">maxent_plot_response_curves()</a></code>)</label></li>
-<li><label><input type="checkbox" checked>Variable importance bar chart (<code><a href="reference/maxent_plot_variable_importance.html">maxent_plot_variable_importance()</a></code>)</label></li>
-<li><label><input type="checkbox" checked>Omission/threshold CSV (<code><a href="reference/maxent_write_omission_csv.html">maxent_write_omission_csv()</a></code>)</label></li>
-<li><label><input type="checkbox" checked>Sample predictions CSV (<code><a href="reference/maxent_write_sample_predictions.html">maxent_write_sample_predictions()</a></code>)</label></li>
-<li><label><input type="checkbox" checked>Console results printer replicating dismo output (<code><a href="reference/maxent_print_results.html">maxent_print_results()</a></code>)</label></li>
-<li><label><input type="checkbox" checked><code>maxentResults.csv</code> appender (<code><a href="reference/maxent_append_results_csv.html">maxent_append_results_csv()</a></code>)</label></li>
-<li><label><input type="checkbox" checked>High-level one-click wrapper (<code><a href="reference/maxent_run.html">maxent_run()</a></code>)</label></li>
-<li><label><input type="checkbox">CRAN release</label></li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
-</h2>
-<p>Contributions are welcome! This is a community-driven migration from the Java implementation.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
