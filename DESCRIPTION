@@ -10,7 +10,7 @@ Description: C++ implementation of Maximum Entropy (Maxent) species distribution
     modeling with R bindings. This package provides a high-performance implementation
     of the Maxent algorithm for modeling species geographic distributions from
     occurrence data and environmental variables.
-URL: https://github.com/alrobles/maxentcpp
+URL: https://github.com/alrobles/maxentcpp, https://alrobles.github.io/maxentcpp/
 BugReports: https://github.com/alrobles/maxentcpp/issues
 License: MIT + file LICENSE
 Depends: R (>= 3.5.0)

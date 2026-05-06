@@ -4,3 +4,6 @@
 ^\.github$
 ^README\.md$
 (^|/).+\.(o|so|dll|a|dylib)$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

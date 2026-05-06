@@ -16,3 +16,4 @@ outputs/
 src/Makevars
 java/classes/
 java/*.class
+docs
