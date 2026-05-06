@@ -41,12 +41,11 @@ Named list of external pointers to Feature C++ objects.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-data <- list(
+env_data <- list(
   temperature   = c(15, 20, 25, 18, 22),
   precipitation = c(100, 200, 150, 80, 300)
 )
-features <- maxent_generate_features(data, types = c("linear", "hinge"))
+features <- maxent_generate_features(env_data, types = c("linear", "hinge"))
 length(features)
-} # }
+#> [1] 42
 ```

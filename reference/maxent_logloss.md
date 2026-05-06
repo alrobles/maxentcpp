@@ -26,7 +26,6 @@ Average log-loss value (lower is better).
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 maxent_logloss(c(0.9, 0.8), c(0.1, 0.2))
-} # }
+#> [1] 0.164252
 ```

@@ -37,11 +37,9 @@ GridDimension object (external pointer)
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 dim <- maxent_dimension(
   nrows = 100, ncols = 100,
   xll = -120.0, yll = 35.0,
   cellsize = 0.1
 )
-} # }
 ```

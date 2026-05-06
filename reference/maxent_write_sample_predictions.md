@@ -64,8 +64,9 @@ Invisibly returns the path to the written CSV.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 maxent_write_sample_predictions(model, list(g1, g2), c("bio1", "bio12"),
   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
-} # }
+#> Error: object 'pres_rows' not found
+# }
 ```

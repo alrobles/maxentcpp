@@ -38,8 +38,7 @@ A named list with elements:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 result <- maxent_auc(c(0.8, 0.9, 1.0), c(0.1, 0.2, 0.3))
 result$auc  # 1.0
-} # }
+#> [1] 1
 ```

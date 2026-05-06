@@ -58,9 +58,9 @@ A named list with:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 res <- maxent_evaluate(c(0.9, 0.85, 0.95), c(0.1, 0.15, 0.2))
 res$auc          # 1.0
+#> [1] 1
 res$correlation  # > 0
-} # }
+#> [1] 0.9941262
 ```

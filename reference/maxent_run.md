@@ -144,10 +144,7 @@ A named list with:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-library(maxentcpp)
-library(terra)
-
+# \donttest{
 stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
                                package = "maxentcpp")
 example_rasters <- terra::unwrap(readRDS(stack_path))
@@ -164,7 +161,23 @@ result <- maxent_run(
   output_dir = tempdir(),
   lon_col    = "long",
   lat_col    = "lat")
+#> class         : MaxEnt
+#> species       : Abeillia_abeillei
+#> n presence    : 73
+#> n background  : 2371
+#> 
+#> Training statistics
+#>   AUC             : 0.8033
+#>   Gain            : 7.2290
+#>   Entropy         : 7.3714
+#> 
+#> Variable contributions
+#>   Variable              Contribution (%)  Permutation importance (%)
+#>   bio1                              61.3                       54.0
+#>   bio12                             38.7                       46.0
+#> 
 
-cat("AUC:", result$evaluation$auc, "\n")
-} # }
+result$evaluation$auc
+#> [1] 0.8033487
+# }
 ```

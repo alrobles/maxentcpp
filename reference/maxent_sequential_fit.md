@@ -112,13 +112,16 @@ Phase C baseline report for details.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 fs  <- maxent_featured_space(100L, 90:99, list(f))
+#> Error: object 'f' not found
 res <- maxent_sequential_fit(
     fs,
     max_iter                 = 500L,
     disable_convergence_test = TRUE,
     trajectory_iterations    = c(1L, 2L, 5L, 10L, 50L, 100L, 500L))
+#> Error: object 'fs' not found
 print(res$trajectory)
-} # }
+#> Error: object 'res' not found
+# }
 ```

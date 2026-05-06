@@ -67,9 +67,12 @@ Named list with:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-result <- maxent_fit(fs, max_iter = 500, convergence = 1e-5)
-cat("Final loss:", result$loss, "\n")
-cat("Entropy:",    result$entropy, "\n")
-} # }
+n   <- 50L
+idx <- c(5L, 15L, 25L, 35L, 45L)
+env <- list(bio1 = runif(n), bio12 = runif(n))
+feats <- maxent_generate_features(env, types = "linear")
+fs  <- maxent_featured_space(n, idx, feats)
+result <- maxent_fit(fs, max_iter = 100, convergence = 1e-5)
+result$loss
+#> [1] 3.767277
 ```

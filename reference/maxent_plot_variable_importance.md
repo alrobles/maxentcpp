@@ -43,8 +43,9 @@ Invisibly returns the path to the PNG file.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 maxent_plot_variable_importance(contrib, perm_imp,
   species = "Sp1", output_dir = tempdir())
-} # }
+#> Error: object 'contrib' not found
+# }
 ```

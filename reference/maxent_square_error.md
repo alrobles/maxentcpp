@@ -25,7 +25,6 @@ Mean squared error.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 maxent_square_error(c(1.0, 1.0), c(0.0, 0.0))  # 0.0
-} # }
+#> [1] 0
 ```

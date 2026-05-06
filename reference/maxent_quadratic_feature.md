@@ -36,9 +36,8 @@ External pointer to a QuadraticFeature C++ object.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 vals <- c(0, 5, 10)
 f <- maxent_quadratic_feature(vals, "temperature_sq")
-maxent_feature_eval(f, 2)  # evaluates at index 2 (1-based → 0-based: 1)
-} # }
+maxent_feature_eval(f, 2)  # evaluates at index 2 (1-based -> 0-based: 1)
+#> [1] 0.25
 ```

@@ -74,7 +74,7 @@ Invisibly returns a named list with all reported metrics.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 maxent_print_results(
   species          = "Sp1",
   eval_result      = maxent_evaluate(pres_preds, bg_preds),
@@ -82,5 +82,8 @@ maxent_print_results(
   perm_imp_df      = perm_imp,
   n_presence       = length(pres_rows),
   n_background     = length(bg_rows))
-} # }
+#> class         : MaxEnt
+#> species       : Sp1
+#> Error: object 'pres_rows' not found
+# }
 ```
