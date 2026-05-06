@@ -18,7 +18,5 @@ Mean squared error.
 Presence sites contribute (1 - pred)^2, absence sites contribute pred^2.
 }
 \examples{
-\dontrun{
 maxent_square_error(c(1.0, 1.0), c(0.0, 0.0))  # 0.0
-}
 }

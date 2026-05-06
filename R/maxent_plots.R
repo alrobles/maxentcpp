@@ -23,7 +23,7 @@
 #' @return Invisibly returns a named list of file paths written.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' maxent_plot_response_curves(
 #'   model, list(g1, g2), c("bio1", "bio12"),
 #'   output_dir = tempdir(), species = "Sp1")
@@ -115,7 +115,7 @@ maxent_plot_response_curves <- function(model, env_grids, feature_names,
 #' @return Invisibly returns the path to the PNG file.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' maxent_plot_variable_importance(contrib, perm_imp,
 #'   species = "Sp1", output_dir = tempdir())
 #' }

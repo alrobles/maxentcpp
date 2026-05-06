@@ -20,8 +20,6 @@ Grid object (external pointer)
 Creates a raster grid for storing environmental variable data.
 }
 \examples{
-\dontrun{
 dim <- maxent_dimension(100, 100, -120, 35, 0.1)
 grid <- maxent_grid(dim, "temperature")
-}
 }

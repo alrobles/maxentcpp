@@ -16,11 +16,9 @@ NULL
 #' @return External pointer to a LinearFeature C++ object.
 #' @export
 #' @examples
-#' \dontrun{
 #' vals <- c(0, 5, 10, 3)
 #' f <- maxent_linear_feature(vals, "temperature")
-#' maxent_feature_eval(f, 1)  # index 1 (R) → 0-based index 0
-#' }
+#' maxent_feature_eval(f, 1)  # index 1 (R) -> 0-based index 0
 maxent_linear_feature <- function(values, name, min_val = NULL, max_val = NULL) {
     values <- as.numeric(values)
     if (is.null(min_val)) min_val <- min(values)
@@ -42,11 +40,9 @@ maxent_linear_feature <- function(values, name, min_val = NULL, max_val = NULL) 
 #' @return External pointer to a QuadraticFeature C++ object.
 #' @export
 #' @examples
-#' \dontrun{
 #' vals <- c(0, 5, 10)
 #' f <- maxent_quadratic_feature(vals, "temperature_sq")
-#' maxent_feature_eval(f, 2)  # evaluates at index 2 (1-based → 0-based: 1)
-#' }
+#' maxent_feature_eval(f, 2)  # evaluates at index 2 (1-based -> 0-based: 1)
 maxent_quadratic_feature <- function(values, name, min_val = NULL, max_val = NULL) {
     values <- as.numeric(values)
     if (is.null(min_val)) min_val <- min(values)
@@ -74,11 +70,10 @@ maxent_quadratic_feature <- function(values, name, min_val = NULL, max_val = NUL
 #' @return External pointer to a ProductFeature C++ object.
 #' @export
 #' @examples
-#' \dontrun{
 #' temp <- c(0, 5, 10)
 #' prec <- c(100, 200, 150)
 #' f <- maxent_product_feature(temp, prec, "temp_x_prec")
-#' }
+#' maxent_feature_eval(f, 2)
 maxent_product_feature <- function(values1, values2, name,
                                    min1 = NULL, max1 = NULL,
                                    min2 = NULL, max2 = NULL) {
@@ -105,11 +100,9 @@ maxent_product_feature <- function(values1, values2, name,
 #' @return External pointer to a ThresholdFeature C++ object.
 #' @export
 #' @examples
-#' \dontrun{
 #' vals <- c(1, 5, 10, 3)
 #' f <- maxent_threshold_feature(vals, "temperature_threshold", threshold = 5)
-#' maxent_feature_eval(f, 3)  # values[2] = 10 > 5 → 1
-#' }
+#' maxent_feature_eval(f, 3)  # values[3] = 10 > 5 -> 1
 maxent_threshold_feature <- function(values, name, threshold) {
     values <- as.numeric(values)
     create_threshold_feature(values, name, threshold)
@@ -135,11 +128,9 @@ maxent_threshold_feature <- function(values, name, threshold) {
 #' @return External pointer to a HingeFeature C++ object.
 #' @export
 #' @examples
-#' \dontrun{
 #' vals <- c(0, 5, 10, 3)
 #' f <- maxent_hinge_feature(vals, "temperature_hinge", min_knot = 2, max_knot = 8)
-#' maxent_feature_eval(f, 2)  # values[1] = 5 → (5-2)/(8-2) = 0.5
-#' }
+#' maxent_feature_eval(f, 2)  # values[2] = 5 -> (5-2)/(8-2) = 0.5
 maxent_hinge_feature <- function(values, name, min_knot, max_knot, reverse = FALSE) {
     values <- as.numeric(values)
     if (min_knot >= max_knot) {
@@ -158,11 +149,9 @@ maxent_hinge_feature <- function(values, name, min_knot, max_knot, reverse = FAL
 #' @return Numeric scalar: the feature value at that index.
 #' @export
 #' @examples
-#' \dontrun{
 #' vals <- c(0, 5, 10)
 #' f <- maxent_linear_feature(vals, "temp")
 #' maxent_feature_eval(f, 2)  # 5/10 = 0.5
-#' }
 maxent_feature_eval <- function(feature, index) {
     if (length(index) != 1L || is.na(index) || !is.finite(index)) {
         stop("index must be a single finite value")
@@ -190,11 +179,9 @@ maxent_feature_eval <- function(feature, index) {
 #'   \code{min}, \code{max}, \code{size}.
 #' @export
 #' @examples
-#' \dontrun{
 #' vals <- c(0, 5, 10)
 #' f <- maxent_linear_feature(vals, "temp")
 #' maxent_feature_info(f)
-#' }
 maxent_feature_info <- function(feature) {
     feature_get_info(feature)
 }
@@ -214,14 +201,12 @@ maxent_feature_info <- function(feature) {
 #' @return Named list of external pointers to Feature C++ objects.
 #' @export
 #' @examples
-#' \dontrun{
-#' data <- list(
+#' env_data <- list(
 #'   temperature   = c(15, 20, 25, 18, 22),
 #'   precipitation = c(100, 200, 150, 80, 300)
 #' )
-#' features <- maxent_generate_features(data, types = c("linear", "hinge"))
+#' features <- maxent_generate_features(env_data, types = c("linear", "hinge"))
 #' length(features)
-#' }
 maxent_generate_features <- function(
     data,
     types = c("linear", "quadratic", "product", "threshold", "hinge"),

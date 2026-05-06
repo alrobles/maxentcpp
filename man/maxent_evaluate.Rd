@@ -29,9 +29,7 @@ Computes all evaluation metrics at once: AUC, correlation, log-loss,
 squared error, misclassification, max Kappa, and prevalence.
 }
 \examples{
-\dontrun{
 res <- maxent_evaluate(c(0.9, 0.85, 0.95), c(0.1, 0.15, 0.2))
 res$auc          # 1.0
 res$correlation  # > 0
-}
 }

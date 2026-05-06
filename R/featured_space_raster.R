@@ -157,16 +157,15 @@ NULL
 #'   \code{\link{maxent_generate_features}}.
 #' @export
 #' @examples
-#' \dontrun{
-#' library(terra)
-#' r <- rast(system.file("ex/elev.tif", package = "terra"))
-#' # Pretend the first 3 finite cells are presences:
+#' \donttest{
+#' stack_path <- system.file("extdata", "stack_1_12_crop.rds",
+#'                          package = "maxentcpp")
+#' r <- terra::unwrap(readRDS(stack_path))
 #' fs <- maxent_featured_space_from_rast(
 #'     r,
 #'     sample_indices = c(0L, 1L, 2L),
 #'     feature_types  = c("linear", "quadratic")
 #' )
-#' res <- maxent_train(fs)
 #' }
 maxent_featured_space_from_rast <- function(
     rast,

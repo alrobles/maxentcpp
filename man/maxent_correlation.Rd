@@ -18,7 +18,5 @@ Correlation coefficient in [-1, 1].
 Computes the Pearson correlation coefficient between two numeric vectors.
 }
 \examples{
-\dontrun{
 maxent_correlation(c(1, 2, 3), c(2, 4, 6))  # 1.0
-}
 }

@@ -31,12 +31,10 @@ Automatically generates all configured feature types from one or more
 environmental variable vectors.
 }
 \examples{
-\dontrun{
-data <- list(
+env_data <- list(
   temperature   = c(15, 20, 25, 18, 22),
   precipitation = c(100, 200, 150, 80, 300)
 )
-features <- maxent_generate_features(data, types = c("linear", "hinge"))
+features <- maxent_generate_features(env_data, types = c("linear", "hinge"))
 length(features)
-}
 }

@@ -31,7 +31,7 @@ Randomly selects valid (non-NODATA) cells from a reference grid for use
 as background points in MaxEnt modeling.
 }
 \examples{
-\dontrun{
+\donttest{
 dim <- maxent_dimension(100, 100, -120, 35, 0.1)
 grid <- maxent_grid(dim, "env1")
 bg <- maxent_background_indices(grid, n = 5000, seed = 42)

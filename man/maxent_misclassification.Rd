@@ -18,7 +18,5 @@ Misclassification rate in [0, 1].
 Fraction of misclassified samples at threshold 0.5.
 }
 \examples{
-\dontrun{
 maxent_misclassification(c(0.8, 0.9), c(0.1, 0.2))  # 0.0
-}
 }

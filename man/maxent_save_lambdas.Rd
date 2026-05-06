@@ -19,7 +19,7 @@ Writes the trained model coefficients (lambdas) to a CSV file in
 the standard Maxent .lambdas format.
 }
 \examples{
-\dontrun{
-maxent_save_lambdas(fs, "mymodel.lambdas")
+\donttest{
+maxent_save_lambdas(fs, tempfile(fileext = ".lambdas"))
 }
 }

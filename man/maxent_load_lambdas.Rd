@@ -21,7 +21,7 @@ Reads model coefficients from a .lambdas file and applies them to
 a FeaturedSpace that was created with the same features.
 }
 \examples{
-\dontrun{
-maxent_load_lambdas(fs2, "mymodel.lambdas")
+\donttest{
+maxent_load_lambdas(fs, tempfile(fileext = ".lambdas"))
 }
 }

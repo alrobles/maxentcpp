@@ -21,7 +21,7 @@ Invisibly returns the output file path.
 Writes a GridFloat to a \code{.asc} file.
 }
 \examples{
-\dontrun{
-maxent_write_asc(g, "output.asc")
+\donttest{
+maxent_write_asc(g, tempfile(fileext = ".asc"))
 }
 }

@@ -54,8 +54,8 @@ the canonical Maxent colour ramp (red = high, blue = low).  Optionally
 overlays presence and test-point locations, and renders a small legend.
 }
 \examples{
-\dontrun{
+\donttest{
 pred <- maxent_project_cloglog(model, list(g1, g2), c("bio1", "bio12"))
-maxent_write_prediction_png(pred, "prediction.png")
+maxent_write_prediction_png(pred, tempfile(fileext = ".png"))
 }
 }
