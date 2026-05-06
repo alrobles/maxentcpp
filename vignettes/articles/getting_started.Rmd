@@ -217,11 +217,11 @@ environment.
 Negative MESS values indicate novel environmental combinations:
 
 ```{r mess, fig.alt = "MESS map showing areas of environmental novelty relative to training data."}
-mess_grid   <- maxent_mess(env_grids = list(g_bio1, g_bio12), 
-                           reference_values = occ,
-                           feature_names =  c("bio1", "bio12"),
-                           )
-mess_raster <- maxent_grid_to_terra(mess_grid)
+ref_vals    <- list(bio1_vals, bio12_vals)
+mess_result <- maxent_mess(list(g_bio1, g_bio12),
+                           ref_vals,
+                           c("bio1", "bio12"))
+mess_raster <- maxent_grid_to_terra(mess_result$mess_grid)
 
 terra::plot(mess_raster,
             main = "MESS (negative = novel environment)",
