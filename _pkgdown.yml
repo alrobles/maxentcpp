@@ -2,3 +2,28 @@ url: https://alrobles.github.io/maxentcpp/
 template:
   bootstrap: 5
 
+navbar:
+  structure:
+    left:  [intro, articles, reference, news]
+    right: [search, github]
+  components:
+    articles:
+      text: Articles
+      menu:
+        - text: "Getting Started"
+          href: articles/getting-started.html
+        - text: "Why maxentcpp? From Java to C++"
+          href: articles/why-maxentcpp.html
+        - text: "MaxEnt Features and Outputs"
+          href: articles/maxent-features-and-outputs.html
+
+articles:
+  - title: Getting Started
+    navbar: ~
+    contents:
+      - getting-started
+  - title: Background
+    navbar: ~
+    contents:
+      - why-maxentcpp
+      - maxent-features-and-outputs

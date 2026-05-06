@@ -21,6 +21,8 @@ Imports:
 LinkingTo: Rcpp, RcppEigen
 Suggests:
     testthat (>= 3.0.0),
+    knitr,
+    rmarkdown,
     raster,
     sf,
     png,
