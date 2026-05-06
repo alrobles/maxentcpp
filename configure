@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Detect terra include path and generate src/Makevars from src/Makevars.in
+
+TERRA_CPPFLAGS=""
+TERRA_INCLUDE=`"${R_HOME}/bin/Rscript" -e "cat(system.file('include', package='terra'))" 2>/dev/null`
+if [ -n "${TERRA_INCLUDE}" ] && [ -d "${TERRA_INCLUDE}" ]; then
+    TERRA_CPPFLAGS="-I${TERRA_INCLUDE}"
+fi
+
+sed -e "s|@TERRA_CPPFLAGS@|${TERRA_CPPFLAGS}|g" src/Makevars.in > src/Makevars

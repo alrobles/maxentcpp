@@ -1,0 +1,6 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^build$
+^\.github$
+^README\.md$
+(^|/).+\.(o|so|dll|a|dylib)$

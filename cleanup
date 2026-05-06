@@ -1,0 +1,5 @@
+#!/bin/sh
+rm -f src/Makevars
+rm -f src/*.o src/*.so src/*.dll src/*.a src/*.dylib
+find src/cpp -type f \( -name '*.o' -o -name '*.so' -o -name '*.dll' -o -name '*.a' -o -name '*.dylib' \) -delete
+exit 0

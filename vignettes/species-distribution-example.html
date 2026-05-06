@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>End-to-End Species Distribution Modeling with maxentcpp</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">End-to-End Species Distribution Modeling with maxentcpp</h1>
+
+
+
+<div id="overview" class="section level2">
+<h2>Overview</h2>
+<p>This vignette demonstrates a complete species distribution modeling (SDM) workflow using <strong>maxentcpp</strong>, from loading environmental raster data and species occurrence records through model training, evaluation, projection, and diagnostics.</p>
+<p>The workflow mirrors a typical “nicher”-style analysis:</p>
+<ol style="list-style-type: decimal">
+<li>Load environmental layers (<code>.tif</code> or <code>.asc</code>)</li>
+<li>Ingest species occurrence data (CSV / data frame)</li>
+<li>Generate background (pseudo-absence) points</li>
+<li>Build features and train the model</li>
+<li>Evaluate the model (AUC, response curves, variable importance)</li>
+<li>Project the model onto a landscape and visualize</li>
+</ol>
+</div>
+<div id="load-environmental-layers" class="section level2">
+<h2>1. Load Environmental Layers</h2>
+<p><code>maxentcpp</code> works with its own internal grid format. The package provides bridge functions for the <strong>terra</strong> and <strong>raster</strong> packages so you can load <code>.tif</code> (GeoTIFF) or any format those packages support.</p>
+<div id="using-terra-recommended" class="section level3">
+<h3>Using terra (recommended)</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">library</span>(maxentcpp)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="kw">library</span>(terra)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true"></a><span class="co"># Load two bioclimatic layers</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true"></a>bio1 &lt;-<span class="st"> </span><span class="kw">rast</span>(<span class="st">&quot;path/to/wc2.1_30s_bio_1.tif&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true"></a>bio12 &lt;-<span class="st"> </span><span class="kw">rast</span>(<span class="st">&quot;path/to/wc2.1_30s_bio_12.tif&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true"></a><span class="co"># Convert to maxentcpp grids</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true"></a>g_bio1  &lt;-<span class="st"> </span><span class="kw">maxent_grid_from_terra</span>(bio1)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true"></a>g_bio12 &lt;-<span class="st"> </span><span class="kw">maxent_grid_from_terra</span>(bio12)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true"></a><span class="co"># Check grid metadata</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true"></a><span class="kw">maxent_grid_info</span>(g_bio1)</span></code></pre></div>
+</div>
+<div id="using-raster-alternative" class="section level3">
+<h3>Using raster (alternative)</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="kw">library</span>(raster)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>r &lt;-<span class="st"> </span><span class="kw">raster</span>(<span class="st">&quot;path/to/bio1.tif&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>mat &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(r)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>e &lt;-<span class="st"> </span><span class="kw">extent</span>(r)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a>g &lt;-<span class="st"> </span><span class="kw">maxent_grid_from_matrix</span>(mat,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true"></a>                             <span class="dt">xll =</span> e<span class="op">@</span>xmin, <span class="dt">yll =</span> e<span class="op">@</span>ymin,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true"></a>                             <span class="dt">cellsize =</span> <span class="kw">res</span>(r)[<span class="dv">1</span>],</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true"></a>                             <span class="dt">name =</span> <span class="kw">names</span>(r))</span></code></pre></div>
+</div>
+<div id="loading-esri-ascii-directly" class="section level3">
+<h3>Loading ESRI ASCII directly</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>g_asc &lt;-<span class="st"> </span><span class="kw">maxent_read_asc</span>(<span class="st">&quot;path/to/bio1.asc&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="prepare-species-occurrence-data" class="section level2">
+<h2>2. Prepare Species Occurrence Data</h2>
+<p><code>maxent_read_occurrences()</code> accepts a CSV file path or an R data frame (e.g. from <code>rgbif::occ_data()</code>) and converts geographic coordinates to grid row/column indices.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="co"># From a data frame</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>occ_df &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;species_occurrences.csv&quot;</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a><span class="kw">head</span>(occ_df)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a><span class="co">#&gt;   species  longitude  latitude</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a><span class="co">#&gt; 1 Quercus   -118.50    36.50</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a><span class="co">#&gt; 2 Quercus   -119.00    37.00</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a><span class="co">#&gt; ...</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a><span class="co"># Build a GridDimension matching the environmental layers</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>info &lt;-<span class="st"> </span><span class="kw">maxent_grid_info</span>(g_bio1)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>dim &lt;-<span class="st"> </span><span class="kw">maxent_dimension</span>(<span class="dt">nrows    =</span> info<span class="op">$</span>nrows,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a>                        <span class="dt">ncols    =</span> info<span class="op">$</span>ncols,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a>                        <span class="dt">xll      =</span> info<span class="op">$</span>xll,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a>                        <span class="dt">yll      =</span> info<span class="op">$</span>yll,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a>                        <span class="dt">cellsize =</span> info<span class="op">$</span>cellsize)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a><span class="co"># Convert occurrences to sample indices</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>occ &lt;-<span class="st"> </span><span class="kw">maxent_read_occurrences</span>(occ_df, dim,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a>                               <span class="dt">lon_col =</span> <span class="st">&quot;longitude&quot;</span>,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a>                               <span class="dt">lat_col =</span> <span class="st">&quot;latitude&quot;</span>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Number of presence points:&quot;</span>, <span class="kw">length</span>(occ<span class="op">$</span>indices), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="generate-background-points" class="section level2">
+<h2>3. Generate Background Points</h2>
+<p>MaxEnt requires background (pseudo-absence) data drawn from the study area.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a>bg &lt;-<span class="st"> </span><span class="kw">maxent_background_indices</span>(g_bio1, <span class="dt">n =</span> <span class="dv">10000</span>, <span class="dt">seed =</span> <span class="dv">42</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Number of background points:&quot;</span>, <span class="kw">length</span>(bg<span class="op">$</span>indices), <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="extract-environmental-values-and-build-features" class="section level2">
+<h2>4. Extract Environmental Values and Build Features</h2>
+<p>We combine background and presence point indices, extract environmental values, and generate features.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="co"># Total number of points: background + presence</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>all_rows &lt;-<span class="st"> </span><span class="kw">c</span>(bg<span class="op">$</span>rows, occ<span class="op">$</span>rows)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>all_cols &lt;-<span class="st"> </span><span class="kw">c</span>(bg<span class="op">$</span>cols, occ<span class="op">$</span>cols)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>n_total  &lt;-<span class="st"> </span><span class="kw">length</span>(all_rows)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a><span class="co"># The presence samples are at the end</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>sample_indices &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="kw">length</span>(bg<span class="op">$</span>rows), n_total <span class="op">-</span><span class="st"> </span>1L)  <span class="co"># 0-based</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a><span class="co"># Extract environmental values at all point locations</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>bio1_vals  &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">seq_along</span>(all_rows), <span class="cf">function</span>(i) {</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a>    <span class="kw">grid_get_value</span>(g_bio1, all_rows[i], all_cols[i])</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>})</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>bio12_vals &lt;-<span class="st"> </span><span class="kw">sapply</span>(<span class="kw">seq_along</span>(all_rows), <span class="cf">function</span>(i) {</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="kw">grid_get_value</span>(g_bio12, all_rows[i], all_cols[i])</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>})</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a><span class="co"># Build a named list of environmental data</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>env_data &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">bio1 =</span> bio1_vals, <span class="dt">bio12 =</span> bio12_vals)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a><span class="co"># Auto-generate features (linear + hinge by default for moderate sample sizes)</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a>features &lt;-<span class="st"> </span><span class="kw">maxent_generate_features</span>(env_data,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a>                                     <span class="dt">types =</span> <span class="kw">c</span>(<span class="st">&quot;linear&quot;</span>, <span class="st">&quot;quadratic&quot;</span>, <span class="st">&quot;hinge&quot;</span>),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>                                     <span class="dt">n_hinges =</span> <span class="dv">15</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Generated&quot;</span>, <span class="kw">length</span>(features), <span class="st">&quot;features</span><span class="ch">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="train-the-model" class="section level2">
+<h2>5. Train the Model</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="co"># Create a FeaturedSpace and train</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>fs &lt;-<span class="st"> </span><span class="kw">maxent_featured_space</span>(n_total, <span class="kw">as.integer</span>(sample_indices), features)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a>result &lt;-<span class="st"> </span><span class="kw">maxent_fit</span>(fs,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a>                     <span class="dt">max_iter        =</span> <span class="dv">500</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a>                     <span class="dt">convergence     =</span> <span class="fl">1e-5</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a>                     <span class="dt">beta_multiplier =</span> <span class="fl">1.0</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Converged:&quot;</span>, result<span class="op">$</span>converged, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Final loss:&quot;</span>, result<span class="op">$</span>loss, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Entropy:&quot;</span>, result<span class="op">$</span>entropy, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Iterations:&quot;</span>, result<span class="op">$</span>iterations, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div id="save-the-model" class="section level3">
+<h3>Save the Model</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="kw">maxent_save_lambdas</span>(fs, <span class="st">&quot;my_model.lambdas&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="project-the-model" class="section level2">
+<h2>6. Project the Model</h2>
+<p>Apply the trained model to the environmental grids to produce a spatial prediction.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a>pred_grid &lt;-<span class="st"> </span><span class="kw">maxent_project_cloglog</span>(fs,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true"></a>                                     <span class="kw">list</span>(g_bio1, g_bio12),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true"></a>                                     <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true"></a><span class="co"># Convert the output to a terra raster for plotting</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true"></a>pred_raster &lt;-<span class="st"> </span><span class="kw">maxent_grid_to_terra</span>(pred_grid)</span></code></pre></div>
+<div id="visualize-the-prediction-map" class="section level3">
+<h3>Visualize the prediction map</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="kw">library</span>(terra)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a><span class="kw">plot</span>(pred_raster,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Predicted Habitat Suitability (cloglog)&quot;</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>     <span class="dt">col  =</span> <span class="kw">hcl.colors</span>(<span class="dv">50</span>, <span class="st">&quot;YlOrRd&quot;</span>, <span class="dt">rev =</span> <span class="ot">TRUE</span>))</span></code></pre></div>
+</div>
+</div>
+<div id="evaluate-the-model" class="section level2">
+<h2>7. Evaluate the Model</h2>
+<p>Compute AUC and other metrics using held-out presence and background predictions.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="co"># Extract predictions at presence and background locations</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true"></a>pres_preds &lt;-<span class="st"> </span><span class="kw">maxent_extract_predictions_raw</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true"></a>    fs, <span class="kw">list</span>(g_bio1, g_bio12), <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>),</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true"></a>    occ<span class="op">$</span>rows, occ<span class="op">$</span>cols)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true"></a>bg_preds &lt;-<span class="st"> </span><span class="kw">maxent_extract_predictions_raw</span>(</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true"></a>    fs, <span class="kw">list</span>(g_bio1, g_bio12), <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>),</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true"></a>    bg<span class="op">$</span>rows, bg<span class="op">$</span>cols)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true"></a></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true"></a><span class="co"># Full evaluation</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true"></a>eval_result &lt;-<span class="st"> </span><span class="kw">maxent_evaluate</span>(pres_preds, bg_preds)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;AUC:&quot;</span>, eval_result<span class="op">$</span>auc, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Max Kappa:&quot;</span>, eval_result<span class="op">$</span>max_kappa, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Log-loss:&quot;</span>, eval_result<span class="op">$</span>logloss, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+</div>
+<div id="variable-importance" class="section level2">
+<h2>8. Variable Importance</h2>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="co"># Percent contribution (based on lambda values)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>contrib &lt;-<span class="st"> </span><span class="kw">maxent_percent_contribution</span>(fs, <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a><span class="kw">print</span>(contrib)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a><span class="co"># Permutation importance (based on AUC drop)</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>perm_imp &lt;-<span class="st"> </span><span class="kw">maxent_permutation_importance</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a>    fs, <span class="kw">list</span>(g_bio1, g_bio12), <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a>    occ<span class="op">$</span>rows, occ<span class="op">$</span>cols,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a>    bg<span class="op">$</span>rows, bg<span class="op">$</span>cols,</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true"></a>    <span class="dt">seed =</span> <span class="dv">42</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true"></a><span class="kw">print</span>(perm_imp)</span></code></pre></div>
+</div>
+<div id="response-curves" class="section level2">
+<h2>9. Response Curves</h2>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true"></a><span class="co"># Response curve for bio1 (index 0)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true"></a>curve_bio1 &lt;-<span class="st"> </span><span class="kw">maxent_response_curve</span>(fs, <span class="kw">list</span>(g_bio1, g_bio12),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true"></a>                                     <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true"></a>                                     <span class="dt">var_index =</span> <span class="dv">0</span>, <span class="dt">n_steps =</span> <span class="dv">100</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true"></a><span class="kw">plot</span>(curve_bio1<span class="op">$</span>value, curve_bio1<span class="op">$</span>prediction,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true"></a>     <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true"></a>     <span class="dt">xlab =</span> <span class="st">&quot;Annual Mean Temperature (bio1)&quot;</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true"></a>     <span class="dt">ylab =</span> <span class="st">&quot;Cloglog Prediction&quot;</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Response Curve: bio1&quot;</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true"></a></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true"></a><span class="co"># Response curve for bio12 (index 1)</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true"></a>curve_bio12 &lt;-<span class="st"> </span><span class="kw">maxent_response_curve</span>(fs, <span class="kw">list</span>(g_bio1, g_bio12),</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true"></a>                                      <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>),</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true"></a>                                      <span class="dt">var_index =</span> <span class="dv">1</span>, <span class="dt">n_steps =</span> <span class="dv">100</span>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true"></a><span class="kw">plot</span>(curve_bio12<span class="op">$</span>value, curve_bio12<span class="op">$</span>prediction,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true"></a>     <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>, <span class="dt">lwd =</span> <span class="dv">2</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true"></a>     <span class="dt">xlab =</span> <span class="st">&quot;Annual Precipitation (bio12)&quot;</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true"></a>     <span class="dt">ylab =</span> <span class="st">&quot;Cloglog Prediction&quot;</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;Response Curve: bio12&quot;</span>)</span></code></pre></div>
+</div>
+<div id="mess-analysis-environmental-novelty" class="section level2">
+<h2>10. MESS Analysis (Environmental Novelty)</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="co"># Reference values = environmental values at training sites</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>ref_vals &lt;-<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true"></a>    bio1_vals[<span class="kw">seq_len</span>(<span class="kw">length</span>(bg<span class="op">$</span>rows))],   <span class="co"># background values for bio1</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true"></a>    bio12_vals[<span class="kw">seq_len</span>(<span class="kw">length</span>(bg<span class="op">$</span>rows))]    <span class="co"># background values for bio12</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true"></a>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true"></a>mess_result &lt;-<span class="st"> </span><span class="kw">maxent_mess</span>(<span class="kw">list</span>(g_bio1, g_bio12),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true"></a>                           ref_vals,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true"></a>                           <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>))</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true"></a>mess_raster &lt;-<span class="st"> </span><span class="kw">maxent_grid_to_terra</span>(mess_result<span class="op">$</span>mess_grid)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true"></a><span class="kw">plot</span>(mess_raster,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true"></a>     <span class="dt">main =</span> <span class="st">&quot;MESS: Negative = Novel Environment&quot;</span>,</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true"></a>     <span class="dt">col  =</span> <span class="kw">hcl.colors</span>(<span class="dv">50</span>, <span class="st">&quot;RdYlGn&quot;</span>))</span></code></pre></div>
+</div>
+<div id="clamping" class="section level2">
+<h2>11. Clamping</h2>
+<p>When projecting to new regions or time periods, environmental values may fall outside the training range. Clamping restricts them:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true"></a>ranges &lt;-<span class="st"> </span><span class="kw">maxent_variable_ranges</span>(<span class="kw">list</span>(g_bio1, g_bio12))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true"></a><span class="kw">print</span>(ranges)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true"></a>clamped &lt;-<span class="st"> </span><span class="kw">maxent_clamp</span>(<span class="kw">list</span>(g_bio1, g_bio12),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true"></a>                        ranges<span class="op">$</span>min, ranges<span class="op">$</span>max)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true"></a><span class="co"># Project with clamped grids</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true"></a>pred_clamped &lt;-<span class="st"> </span><span class="kw">maxent_project_cloglog</span>(fs,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true"></a>                                        clamped<span class="op">$</span>clamped_grids,</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true"></a>                                        <span class="kw">c</span>(<span class="st">&quot;bio1&quot;</span>, <span class="st">&quot;bio12&quot;</span>))</span></code></pre></div>
+</div>
+<div id="complete-workflow-summary" class="section level2">
+<h2>Complete Workflow Summary</h2>
+<pre><code>maxent_grid_from_terra()       ─── Load .tif layers
+maxent_read_occurrences()      ─── Ingest presence records
+maxent_background_indices()    ─── Sample background points
+maxent_generate_features()     ─── Build feature set
+maxent_featured_space()        ─── Create model object
+maxent_fit()                   ─── Train the MaxEnt model
+maxent_save_lambdas()          ─── Persist model to disk
+maxent_project_cloglog()       ─── Spatial prediction
+maxent_grid_to_terra()         ─── Convert output for plotting
+maxent_evaluate()              ─── Compute AUC + metrics
+maxent_response_curve()        ─── Variable response plots
+maxent_permutation_importance()─── Variable ranking
+maxent_mess()                  ─── Environmental novelty
+maxent_clamp()                 ─── Safe extrapolation</code></pre>
+</div>
+<div id="one-click-workflow-with-maxent_run" class="section level2">
+<h2>One-Click Workflow with <code>maxent_run()</code></h2>
+<p>For users who want a complete Java-Maxent-style output directory in a single call, <code>maxent_run()</code> orchestrates the full pipeline — from occurrence records to an HTML report — and writes all the standard output files.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true"></a><span class="kw">library</span>(maxentcpp)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true"></a><span class="kw">library</span>(terra)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true"></a>stack_path      &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;stack_1_12_crop.rds&quot;</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true"></a>                               <span class="dt">package =</span> <span class="st">&quot;maxentcpp&quot;</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true"></a>example_rasters &lt;-<span class="st"> </span>terra<span class="op">::</span><span class="kw">unwrap</span>(<span class="kw">readRDS</span>(stack_path))</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true"></a>grids &lt;-<span class="st"> </span><span class="kw">list</span>(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true"></a>  <span class="dt">bio1  =</span> <span class="kw">maxent_grid_from_terra</span>(example_rasters[[<span class="dv">1</span>]]),</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true"></a>  <span class="dt">bio12 =</span> <span class="kw">maxent_grid_from_terra</span>(example_rasters[[<span class="dv">2</span>]])</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true"></a>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true"></a><span class="kw">data</span>(example_occ_df)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true"></a>result &lt;-<span class="st"> </span><span class="kw">maxent_run</span>(</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true"></a>  <span class="dt">species    =</span> <span class="st">&quot;Abeillia_abeillei&quot;</span>,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true"></a>  <span class="dt">env_grids  =</span> grids,</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true"></a>  <span class="dt">occ_df     =</span> example_occ_df,</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true"></a>  <span class="dt">output_dir =</span> <span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;maxent_output&quot;</span>),</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true"></a>  <span class="dt">lon_col    =</span> <span class="st">&quot;long&quot;</span>,</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true"></a>  <span class="dt">lat_col    =</span> <span class="st">&quot;lat&quot;</span>,</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true"></a>  <span class="dt">n_background =</span> <span class="dv">10000</span>,</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true"></a>  <span class="dt">types      =</span> <span class="kw">c</span>(<span class="st">&quot;linear&quot;</span>, <span class="st">&quot;quadratic&quot;</span>, <span class="st">&quot;hinge&quot;</span>),</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true"></a>  <span class="dt">n_hinges   =</span> <span class="dv">15</span>,</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true"></a>  <span class="dt">max_iter   =</span> <span class="dv">500</span>,</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true"></a>  <span class="dt">seed       =</span> <span class="dv">42</span>)</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true"></a></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Training AUC :&quot;</span>, result<span class="op">$</span>evaluation<span class="op">$</span>auc, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;HTML report  :&quot;</span>, result<span class="op">$</span>html_file, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true"></a><span class="kw">cat</span>(<span class="st">&quot;Output files :</span><span class="ch">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true"></a><span class="kw">list.files</span>(result<span class="op">$</span>output_dir, <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</span></code></pre></div>
+<p>The output directory will contain:</p>
+<table>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Abeillia_abeillei.html</code></td>
+<td>Full HTML report</td>
+</tr>
+<tr class="even">
+<td><code>Abeillia_abeillei.lambdas</code></td>
+<td>Model coefficients</td>
+</tr>
+<tr class="odd">
+<td><code>Abeillia_abeillei_cloglog.png</code></td>
+<td>Prediction map</td>
+</tr>
+<tr class="even">
+<td><code>Abeillia_abeillei_omission.csv</code></td>
+<td>Omission / threshold table</td>
+</tr>
+<tr class="odd">
+<td><code>Abeillia_abeillei_samplePredictions.csv</code></td>
+<td>Per-site predictions</td>
+</tr>
+<tr class="even">
+<td><code>maxentResults.csv</code></td>
+<td>Species-level summary statistics</td>
+</tr>
+<tr class="odd">
+<td><code>plots/&lt;species&gt;_&lt;var&gt;.png</code></td>
+<td>Response curve (full)</td>
+</tr>
+<tr class="even">
+<td><code>plots/&lt;species&gt;_&lt;var&gt;_thumb.png</code></td>
+<td>Response curve (thumbnail)</td>
+</tr>
+<tr class="odd">
+<td><code>plots/&lt;species&gt;_varimp.png</code></td>
+<td>Variable importance chart</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
