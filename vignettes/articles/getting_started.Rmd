@@ -238,7 +238,7 @@ maxent_save_lambdas(fs, lambdas_file)
 cat("Model saved to:", lambdas_file, "\n")
 
 # Load it back
-fs_loaded <- maxent_load_lambdas(lambdas_file)
+fs_loaded <- maxent_load_lambdas(featured_space = fs, file = lambdas_file)
 cat("Model loaded successfully\n")
 ```
 
@@ -247,7 +247,7 @@ cat("Model loaded successfully\n")
 For a quick analysis, `maxent_run()` wraps the entire pipeline --- from
 raw rasters and occurrence records to model outputs --- in a single call:
   
-```r
+```{r oneclick}
 result <- maxent_run(
     species    = "Abeillia_abeillei",
     env_grids  = list(bio1 = g_bio1, bio12 = g_bio12),
