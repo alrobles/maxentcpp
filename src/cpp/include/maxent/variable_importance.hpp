@@ -193,14 +193,22 @@ public:
 
         const auto& features = model.features();
         for (const auto& f : features) {
-            const std::string& fname = f->name();
             double abs_lambda = std::abs(f->lambda());
-            // Match feature name to variable: feature name starts with var name
-            for (int k = 0; k < n_vars; ++k) {
-                if (fname.find(feature_names[k]) == 0) {
-                    contrib[k] += abs_lambda;
-                    break;
+            int vidx = f->var_index();
+            if (vidx < 0 || vidx >= n_vars) continue;
+
+            // Product features contribute equally to both source variables
+            if (const auto* prod =
+                    dynamic_cast<const ProductFeature*>(f.get())) {
+                int vidx2 = prod->var_index2();
+                if (vidx2 >= 0 && vidx2 < n_vars) {
+                    contrib[vidx]  += abs_lambda / 2.0;
+                    contrib[vidx2] += abs_lambda / 2.0;
+                } else {
+                    contrib[vidx] += abs_lambda;
                 }
+            } else {
+                contrib[vidx] += abs_lambda;
             }
         }
 
