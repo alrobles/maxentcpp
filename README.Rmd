@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# maxentcpp
+# maxentcpp <img src="man/figures/logo.png" align="right" height="139" alt="maxentcpp logo" />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/alrobles/maxentcpp/actions/workflows/test-r-package.yml/badge.svg)](https://github.com/alrobles/maxentcpp/actions/workflows/test-r-package.yml)
