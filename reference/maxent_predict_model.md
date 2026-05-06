@@ -30,10 +30,9 @@ Numeric vector of raw (unnormalized) prediction scores.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 # After training, predict on 5 new points with 2 features each
 newdata <- matrix(runif(10), nrow = 5, ncol = 2)
 preds <- maxent_predict_model(fs, newdata)
-#> Error: object 'fs' not found
-# }
+} # }
 ```

@@ -46,12 +46,10 @@ A named list with:
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 dim <- maxent_dimension(100, 100, -120, 35, 0.1)
 grid <- maxent_grid(dim, "env1")
 bg <- maxent_background_indices(grid, n = 5000, seed = 42)
-#> Error in maxent_background_indices(grid, n = 5000, seed = 42): No valid (non-NODATA) cells in the grid
 bg$indices  # 0-based flat indices for FeaturedSpace
-#> Error: object 'bg' not found
-# }
+} # }
 ```

@@ -78,12 +78,11 @@ Invisibly returns `results_file`.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 maxent_append_results_csv(
   file.path(tempdir(), "maxentResults.csv"),
   species = "Sp1", n_training = 50L, training_gain = 1.23,
   training_auc = 0.95, entropy = 6.7,
   contributions_df = contrib, perm_imp_df = perm_imp)
-#> Error: object 'contrib' not found
-# }
+} # }
 ```

@@ -21,12 +21,9 @@ External pointer to a GridFloat C++ object.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 g <- maxent_read_asc("bio1.asc")
-#> Error: Cannot open ASC file: bio1.asc
 info <- maxent_grid_info(g)
-#> Error: object 'g' not found
 print(info)
-#> Error: object 'info' not found
-# }
+} # }
 ```

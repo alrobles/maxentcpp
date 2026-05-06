@@ -70,10 +70,9 @@ Invisibly returns a named list of file paths written.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 maxent_plot_response_curves(
   model, list(g1, g2), c("bio1", "bio12"),
   output_dir = tempdir(), species = "Sp1")
-#> Error: object 'model' not found
-# }
+} # }
 ```

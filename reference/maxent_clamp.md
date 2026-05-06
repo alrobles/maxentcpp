@@ -39,12 +39,9 @@ A named list with:
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 result <- maxent_clamp(list(g1, g2), c(0, 50), c(30, 200))
-#> Error: object 'g1' not found
 clamped <- result$clamped_grids
-#> Error: object 'result' not found
 clamp_mat <- maxent_grid_to_matrix(result$clamp_grid)
-#> Error: object 'result' not found
-# }
+} # }
 ```

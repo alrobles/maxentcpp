@@ -41,14 +41,11 @@ A named list with:
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 result <- maxent_mess(list(g1, g2),
             list(temp_train_vals, precip_train_vals),
             c("temp", "precip"))
-#> Error: object 'g1' not found
 mess_mat <- maxent_grid_to_matrix(result$mess_grid)
-#> Error: object 'result' not found
 mod_mat  <- maxent_grid_to_matrix(result$mod_grid)
-#> Error: object 'result' not found
-# }
+} # }
 ```

@@ -76,10 +76,8 @@ Invisibly returns `filename`.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 pred <- maxent_project_cloglog(model, list(g1, g2), c("bio1", "bio12"))
-#> Error: object 'model' not found
 maxent_write_prediction_png(pred, tempfile(fileext = ".png"))
-#> Error: object 'pred' not found
-# }
+} # }
 ```

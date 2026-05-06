@@ -66,9 +66,8 @@ Invisibly returns the path to the written CSV file.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 maxent_write_omission_csv(model, list(g1, g2), c("bio1", "bio12"),
   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
-#> Error: object 'pres_rows' not found
-# }
+} # }
 ```

@@ -30,8 +30,7 @@ Invisibly returns the output file path.
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 maxent_write_asc(g, tempfile(fileext = ".asc"))
-#> Error: object 'g' not found
-# }
+} # }
 ```

@@ -58,11 +58,9 @@ A data.frame with columns:
 ## Examples
 
 ``` r
-# \donttest{
+if (FALSE) { # \dontrun{
 curve <- maxent_response_curve(model, list(g1, g2),
            c("temp", "precip"), var_index = 0)
-#> Error: object 'model' not found
 plot(curve$value, curve$prediction, type = "l")
-#> Error in curve$value: object of type 'closure' is not subsettable
-# }
+} # }
 ```
