@@ -34,6 +34,29 @@ test_that("Percent contribution returns correct structure", {
     expect_equal(sum(contrib$contribution), 100.0, tolerance = 1e-6)
 })
 
+test_that("Percent contribution handles prefix-colliding names (bio1/bio12)", {
+    skip_if_not_installed("maxentcpp")
+
+    # bio12 starts with "bio1" — old prefix-matching assigned all bio12
+    # features to bio1, resulting in 0% for bio12.
+    vals1  <- seq(0, 1, length.out = 9)
+    vals12 <- seq(1, 0, length.out = 9)
+
+    env_data <- list(bio1 = vals1, bio12 = vals12)
+    features <- maxent_generate_features(env_data, types = "linear",
+                                         n_thresholds = 0, n_hinges = 0)
+
+    model <- maxent_featured_space(9, c(6L, 7L, 8L), features)
+    maxent_fit(model, max_iter = 100, convergence = 0.001, beta_multiplier = 1.0)
+
+    contrib <- maxent_percent_contribution(model, c("bio1", "bio12"))
+
+    expect_equal(nrow(contrib), 2)
+    expect_equal(sum(contrib$contribution), 100.0, tolerance = 1e-6)
+    # bio12 must NOT be zero when its features have non-zero lambdas
+    expect_true(contrib$contribution[contrib$name == "bio12"] > 0)
+})
+
 test_that("Clamping works correctly via R wrapper", {
     skip_if_not_installed("maxentcpp")
 
