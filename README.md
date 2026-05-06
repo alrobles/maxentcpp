@@ -103,10 +103,10 @@ features <- maxent_generate_features(
 fs     <- maxent_featured_space(n_total, as.integer(sample_indices), features)
 result <- maxent_fit(fs, max_iter = 500, convergence = 1e-5)
 cat("AUC:", maxent_evaluate(
-    maxent_extract_predictions(fs, list(g_bio1, g_bio12),
-                               c("bio1", "bio12"), occ$rows, occ$cols),
-    maxent_extract_predictions(fs, list(g_bio1, g_bio12),
-                               c("bio1", "bio12"), bg$rows,  bg$cols))$auc, "\n")
+    maxent_extract_predictions_raw(fs, list(g_bio1, g_bio12),
+                                   c("bio1", "bio12"), occ$rows, occ$cols),
+    maxent_extract_predictions_raw(fs, list(g_bio1, g_bio12),
+                                   c("bio1", "bio12"), bg$rows,  bg$cols))$auc, "\n")
 
 # --- 6. Project and visualise ------------------------------------------------
 pred_raster <- maxent_grid_to_terra(
