@@ -1,0 +1,140 @@
+name: Compare Java and C++ Consistency Results
+
+on:
+  workflow_run:
+    workflows: ["C++ Consistency Test"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      cpp_run_id:
+        description: "C++ workflow run ID (leave blank to use latest)"
+        required: false
+        type: string
+      java_run_id:
+        description: "Java workflow run ID from alrobles/Maxent (leave blank to use latest)"
+        required: false
+        type: string
+      tolerance:
+        description: "Floating-point tolerance for comparison"
+        required: false
+        default: "1e-4"
+        type: string
+
+jobs:
+  compare-results:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+    # Only run when the C++ workflow succeeded (skip on failure)
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # ----------------------------------------------------------------
+      # Download C++ results artifact
+      # ----------------------------------------------------------------
+      - name: Download C++ consistency results (triggered run)
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: cpp-consistency-results
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/cpp
+
+      - name: Download C++ consistency results (manual dispatch)
+        if: github.event_name == 'workflow_dispatch' && inputs.cpp_run_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: cpp-consistency-results
+          run-id: ${{ inputs.cpp_run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: artifacts/cpp
+        continue-on-error: true
+
+      # ----------------------------------------------------------------
+      # Download Java results artifact from alrobles/Maxent
+      # A CROSS_REPO_TOKEN secret with read:actions scope on the
+      # alrobles/Maxent repository is required for cross-repo downloads.
+      # ----------------------------------------------------------------
+      - name: Download Java consistency results from alrobles/Maxent
+        uses: actions/download-artifact@v4
+        with:
+          name: java-consistency-results
+          run-id: ${{ inputs.java_run_id || '' }}
+          repository: alrobles/Maxent
+          github-token: ${{ secrets.CROSS_REPO_TOKEN }}
+          path: artifacts/java
+        # Continue even if the Java artifact is unavailable (e.g. token
+        # not configured yet), so the workflow reports a useful message.
+        continue-on-error: true
+
+      # ----------------------------------------------------------------
+      # Fallback: create a stub java_results.json so the comparison
+      # script can report which fields are missing rather than crashing.
+      # Remove this step once the Java workflow is operational.
+      # ----------------------------------------------------------------
+      - name: Create Java results stub (if download failed)
+        if: hashFiles('artifacts/java/java_results.json') == ''
+        run: |
+          mkdir -p artifacts/java
+          cat > artifacts/java/java_results.json <<'EOF'
+          {
+            "_note": "Java artifact not available. Configure CROSS_REPO_TOKEN secret and ensure the Java consistency workflow has run on alrobles/Maxent.",
+            "n_total": null,
+            "n_presence": null,
+            "n_background": null,
+            "n_features": null,
+            "training": {},
+            "lambdas": {},
+            "evaluation": {},
+            "presence_scores": null,
+            "background_scores": null
+          }
+          EOF
+          echo "WARNING: Java results not found – comparison will be partial."
+
+      # ----------------------------------------------------------------
+      # Fallback: create a stub cpp_results.json if the C++ artifact
+      # was not downloaded (e.g. manual dispatch without a run-id).
+      # ----------------------------------------------------------------
+      - name: Create C++ results stub (if download failed)
+        if: hashFiles('artifacts/cpp/cpp_results.json') == ''
+        run: |
+          mkdir -p artifacts/cpp
+          cat > artifacts/cpp/cpp_results.json <<'EOF'
+          {
+            "_note": "C++ artifact not available. Provide a valid cpp_run_id when triggering via workflow_dispatch, or trigger via the C++ Consistency Test workflow_run event.",
+            "n_total": null,
+            "n_presence": null,
+            "n_background": null,
+            "n_features": null,
+            "training": {},
+            "lambdas": {},
+            "evaluation": {},
+            "presence_scores": null,
+            "background_scores": null
+          }
+          EOF
+          echo "WARNING: C++ results not found – comparison will be partial."
+
+      # ----------------------------------------------------------------
+      # Run comparison
+      # ----------------------------------------------------------------
+      - name: Compare Java and C++ results
+        run: |
+          TOLERANCE="${{ inputs.tolerance || '1e-4' }}"
+          python3 scripts/compare_results.py \
+            artifacts/java/java_results.json \
+            artifacts/cpp/cpp_results.json \
+            --tolerance "$TOLERANCE"

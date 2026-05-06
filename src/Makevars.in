@@ -1,0 +1,28 @@
+CXX_STD = CXX17
+
+PKG_CPPFLAGS = -Icpp/include -DRCPP_EIGEN_LIBRARY @TERRA_CPPFLAGS@
+PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
+PKG_LIBS = $(SHLIB_OPENMP_CXXFLAGS) $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+
+OBJECTS = \
+  RcppExports.o \
+  rcpp_featured_space.o \
+  rcpp_features.o \
+  rcpp_grid_io.o \
+  rcpp_maxent.o \
+  rcpp_model_diagnostics.o \
+  rcpp_model_evaluation.o \
+  cpp/src/clamping.o \
+  cpp/src/csv_reader.o \
+  cpp/src/csv_writer.o \
+  cpp/src/featured_space.o \
+  cpp/src/grid.o \
+  cpp/src/grid_dimension.o \
+  cpp/src/grid_io.o \
+  cpp/src/layer.o \
+  cpp/src/model_evaluation.o \
+  cpp/src/novelty.o \
+  cpp/src/projection.o \
+  cpp/src/response_curve.o \
+  cpp/src/sample.o \
+  cpp/src/variable_importance.o
