@@ -27,6 +27,7 @@ Suggests:
     sf,
     png,
     rJava
+VignetteBuilder: knitr
 SystemRequirements: C++17
 Encoding: UTF-8
 LazyData: true
