@@ -24,10 +24,7 @@ Suggests:
     raster,
     sf,
     png,
-    knitr,
-    rmarkdown,
     rJava
-VignetteBuilder: knitr
 SystemRequirements: C++17
 Encoding: UTF-8
 LazyData: true
