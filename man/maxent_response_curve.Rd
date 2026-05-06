@@ -38,7 +38,7 @@ Maxent and \pkg{dismo}:
 \deqn{cloglog = 1 - exp(-exp(H) \cdot raw)}
 }
 \examples{
-\donttest{
+\dontrun{
 curve <- maxent_response_curve(model, list(g1, g2),
            c("temp", "precip"), var_index = 0)
 plot(curve$value, curve$prediction, type = "l")

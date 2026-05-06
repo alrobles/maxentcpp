@@ -366,6 +366,9 @@ maxent_train_terra <- function(
     convergence = 1e-5,
     beta_multiplier = 1.0,
     min_deviation = 0.001) {
+    if (!requireNamespace("terra", quietly = TRUE)) {
+        stop("Package 'terra' is required. Install it with install.packages('terra').")
+    }
     cells <- NULL
     if (is.numeric(occurrences) || is.integer(occurrences)) {
         cells <- as.integer(occurrences)

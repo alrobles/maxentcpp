@@ -22,7 +22,7 @@ Computes raw Gibbs distribution scores for new environmental data, using
 the feature lambdas stored in the trained FeaturedSpace.
 }
 \examples{
-\donttest{
+\dontrun{
 # After training, predict on 5 new points with 2 features each
 newdata <- matrix(runif(10), nrow = 5, ncol = 2)
 preds <- maxent_predict_model(fs, newdata)

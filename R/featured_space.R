@@ -93,7 +93,7 @@ maxent_fit <- function(featured_space,
 #' @return Numeric vector of raw (unnormalized) prediction scores.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' # After training, predict on 5 new points with 2 features each
 #' newdata <- matrix(runif(10), nrow = 5, ncol = 2)
 #' preds <- maxent_predict_model(fs, newdata)
@@ -147,7 +147,7 @@ maxent_model_loss <- function(featured_space) {
 #' @return Invisibly returns the output file path.
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' maxent_save_lambdas(fs, tempfile(fileext = ".lambdas"))
 #' }
 maxent_save_lambdas <- function(featured_space, file) {
@@ -167,7 +167,7 @@ maxent_save_lambdas <- function(featured_space, file) {
 #'   in-place).
 #' @export
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' maxent_load_lambdas(fs, tempfile(fileext = ".lambdas"))
 #' }
 maxent_load_lambdas <- function(featured_space, file) {

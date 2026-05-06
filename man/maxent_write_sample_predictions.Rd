@@ -45,7 +45,7 @@ Computes model predictions at presence (and optionally test) locations and
 writes \code{<output_dir>/<species>_samplePredictions.csv}.
 }
 \examples{
-\donttest{
+\dontrun{
 maxent_write_sample_predictions(model, list(g1, g2), c("bio1", "bio12"),
   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
 }

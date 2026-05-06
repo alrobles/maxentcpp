@@ -26,7 +26,7 @@ training. Values below min are set to min, values above max are set to max.
 A clamping grid records the total absolute clamping at each cell.
 }
 \examples{
-\donttest{
+\dontrun{
 result <- maxent_clamp(list(g1, g2), c(0, 50), c(30, 200))
 clamped <- result$clamped_grids
 clamp_mat <- maxent_grid_to_matrix(result$clamp_grid)
