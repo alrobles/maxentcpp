@@ -30,7 +30,7 @@ through Rcpp. This package aims to provide:
 install.packages(c("Rcpp", "RcppEigen", "testthat"))
 
 # Build and install
-devtools::install("path/to/R-package")
+remotes::install_github("alrobles/maxentcpp")
 ```
 
 ## Quick Start
@@ -142,7 +142,7 @@ MIT License - See LICENSE file for details
 
 ## Related Projects
 
-- [Java Maxent](https://github.com/alrobles/Maxent) - Original Java
+- [Java Maxent](https://github.com/mrmaxent/Maxent) - Original Java
   implementation
 - [maxnet](https://CRAN.R-project.org/package=maxnet) - R implementation
   using glmnet
