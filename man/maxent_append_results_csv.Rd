@@ -54,9 +54,9 @@ not yet exist.  Column names match the Java Maxent output for
 cross-tool compatibility.
 }
 \examples{
-\dontrun{
+\donttest{
 maxent_append_results_csv(
-  file.path(output_dir, "maxentResults.csv"),
+  file.path(tempdir(), "maxentResults.csv"),
   species = "Sp1", n_training = 50L, training_gain = 1.23,
   training_auc = 0.95, entropy = 6.7,
   contributions_df = contrib, perm_imp_df = perm_imp)

@@ -28,10 +28,7 @@ it also works correctly after reloading coefficients with
 \code{\link{maxent_load_lambdas}}.
 }
 \examples{
-\dontrun{
-library(maxentcpp)
-library(terra)
-
+\donttest{
 stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
                                package = "maxentcpp")
 example_rasters <- terra::unwrap(readRDS(stack_path))

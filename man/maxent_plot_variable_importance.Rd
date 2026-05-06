@@ -33,7 +33,7 @@ permutation importance for each environmental variable, replicating
 \code{density/Runner.java::makeJackknifePlots()}.
 }
 \examples{
-\dontrun{
+\donttest{
 maxent_plot_variable_importance(contrib, perm_imp,
   species = "Sp1", output_dir = tempdir())
 }

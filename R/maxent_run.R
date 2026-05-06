@@ -57,10 +57,7 @@
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
-#' library(maxentcpp)
-#' library(terra)
-#'
+#' \donttest{
 #' stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
 #'                                package = "maxentcpp")
 #' example_rasters <- terra::unwrap(readRDS(stack_path))
@@ -78,7 +75,7 @@
 #'   lon_col    = "long",
 #'   lat_col    = "lat")
 #'
-#' cat("AUC:", result$evaluation$auc, "\n")
+#' result$evaluation$auc
 #' }
 maxent_run <- function(species,
                        env_grids,

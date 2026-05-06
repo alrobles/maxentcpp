@@ -19,7 +19,5 @@ Computes the average cross-entropy log-loss from predictions at
 presence and absence sites.
 }
 \examples{
-\dontrun{
 maxent_logloss(c(0.9, 0.8), c(0.1, 0.2))
-}
 }

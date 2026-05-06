@@ -13,10 +13,8 @@
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
 #' result <- maxent_auc(c(0.8, 0.9, 1.0), c(0.1, 0.2, 0.3))
 #' result$auc  # 1.0
-#' }
 maxent_auc <- function(presence, absence) {
     eval_auc(as.numeric(presence), as.numeric(absence))
 }
@@ -30,9 +28,7 @@ maxent_auc <- function(presence, absence) {
 #' @return Correlation coefficient in [-1, 1].
 #' @export
 #' @examples
-#' \dontrun{
 #' maxent_correlation(c(1, 2, 3), c(2, 4, 6))  # 1.0
-#' }
 maxent_correlation <- function(x, y) {
     eval_correlation(as.numeric(x), as.numeric(y))
 }
@@ -47,9 +43,7 @@ maxent_correlation <- function(x, y) {
 #' @return Average log-loss value (lower is better).
 #' @export
 #' @examples
-#' \dontrun{
 #' maxent_logloss(c(0.9, 0.8), c(0.1, 0.2))
-#' }
 maxent_logloss <- function(presence, absence) {
     eval_logloss(as.numeric(presence), as.numeric(absence))
 }
@@ -63,9 +57,7 @@ maxent_logloss <- function(presence, absence) {
 #' @return Mean squared error.
 #' @export
 #' @examples
-#' \dontrun{
 #' maxent_square_error(c(1.0, 1.0), c(0.0, 0.0))  # 0.0
-#' }
 maxent_square_error <- function(presence, absence) {
     eval_square_error(as.numeric(presence), as.numeric(absence))
 }
@@ -79,9 +71,7 @@ maxent_square_error <- function(presence, absence) {
 #' @return Misclassification rate in [0, 1].
 #' @export
 #' @examples
-#' \dontrun{
 #' maxent_misclassification(c(0.8, 0.9), c(0.1, 0.2))  # 0.0
-#' }
 maxent_misclassification <- function(presence, absence) {
     eval_misclassification(as.numeric(presence), as.numeric(absence))
 }
@@ -106,11 +96,9 @@ maxent_misclassification <- function(presence, absence) {
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
 #' res <- maxent_evaluate(c(0.9, 0.85, 0.95), c(0.1, 0.15, 0.2))
 #' res$auc          # 1.0
 #' res$correlation  # > 0
-#' }
 maxent_evaluate <- function(presence, absence) {
     eval_model(as.numeric(presence), as.numeric(absence))
 }

@@ -22,7 +22,5 @@ Sample object (external pointer)
 Creates a sample point representing a species occurrence location.
 }
 \examples{
-\dontrun{
 sample <- maxent_sample(lon = -118.5, lat = 36.5, name = "site1")
-}
 }

@@ -6,7 +6,7 @@
 #' @return External pointer to a GridFloat C++ object.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' g <- maxent_read_asc("bio1.asc")
 #' info <- maxent_grid_info(g)
 #' print(info)
@@ -38,8 +38,8 @@ maxent_read_grid <- function(filename) {
 #' @return Invisibly returns the output file path.
 #' @export
 #' @examples
-#' \dontrun{
-#' maxent_write_asc(g, "output.asc")
+#' \donttest{
+#' maxent_write_asc(g, tempfile(fileext = ".asc"))
 #' }
 maxent_write_asc <- function(grid, filename, scientific = TRUE) {
     grid_write_asc(grid, as.character(filename), as.logical(scientific))
@@ -118,10 +118,11 @@ maxent_grid_from_matrix <- function(mat, xll, yll, cellsize,
 #' }
 #' @export
 #' @examples
-#' \dontrun{
-#' library(terra)
-#' r <- rast("bio1.tif")
-#' g <- maxent_grid_from_terra(r)
+#' \donttest{
+#' stack_path <- system.file("extdata", "stack_1_12_crop.rds",
+#'                          package = "maxentcpp")
+#' r <- terra::unwrap(readRDS(stack_path))
+#' g <- maxent_grid_from_terra(r[[1]])
 #' maxent_grid_info(g)
 #' }
 maxent_grid_from_terra <- function(r, name = NULL) {
@@ -183,13 +184,12 @@ maxent_grid_from_terra <- function(r, name = NULL) {
 #' }
 #' @export
 #' @examples
-#' \dontrun{
-#' # Round-trip: terra → maxentcpp → terra
-#' library(terra)
-#' r <- rast("bio1.tif")
-#' g <- maxent_grid_from_terra(r)
+#' \donttest{
+#' stack_path <- system.file("extdata", "stack_1_12_crop.rds",
+#'                          package = "maxentcpp")
+#' r <- terra::unwrap(readRDS(stack_path))
+#' g <- maxent_grid_from_terra(r[[1]])
 #' r2 <- maxent_grid_to_terra(g)
-#' plot(r2)
 #' }
 maxent_grid_to_terra <- function(grid, crs = "EPSG:4326") {
     if (!requireNamespace("terra", quietly = TRUE)) {

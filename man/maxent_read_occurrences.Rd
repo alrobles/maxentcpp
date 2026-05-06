@@ -46,17 +46,9 @@ and converts them to row/column indices suitable for
 \code{\link{maxent_featured_space}}.
 }
 \examples{
-\dontrun{
 dim <- maxent_dimension(100, 100, -120, 35, 0.1)
-
-# From a data.frame
 occ <- data.frame(longitude = c(-118.5, -119.0),
                   latitude  = c(36.5, 37.0))
 result <- maxent_read_occurrences(occ, dim)
 result$indices  # 0-based flat indices for FeaturedSpace
-
-# From a CSV file
-result2 <- maxent_read_occurrences("occurrences.csv", dim,
-                                    lon_col = "lon", lat_col = "lat")
-}
 }

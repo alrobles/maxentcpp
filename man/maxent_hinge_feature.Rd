@@ -33,9 +33,7 @@ Creates a piecewise-linear hinge feature.
 \code{eval(i) = max(0, (max_knot - values[i]) / (max_knot - min_knot))}
 }
 \examples{
-\dontrun{
 vals <- c(0, 5, 10, 3)
 f <- maxent_hinge_feature(vals, "temperature_hinge", min_knot = 2, max_knot = 8)
-maxent_feature_eval(f, 2)  # values[1] = 5 → (5-2)/(8-2) = 0.5
-}
+maxent_feature_eval(f, 2)  # values[2] = 5 -> (5-2)/(8-2) = 0.5
 }

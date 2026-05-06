@@ -17,17 +17,11 @@
 #' @return External pointer to a FeaturedSpace C++ object.
 #' @export
 #' @examples
-#' \dontrun{
 #' n   <- 100L
 #' idx <- 90:99  # 0-based sample indices
 #' env <- seq(0, 1, length.out = n)
 #' f   <- maxent_linear_feature(env, "env1")
 #' fs  <- maxent_featured_space(n, idx, list(f))
-#'
-#' # With bias weights (e.g. from sampling effort surface)
-#' bias <- runif(n, 0.5, 2.0)
-#' fs_biased <- maxent_featured_space(n, idx, list(f), bias_weights = bias)
-#' }
 maxent_featured_space <- function(num_points, sample_indices, features,
                                   bias_weights = NULL) {
     if (!is.list(features)) {
@@ -65,11 +59,13 @@ maxent_featured_space <- function(num_points, sample_indices, features,
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
-#' result <- maxent_fit(fs, max_iter = 500, convergence = 1e-5)
-#' cat("Final loss:", result$loss, "\n")
-#' cat("Entropy:",    result$entropy, "\n")
-#' }
+#' n   <- 50L
+#' idx <- c(5L, 15L, 25L, 35L, 45L)
+#' env <- list(bio1 = runif(n), bio12 = runif(n))
+#' feats <- maxent_generate_features(env, types = "linear")
+#' fs  <- maxent_featured_space(n, idx, feats)
+#' result <- maxent_fit(fs, max_iter = 100, convergence = 1e-5)
+#' result$loss
 maxent_fit <- function(featured_space,
                        max_iter        = 500L,
                        convergence     = 1e-5,
@@ -97,7 +93,7 @@ maxent_fit <- function(featured_space,
 #' @return Numeric vector of raw (unnormalized) prediction scores.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # After training, predict on 5 new points with 2 features each
 #' newdata <- matrix(runif(10), nrow = 5, ncol = 2)
 #' preds <- maxent_predict_model(fs, newdata)
@@ -151,8 +147,8 @@ maxent_model_loss <- function(featured_space) {
 #' @return Invisibly returns the output file path.
 #' @export
 #' @examples
-#' \dontrun{
-#' maxent_save_lambdas(fs, "mymodel.lambdas")
+#' \donttest{
+#' maxent_save_lambdas(fs, tempfile(fileext = ".lambdas"))
 #' }
 maxent_save_lambdas <- function(featured_space, file) {
     maxent_write_lambdas(featured_space, as.character(file))
@@ -171,8 +167,8 @@ maxent_save_lambdas <- function(featured_space, file) {
 #'   in-place).
 #' @export
 #' @examples
-#' \dontrun{
-#' maxent_load_lambdas(fs2, "mymodel.lambdas")
+#' \donttest{
+#' maxent_load_lambdas(fs, tempfile(fileext = ".lambdas"))
 #' }
 maxent_load_lambdas <- function(featured_space, file) {
     maxent_read_lambdas(featured_space, as.character(file))
@@ -211,10 +207,7 @@ maxent_space_info <- function(featured_space) {
 #'   are the feature names as stored in the model.
 #' @export
 #' @examples
-#' \dontrun{
-#' library(maxentcpp)
-#' library(terra)
-#'
+#' \donttest{
 #' stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
 #'                                package = "maxentcpp")
 #' example_rasters <- terra::unwrap(readRDS(stack_path))
