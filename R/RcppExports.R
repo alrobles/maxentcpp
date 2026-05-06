@@ -759,39 +759,6 @@ compute_percent_contribution <- function(fs_ptr, feature_names) {
     .Call(`_maxentcpp_compute_percent_contribution`, fs_ptr, feature_names)
 }
 
-#' Compute Marginal Response Curve
-#'
-#' Varies one environmental variable from min to max while holding others
-#' at their mean value. Returns cloglog-transformed predictions.
-#'
-#' @param fs_ptr         External pointer to a FeaturedSpace object.
-#' @param grid_ptrs      List of external pointers to Grid<float> objects.
-#' @param feature_names  Character vector of environment variable names.
-#' @param var_index      0-based index of the variable to vary.
-#' @param n_steps        Number of steps across the variable range.
-#' @return A data.frame with columns: value, prediction.
-#' @export
-compute_response_curve_deprecated <- function(fs_ptr, grid_ptrs, feature_names, var_index, n_steps = 100L) {
-    .Call(`_maxentcpp_compute_response_curve_deprecated`, fs_ptr, grid_ptrs, feature_names, var_index, n_steps)
-}
-
-#' Compute Marginal Response Curve with Fixed Values
-#'
-#' Varies one variable while holding others at user-specified fixed values.
-#'
-#' @param fs_ptr         External pointer to a FeaturedSpace object.
-#' @param fixed_values   Numeric vector of fixed values for each variable.
-#' @param feature_names  Character vector of environment variable names.
-#' @param var_index      0-based index of the variable to vary.
-#' @param var_min        Minimum value of the target variable.
-#' @param var_max        Maximum value of the target variable.
-#' @param n_steps        Number of steps.
-#' @return A data.frame with columns: value, prediction.
-#' @export
-compute_response_curve_fixed_deprecated <- function(fs_ptr, fixed_values, feature_names, var_index, var_min, var_max, n_steps = 100L) {
-    .Call(`_maxentcpp_compute_response_curve_fixed_deprecated`, fs_ptr, fixed_values, feature_names, var_index, var_min, var_max, n_steps)
-}
-
 #' Compute Java-compatible Marginal Response Curve
 #'
 #' Like compute_response_curve() but applies the Java Maxent cloglog:
@@ -963,62 +930,6 @@ eval_misclassification <- function(presence, absence) {
 #' @export
 eval_model <- function(presence, absence) {
     .Call(`_maxentcpp_eval_model`, presence, absence)
-}
-
-#' Project Model onto Grids (raw output)
-#'
-#' Applies a trained FeaturedSpace model to environmental grids to produce
-#' raw Gibbs scores.
-#'
-#' @param fs_ptr         External pointer to a FeaturedSpace object.
-#' @param grid_ptrs      List of external pointers to Grid<float> objects.
-#' @param feature_names  Character vector of environment variable names,
-#'   matching the order of grid_ptrs.
-#' @return External pointer to a Grid<float> with raw prediction scores.
-#' @export
-project_raw_deprecated <- function(fs_ptr, grid_ptrs, feature_names) {
-    .Call(`_maxentcpp_project_raw_deprecated`, fs_ptr, grid_ptrs, feature_names)
-}
-
-#' Project Model onto Grids (cloglog output)
-#'
-#' cloglog(x) = 1 - exp(-x). Recommended output format for Maxent v3.4+.
-#'
-#' @param fs_ptr         External pointer to a FeaturedSpace object.
-#' @param grid_ptrs      List of external pointers to Grid<float> objects.
-#' @param feature_names  Character vector of environment variable names.
-#' @return External pointer to a Grid<float> with cloglog scores in [0, 1].
-#' @export
-project_cloglog_deprecated <- function(fs_ptr, grid_ptrs, feature_names) {
-    .Call(`_maxentcpp_project_cloglog_deprecated`, fs_ptr, grid_ptrs, feature_names)
-}
-
-#' Project Model onto Grids (logistic output)
-#'
-#' logistic(x) = x / (1 + x).
-#'
-#' @param fs_ptr         External pointer to a FeaturedSpace object.
-#' @param grid_ptrs      List of external pointers to Grid<float> objects.
-#' @param feature_names  Character vector of environment variable names.
-#' @return External pointer to a Grid<float> with logistic scores in [0, 1].
-#' @export
-project_logistic_deprecated <- function(fs_ptr, grid_ptrs, feature_names) {
-    .Call(`_maxentcpp_project_logistic_deprecated`, fs_ptr, grid_ptrs, feature_names)
-}
-
-#' Extract Predictions at Sample Locations
-#'
-#' Gets model predictions at specific grid cell locations.
-#'
-#' @param fs_ptr         External pointer to a FeaturedSpace object.
-#' @param grid_ptrs      List of external pointers to Grid<float> objects.
-#' @param feature_names  Character vector of environment variable names.
-#' @param rows           Integer vector of row indices.
-#' @param cols           Integer vector of column indices.
-#' @return Numeric vector of raw prediction scores. NaN for NODATA cells.
-#' @export
-extract_predictions_deprecated <- function(fs_ptr, grid_ptrs, feature_names, rows, cols) {
-    .Call(`_maxentcpp_extract_predictions_deprecated`, fs_ptr, grid_ptrs, feature_names, rows, cols)
 }
 
 #' Project Model onto Grids (Java-compatible raw output)

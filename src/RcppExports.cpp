@@ -755,38 +755,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// compute_response_curve_deprecated
-DataFrame compute_response_curve_deprecated(SEXP fs_ptr, List grid_ptrs, CharacterVector feature_names, int var_index, int n_steps);
-RcppExport SEXP _maxentcpp_compute_response_curve_deprecated(SEXP fs_ptrSEXP, SEXP grid_ptrsSEXP, SEXP feature_namesSEXP, SEXP var_indexSEXP, SEXP n_stepsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type fs_ptr(fs_ptrSEXP);
-    Rcpp::traits::input_parameter< List >::type grid_ptrs(grid_ptrsSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type feature_names(feature_namesSEXP);
-    Rcpp::traits::input_parameter< int >::type var_index(var_indexSEXP);
-    Rcpp::traits::input_parameter< int >::type n_steps(n_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_response_curve_deprecated(fs_ptr, grid_ptrs, feature_names, var_index, n_steps));
-    return rcpp_result_gen;
-END_RCPP
-}
-// compute_response_curve_fixed_deprecated
-DataFrame compute_response_curve_fixed_deprecated(SEXP fs_ptr, NumericVector fixed_values, CharacterVector feature_names, int var_index, double var_min, double var_max, int n_steps);
-RcppExport SEXP _maxentcpp_compute_response_curve_fixed_deprecated(SEXP fs_ptrSEXP, SEXP fixed_valuesSEXP, SEXP feature_namesSEXP, SEXP var_indexSEXP, SEXP var_minSEXP, SEXP var_maxSEXP, SEXP n_stepsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type fs_ptr(fs_ptrSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type fixed_values(fixed_valuesSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type feature_names(feature_namesSEXP);
-    Rcpp::traits::input_parameter< int >::type var_index(var_indexSEXP);
-    Rcpp::traits::input_parameter< double >::type var_min(var_minSEXP);
-    Rcpp::traits::input_parameter< double >::type var_max(var_maxSEXP);
-    Rcpp::traits::input_parameter< int >::type n_steps(n_stepsSEXP);
-    rcpp_result_gen = Rcpp::wrap(compute_response_curve_fixed_deprecated(fs_ptr, fixed_values, feature_names, var_index, var_min, var_max, n_steps));
-    return rcpp_result_gen;
-END_RCPP
-}
 // compute_response_curve
 DataFrame compute_response_curve(SEXP fs_ptr, List grid_ptrs, CharacterVector feature_names, int var_index, int n_steps);
 RcppExport SEXP _maxentcpp_compute_response_curve(SEXP fs_ptrSEXP, SEXP grid_ptrsSEXP, SEXP feature_namesSEXP, SEXP var_indexSEXP, SEXP n_stepsSEXP) {
@@ -941,60 +909,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// project_raw_deprecated
-SEXP project_raw_deprecated(SEXP fs_ptr, List grid_ptrs, CharacterVector feature_names);
-RcppExport SEXP _maxentcpp_project_raw_deprecated(SEXP fs_ptrSEXP, SEXP grid_ptrsSEXP, SEXP feature_namesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type fs_ptr(fs_ptrSEXP);
-    Rcpp::traits::input_parameter< List >::type grid_ptrs(grid_ptrsSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type feature_names(feature_namesSEXP);
-    rcpp_result_gen = Rcpp::wrap(project_raw_deprecated(fs_ptr, grid_ptrs, feature_names));
-    return rcpp_result_gen;
-END_RCPP
-}
-// project_cloglog_deprecated
-SEXP project_cloglog_deprecated(SEXP fs_ptr, List grid_ptrs, CharacterVector feature_names);
-RcppExport SEXP _maxentcpp_project_cloglog_deprecated(SEXP fs_ptrSEXP, SEXP grid_ptrsSEXP, SEXP feature_namesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type fs_ptr(fs_ptrSEXP);
-    Rcpp::traits::input_parameter< List >::type grid_ptrs(grid_ptrsSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type feature_names(feature_namesSEXP);
-    rcpp_result_gen = Rcpp::wrap(project_cloglog_deprecated(fs_ptr, grid_ptrs, feature_names));
-    return rcpp_result_gen;
-END_RCPP
-}
-// project_logistic_deprecated
-SEXP project_logistic_deprecated(SEXP fs_ptr, List grid_ptrs, CharacterVector feature_names);
-RcppExport SEXP _maxentcpp_project_logistic_deprecated(SEXP fs_ptrSEXP, SEXP grid_ptrsSEXP, SEXP feature_namesSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type fs_ptr(fs_ptrSEXP);
-    Rcpp::traits::input_parameter< List >::type grid_ptrs(grid_ptrsSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type feature_names(feature_namesSEXP);
-    rcpp_result_gen = Rcpp::wrap(project_logistic_deprecated(fs_ptr, grid_ptrs, feature_names));
-    return rcpp_result_gen;
-END_RCPP
-}
-// extract_predictions_deprecated
-NumericVector extract_predictions_deprecated(SEXP fs_ptr, List grid_ptrs, CharacterVector feature_names, IntegerVector rows, IntegerVector cols);
-RcppExport SEXP _maxentcpp_extract_predictions_deprecated(SEXP fs_ptrSEXP, SEXP grid_ptrsSEXP, SEXP feature_namesSEXP, SEXP rowsSEXP, SEXP colsSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type fs_ptr(fs_ptrSEXP);
-    Rcpp::traits::input_parameter< List >::type grid_ptrs(grid_ptrsSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type feature_names(feature_namesSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type rows(rowsSEXP);
-    Rcpp::traits::input_parameter< IntegerVector >::type cols(colsSEXP);
-    rcpp_result_gen = Rcpp::wrap(extract_predictions_deprecated(fs_ptr, grid_ptrs, feature_names, rows, cols));
-    return rcpp_result_gen;
-END_RCPP
-}
 // project_raw
 SEXP project_raw(SEXP fs_ptr, List grid_ptrs, CharacterVector feature_names);
 RcppExport SEXP _maxentcpp_project_raw(SEXP fs_ptrSEXP, SEXP grid_ptrsSEXP, SEXP feature_namesSEXP) {
@@ -1109,8 +1023,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_maxentcpp_grid_from_matrix", (DL_FUNC) &_maxentcpp_grid_from_matrix, 2},
     {"_maxentcpp_compute_permutation_importance", (DL_FUNC) &_maxentcpp_compute_permutation_importance, 8},
     {"_maxentcpp_compute_percent_contribution", (DL_FUNC) &_maxentcpp_compute_percent_contribution, 2},
-    {"_maxentcpp_compute_response_curve_deprecated", (DL_FUNC) &_maxentcpp_compute_response_curve_deprecated, 5},
-    {"_maxentcpp_compute_response_curve_fixed_deprecated", (DL_FUNC) &_maxentcpp_compute_response_curve_fixed_deprecated, 7},
     {"_maxentcpp_compute_response_curve", (DL_FUNC) &_maxentcpp_compute_response_curve, 5},
     {"_maxentcpp_compute_response_curve_fixed", (DL_FUNC) &_maxentcpp_compute_response_curve_fixed, 7},
     {"_maxentcpp_clamp_grids", (DL_FUNC) &_maxentcpp_clamp_grids, 3},
@@ -1123,10 +1035,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_maxentcpp_eval_square_error", (DL_FUNC) &_maxentcpp_eval_square_error, 2},
     {"_maxentcpp_eval_misclassification", (DL_FUNC) &_maxentcpp_eval_misclassification, 2},
     {"_maxentcpp_eval_model", (DL_FUNC) &_maxentcpp_eval_model, 2},
-    {"_maxentcpp_project_raw_deprecated", (DL_FUNC) &_maxentcpp_project_raw_deprecated, 3},
-    {"_maxentcpp_project_cloglog_deprecated", (DL_FUNC) &_maxentcpp_project_cloglog_deprecated, 3},
-    {"_maxentcpp_project_logistic_deprecated", (DL_FUNC) &_maxentcpp_project_logistic_deprecated, 3},
-    {"_maxentcpp_extract_predictions_deprecated", (DL_FUNC) &_maxentcpp_extract_predictions_deprecated, 5},
     {"_maxentcpp_project_raw", (DL_FUNC) &_maxentcpp_project_raw, 3},
     {"_maxentcpp_project_cloglog", (DL_FUNC) &_maxentcpp_project_cloglog, 3},
     {"_maxentcpp_project_logistic", (DL_FUNC) &_maxentcpp_project_logistic, 3},
