@@ -24,39 +24,25 @@ make_projection_model <- function() {
     list(model = model, grids = list(g0, g1), names = c("env0", "env1"))
 }
 
-test_that("cloglog_deprecated projection matches 1 - exp(-raw_deprecated)", {
+test_that("cloglog projection values are in [0, 1]", {
     skip_if_not_installed("maxentcpp")
 
     m <- make_projection_model()
 
-    raw_grid     <- maxent_project_raw_deprecated(m$model, m$grids, m$names)
-    cloglog_grid <- maxent_project_cloglog_deprecated(m$model, m$grids, m$names)
+    cloglog_grid <- maxent_project_cloglog(m$model, m$grids, m$names)
+    cloglog_mat  <- maxent_grid_to_matrix(cloglog_grid)
 
-    raw_mat     <- maxent_grid_to_matrix(raw_grid)
-    cloglog_mat <- maxent_grid_to_matrix(cloglog_grid)
-
-    expected <- 1.0 - exp(-raw_mat)
-
-    expect_equal(cloglog_mat, expected, tolerance = 1e-5)
-    # All values in [0, 1]
     expect_true(all(cloglog_mat >= 0 & cloglog_mat <= 1))
 })
 
-test_that("logistic_deprecated projection matches raw_deprecated / (1 + raw_deprecated)", {
+test_that("logistic projection values are in [0, 1]", {
     skip_if_not_installed("maxentcpp")
 
     m <- make_projection_model()
 
-    raw_grid      <- maxent_project_raw_deprecated(m$model, m$grids, m$names)
-    logistic_grid <- maxent_project_logistic_deprecated(m$model, m$grids, m$names)
+    logistic_grid <- maxent_project_logistic(m$model, m$grids, m$names)
+    logistic_mat  <- maxent_grid_to_matrix(logistic_grid)
 
-    raw_mat      <- maxent_grid_to_matrix(raw_grid)
-    logistic_mat <- maxent_grid_to_matrix(logistic_grid)
-
-    expected <- raw_mat / (1.0 + raw_mat)
-
-    expect_equal(logistic_mat, expected, tolerance = 1e-5)
-    # All values in [0, 1]
     expect_true(all(logistic_mat >= 0 & logistic_mat <= 1))
 })
 
@@ -85,25 +71,6 @@ test_that("cloglog and logistic values are in [0, 1] and increase with raw", {
 # ============================================================================
 # Tests for Java-compatible prediction APIs
 # ============================================================================
-
-test_that("raw == raw_deprecated / density_normalizer", {
-    skip_if_not_installed("maxentcpp")
-
-    m <- make_projection_model()
-
-    raw_deprecated_grid <- maxent_project_raw_deprecated(m$model, m$grids, m$names)
-    raw_grid            <- maxent_project_raw(m$model, m$grids, m$names)
-
-    raw_deprecated_mat <- maxent_grid_to_matrix(raw_deprecated_grid)
-    raw_mat            <- maxent_grid_to_matrix(raw_grid)
-
-    info <- maxent_featured_space_info(m$model)
-    dn   <- info$density_normalizer
-
-    expect_gt(dn, 0)
-    expected_java <- raw_deprecated_mat / dn
-    expect_equal(raw_mat, expected_java, tolerance = 1e-5)
-})
 
 test_that("cloglog_java matches 1 - exp(-exp(H) * raw_java)", {
     skip_if_not_installed("maxentcpp")
@@ -208,28 +175,5 @@ test_that("extract_predictions_logistic_java matches formula", {
     expect_equal(pt_logistic_java, expected, tolerance = 1e-5)
 })
 
-test_that("Java cloglog is strictly larger than unnormalized cloglog when densityNorm > 1", {
-    skip_if_not_installed("maxentcpp")
 
-    m <- make_projection_model()
-
-    info <- maxent_featured_space_info(m$model)
-    dn   <- info$density_normalizer
-
-    # The density normalizer should be > 1 for a non-trivial model
-    if (dn > 1.0) {
-        cloglog_deprecated_grid <- maxent_project_cloglog_deprecated(m$model, m$grids, m$names)
-        cloglog_grid            <- maxent_project_cloglog(m$model, m$grids, m$names)
-
-        cloglog_deprecated_mat <- maxent_grid_to_matrix(cloglog_deprecated_grid)
-        cloglog_mat            <- maxent_grid_to_matrix(cloglog_grid)
-
-        # raw < raw_unnorm when dn > 1, but exp(H)*raw vs raw_unnorm
-        # comparison depends on H - just check they are both in [0,1]
-        expect_true(all(cloglog_mat            >= 0 & cloglog_mat            <= 1))
-        expect_true(all(cloglog_deprecated_mat >= 0 & cloglog_deprecated_mat <= 1))
-    } else {
-        skip("density_normalizer <= 1 for this test model; skipping comparison")
-    }
-})
 
