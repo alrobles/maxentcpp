@@ -1,0 +1,317 @@
+# MaxEnt Features and Outputs
+
+This article explains the mathematical building blocks of the Maxent
+algorithm as implemented in `maxentcpp`: what **features** are, how the
+**optimizer** works, and what the different **output transformations**
+mean.
+
+## The Maxent Principle
+
+Maxent fits a probability distribution over geographic space by
+maximizing entropy subject to constraints derived from the training
+data. Given a set of environmental variables measured at presence
+locations, the algorithm finds the distribution that:
+
+1.  Agrees with the observed data (sample expectations match model
+    expectations for each feature).
+2.  Is as spread out (high entropy) as possible, avoiding unwarranted
+    assumptions.
+
+The result is a **Gibbs distribution**:
+
+``` math
+P(x) = \frac{1}{Z} \exp\left(\sum_j \lambda_j f_j(x)\right)
+```
+
+where $`f_j`$ are features (transformations of environmental variables),
+$`\lambda_j`$ are learned weights, and $`Z`$ is the normalizing constant
+(partition function).
+
+## Feature Types
+
+Features are transformations of the raw environmental variables. Each
+feature type captures a different aspect of the species–environment
+relationship. `maxentcpp` implements all five feature types from Java
+Maxent 3.4.4:
+
+### Linear Features
+
+The simplest transformation: a linear rescaling to \[0, 1\].
+
+``` math
+f_{\text{linear}}(v) = \frac{v - v_{\min}}{v_{\max} - v_{\min}}
+```
+
+Linear features capture monotonic (directional) responses. For example,
+a species that prefers warmer temperatures will have a positive
+$`\lambda`$ for the linear feature of mean annual temperature.
+
+``` r
+
+maxent_linear_feature(env_values, min_val, max_val)
+```
+
+### Quadratic Features
+
+The square of the linear feature:
+
+``` math
+f_{\text{quadratic}}(v) = f_{\text{linear}}(v)^2
+```
+
+Quadratic features allow the model to capture **unimodal** (hump-shaped)
+responses — a species may prefer intermediate values of a variable,
+declining at both extremes.
+
+``` r
+
+maxent_quadratic_feature(env_values, min_val, max_val)
+```
+
+### Product Features
+
+The product of two linear features from different variables:
+
+``` math
+f_{\text{product}}(v_1, v_2) = f_{\text{linear}}(v_1) \times f_{\text{linear}}(v_2)
+```
+
+Product features model **interactions** between environmental variables.
+For example, a species might tolerate low precipitation only when
+temperatures are also low.
+
+``` r
+
+maxent_product_feature(env_values_1, env_values_2,
+                       min1, max1, min2, max2)
+```
+
+### Threshold Features
+
+A binary step function:
+
+``` math
+f_{\text{threshold}}(v) =
+\begin{cases}
+1 & \text{if } v \geq t \\
+0 & \text{otherwise}
+\end{cases}
+```
+
+Threshold features capture **hard limits** — for example, a species that
+cannot survive below a critical temperature.
+
+``` r
+
+maxent_threshold_feature(env_values, threshold)
+```
+
+### Hinge Features
+
+A piecewise linear function that is zero on one side and linear on the
+other:
+
+``` math
+f_{\text{hinge}}(v) =
+\begin{cases}
+0 & \text{if } v \leq \text{knot} \\
+\frac{v - \text{knot}}{v_{\max} - \text{knot}} & \text{if } v > \text{knot}
+\end{cases}
+```
+
+(Reverse hinges ramp *down* instead of up.)
+
+Hinge features are the most expressive feature type in Maxent. A set of
+evenly-spaced hinges can approximate any smooth response curve, similar
+to a basis spline. They are the default feature type for datasets with
+$`\geq 15`$ presence records.
+
+``` r
+
+maxent_hinge_feature(env_values, min_val, max_val, knot)
+```
+
+### Automatic Feature Generation
+
+In practice, you rarely construct features manually.
+[`maxent_generate_features()`](https://alrobles.github.io/maxentcpp/reference/maxent_generate_features.md)
+creates the full feature set from a list of environmental variable
+vectors:
+
+``` r
+
+library(maxentcpp)
+library(terra)
+#> terra 1.9.11
+
+stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
+                               package = "maxentcpp")
+example_rasters <- terra::unwrap(readRDS(stack_path))
+g_bio1  <- maxent_grid_from_terra(example_rasters[[1]])
+g_bio12 <- maxent_grid_from_terra(example_rasters[[2]])
+
+bg   <- maxent_background_indices(g_bio1, n = 10000, seed = 42)
+data(example_occ_df)
+info <- maxent_grid_info(g_bio1)
+dim  <- maxent_dimension(info$nrows, info$ncols,
+                         info$xll, info$yll, info$cellsize)
+occ  <- maxent_read_occurrences(example_occ_df, dim,
+                                lon_col = "long", lat_col = "lat")
+
+all_rows <- c(bg$rows, occ$rows)
+all_cols <- c(bg$cols, occ$cols)
+bio1_vals  <- sapply(seq_along(all_rows), function(i)
+    grid_get_value(g_bio1, all_rows[i], all_cols[i]))
+bio12_vals <- sapply(seq_along(all_rows), function(i)
+    grid_get_value(g_bio12, all_rows[i], all_cols[i]))
+
+features <- maxent_generate_features(
+    list(bio1 = bio1_vals, bio12 = bio12_vals),
+    types    = c("linear", "quadratic", "hinge"),
+    n_hinges = 15
+)
+
+cat(length(features), "features generated from 2 variables\n")
+#> 64 features generated from 2 variables
+```
+
+## The Optimizer
+
+Maxent uses **sequential coordinate ascent** (also called sequential
+updating) to maximize the penalized log-likelihood. In each iteration,
+the algorithm:
+
+1.  Selects one feature $`f_j`$.
+2.  Finds the optimal step size $`\alpha`$ that maximizes the gain
+    (regularized log-likelihood improvement) for that feature.
+3.  Updates $`\lambda_j \leftarrow \lambda_j + \alpha`$.
+4.  Recalculates the model distribution.
+
+This process repeats, cycling through all features, until convergence
+(gain per iteration falls below a threshold, typically $`10^{-5}`$).
+
+### Regularization
+
+Without regularization, Maxent can overfit to noise in the training
+data. The algorithm applies **L1 regularization** (lasso penalty)
+controlled by the `beta_multiplier` parameter:
+
+- `beta_multiplier = 1.0` (default): standard regularization as in Java
+  Maxent.
+- `beta_multiplier > 1.0`: stronger regularization, simpler models.
+- `beta_multiplier < 1.0`: weaker regularization, more complex models.
+
+The regularization parameter for each feature depends on its type. Hinge
+and threshold features receive higher penalties than linear features,
+reflecting the greater risk of overfitting with more flexible feature
+types.
+
+## Output Transformations
+
+The trained model produces **raw** output values (unnormalized Gibbs
+scores). These are transformed into ecologically interpretable
+quantities using one of three transformations:
+
+### Raw Output
+
+``` math
+\text{raw}(x) = \frac{\exp\left(\sum_j \lambda_j f_j(x)\right)}{Z}
+```
+
+where $`Z = \sum_x \exp\left(\sum_j \lambda_j f_j(x)\right)`$ is the
+density normalizer (sum over all background cells).
+
+Raw output represents **relative occurrence rate** (ROR). A cell with
+raw value 2.0 has twice the expected occurrence rate of a cell with
+value 1.0.
+
+``` r
+
+pred_raw <- maxent_project_raw(model, grids, feature_names)
+```
+
+### Cloglog Output (Recommended)
+
+``` math
+\text{cloglog}(x) = 1 - \exp\left(-e^H \cdot \text{raw}(x)\right)
+```
+
+where $`H`$ is the model entropy.
+
+Cloglog output is the **recommended default** since Maxent 3.4.0. Under
+certain assumptions about the sampling process, cloglog values can be
+interpreted as the probability that the species is present in a grid
+cell, conditional on the environment. Values are in \[0, 1\].
+
+``` r
+
+pred_cloglog <- maxent_project_cloglog(model, grids, feature_names)
+```
+
+### Logistic Output
+
+``` math
+\text{logistic}(x) = \frac{e^H \cdot \text{raw}(x)}{1 + e^H \cdot \text{raw}(x)}
+```
+
+Logistic output was the default before Maxent 3.4.0. Like cloglog,
+values are in \[0, 1\], but the probabilistic interpretation requires a
+stronger assumption (species prevalence = 0.5). The cloglog transform is
+now preferred for most applications.
+
+``` r
+
+pred_logistic <- maxent_project_logistic(model, grids, feature_names)
+```
+
+## Model Diagnostics
+
+### AUC (Area Under the ROC Curve)
+
+AUC measures the model’s ability to distinguish presence from background
+locations. An AUC of 0.5 indicates random performance; values above 0.7
+are generally considered useful, and above 0.8 good.
+
+### Permutation Importance
+
+For each variable, the values at presence locations are randomly
+shuffled and the AUC is recalculated. The drop in AUC indicates how much
+the model depends on that variable. Permutation importance is more
+reliable than percent contribution for assessing variable effects,
+because it is independent of the path taken during training.
+
+### MESS (Multivariate Environmental Similarity Surface)
+
+MESS maps identify areas where the model is projecting into novel
+environments not represented in the training data. Negative MESS values
+indicate extrapolation — predictions in those areas should be
+interpreted with caution.
+
+### Clamping
+
+Clamping restricts environmental variable values to their training range
+before projection. This prevents the model from extrapolating feature
+values beyond the range it was trained on, producing more conservative
+(but safer) predictions.
+
+``` r
+
+clamped_grids <- maxent_clamp(grids, feature_names, occ_rows, occ_cols)
+```
+
+## Further Reading
+
+- Phillips, S.J., Anderson, R.P. & Schapire, R.E. (2006). Maximum
+  entropy modeling of species geographic distributions. *Ecological
+  Modelling*, 190, 231–259.
+  [doi:10.1016/j.ecolmodel.2005.03.026](https://doi.org/10.1016/j.ecolmodel.2005.03.026)
+
+- Elith, J., Phillips, S.J., Hastie, T., Dudík, M., Chee, Y.E. & Yates,
+  C.J. (2011). A statistical explanation of MaxEnt for ecologists.
+  *Diversity and Distributions*, 17, 43–57.
+  [doi:10.1111/j.1472-4642.2010.00725.x](https://doi.org/10.1111/j.1472-4642.2010.00725.x)
+
+- Merow, C., Smith, M.J. & Silander, J.A. (2013). A practical guide to
+  MaxEnt for modeling species’ distributions: what it does, and why
+  inputs and settings matter. *Ecography*, 36, 1058–1069.
+  [doi:10.1111/j.1600-0587.2013.07872.x](https://doi.org/10.1111/j.1600-0587.2013.07872.x)
