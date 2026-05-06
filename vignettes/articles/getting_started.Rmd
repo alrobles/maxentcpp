@@ -262,9 +262,9 @@ curves, variable importance, omission/commission CSV, and
 
 ## Next Steps
 
-- Read the [Why maxentcpp?](why-maxentcpp.html) article to understand the
+- Read the [Why maxentcpp?](why_maxentcpp.html) article to understand the
   motivation behind the Java-to-C++ migration.
-- See the [MaxEnt Features and Outputs](maxent-features-and-outputs.html)
+- See the [MaxEnt Features and Outputs](maxent_features_and_outputs.html)
   article for a deeper look at feature types and output transformations.
 - Explore the [function reference](../reference/index.html) for the full
   API documentation.
