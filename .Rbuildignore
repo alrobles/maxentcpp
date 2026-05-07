@@ -12,3 +12,4 @@
 ^\.agents$
 ^README\.Rmd$
 ^inst/java$
+^CRAN-SUBMISSION$
