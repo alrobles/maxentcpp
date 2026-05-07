@@ -1,4 +1,5 @@
 url: https://alrobles.github.io/maxentcpp/
 template:
   bootstrap: 5
-
+  bslib:
+    primary: "#2B6DA8"

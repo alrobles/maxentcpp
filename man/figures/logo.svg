@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" width="820" height="300">
+  <defs>
+    <linearGradient id="curveGrad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.35"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="820" height="300" fill="white"/>
+
+  <!-- Hex icon -->
+  <g transform="translate(130, 150)">
+    <!-- Rounded hexagon -->
+    <path d="M0,-100 C8,-100 74,-54 82,-47
+             C90,-40 90,40 82,47
+             C74,54 8,100 0,100
+             C-8,100 -74,54 -82,47
+             C-90,40 -90,-40 -82,-47
+             C-74,-54 -8,-100 0,-100 Z"
+          fill="#2B6DA8" stroke="none"/>
+
+    <!-- MaxEnt distribution curve -->
+    <path d="M-58,38 C-45,34 -35,18 -25,-5 C-18,-22 -8,-48 0,-55 C8,-48 18,-22 25,-5 C35,18 45,34 58,38"
+          fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Area under curve -->
+    <path d="M-58,38 C-45,34 -35,18 -25,-5 C-18,-22 -8,-48 0,-55 C8,-48 18,-22 25,-5 C35,18 45,34 58,38 L58,60 L-58,60 Z"
+          fill="url(#curveGrad)"/>
+
+    <!-- Grid lines (raster) -->
+    <line x1="-55" y1="60" x2="55" y2="60" stroke="white" stroke-width="1.8" opacity="0.45"/>
+    <line x1="-55" y1="48" x2="55" y2="48" stroke="white" stroke-width="1.2" opacity="0.3"/>
+    <line x1="-20" y1="38" x2="-20" y2="60" stroke="white" stroke-width="1.2" opacity="0.3"/>
+    <line x1="0" y1="38" x2="0" y2="60" stroke="white" stroke-width="1.2" opacity="0.3"/>
+    <line x1="20" y1="38" x2="20" y2="60" stroke="white" stroke-width="1.2" opacity="0.3"/>
+
+    <!-- Occurrence dots on curve -->
+    <circle cx="-18" cy="-15" r="3.5" fill="white" opacity="0.85"/>
+    <circle cx="0" cy="-55" r="3.5" fill="white" opacity="0.85"/>
+    <circle cx="22" cy="0" r="3.5" fill="white" opacity="0.85"/>
+  </g>
+
+  <!-- Package name -->
+  <text x="265" y="162" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+        font-size="76" font-weight="800" fill="#1a1a1a" letter-spacing="-1.5">
+    maxentcpp
+  </text>
+
+  <!-- Subtitle with lines (COFID style: line — text — line) -->
+  <g transform="translate(265, 205)">
+    <line x1="0" y1="0" x2="55" y2="0" stroke="#7BADD4" stroke-width="2.5"/>
+    <text x="67" y="6" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+          font-size="27" fill="#7BADD4" font-style="italic" letter-spacing="0.5">
+      MaxEnt C++ engine
+    </text>
+    <line x1="370" y1="0" x2="440" y2="0" stroke="#7BADD4" stroke-width="2.5"/>
+  </g>
+</svg>
