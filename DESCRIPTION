@@ -1,13 +1,13 @@
 Package: maxentcpp
 Type: Package
-Title: Maximum Entropy Species Distribution Modeling (C++ Implementation)
+Title: Maximum Entropy Species Distribution Modeling ('C++' Implementation)
 Version: 1.0.0
 Authors@R: c(
     person("Angel", "Robles", role = c("aut", "cre"),
            email = "a.l.robles.fernandez@gmail.com"))
-Description: C++ implementation of Maximum Entropy (Maxent) species distribution
+Description: 'C++' implementation of Maximum Entropy ('Maxent') species distribution
     modeling with R bindings via 'Rcpp'. Provides a high-performance
-    reimplementation of the Maxent algorithm for modeling species geographic
+    reimplementation of the 'Maxent' algorithm for modeling species geographic
     distributions from occurrence data and environmental variables, following
     Phillips et al. (2006) <doi:10.1016/j.ecolmodel.2005.03.026>. Supports
     linear, quadratic, product, hinge, and threshold feature transformations,
