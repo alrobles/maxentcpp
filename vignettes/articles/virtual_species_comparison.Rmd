@@ -9,6 +9,9 @@ knitr::opts_chunk$set(
   fig.width = 7,
   fig.height = 5
 )
+has_maxnet <- requireNamespace("maxnet", quietly = TRUE)
+has_terra  <- requireNamespace("terra", quietly = TRUE)
+can_run    <- has_maxnet && has_terra
 ```
 
 This article demonstrates `maxentcpp` on a virtual species with known
@@ -23,7 +26,7 @@ obtain with real occurrence data.
 and southern Mexico: Annual Mean Temperature (bio1) and Annual
 Precipitation (bio12), cropped from WorldClim at ~10 arcmin resolution.
 
-```{r load-env}
+```{r load-env, eval = can_run}
 library(maxentcpp)
 library(terra)
 
@@ -47,7 +50,7 @@ function from the `xsdm` package, which generates virtual species from
 parametric niche models. The species has an optimum at 20 °C mean
 temperature and 1500 mm annual precipitation:
 
-```{r virtual-species}
+```{r virtual-species, eval = can_run}
 # Extract all non-NA cell values with coordinates
 cells <- as.data.frame(env, xy = TRUE, na.rm = TRUE)
 names(cells) <- c("x", "y", "bio1", "bio12")
@@ -83,7 +86,7 @@ surveys. This mirrors the approach in `xsdm::vsp()`, which draws
 presence records from cells where detection probability exceeds a
 threshold.
 
-```{r sample-presences}
+```{r sample-presences, eval = can_run}
 set.seed(42)
 
 # Sample presence points proportional to suitability
@@ -104,7 +107,7 @@ points(occ_points$long, occ_points$lat, pch = 21, bg = "black",
 
 ## Fit with maxentcpp
 
-```{r fit-maxentcpp}
+```{r fit-maxentcpp, eval = can_run}
 g_bio1  <- maxent_grid_from_terra(bio1)
 g_bio12 <- maxent_grid_from_terra(bio12)
 
@@ -129,7 +132,7 @@ pred_cpp <- maxent_grid_to_terra(pred_cpp_grid)
 
 ## Fit with maxnet
 
-```{r fit-maxnet, message=FALSE}
+```{r fit-maxnet, message=FALSE, eval = can_run}
 library(maxnet)
 
 # Extract environment at occurrences and background
@@ -155,7 +158,7 @@ values(pred_maxnet)[data_cells] <- pred_mn_vals
 
 ## Visual Comparison
 
-```{r comparison-maps, fig.width=10, fig.height=7, fig.alt="Side-by-side maps showing true suitability, maxentcpp prediction, maxnet prediction, and the difference between maxentcpp and maxnet."}
+```{r comparison-maps, fig.width=10, fig.height=7, fig.alt="Side-by-side maps showing true suitability, maxentcpp prediction, maxnet prediction, and the difference between maxentcpp and maxnet.", eval = can_run}
 par(mfrow = c(2, 2))
 plot(true_rast,
      main = "True Suitability",
@@ -177,7 +180,7 @@ par(mfrow = c(1, 1))
 We compute standard SDM comparison metrics to assess ecological
 equivalence between `maxentcpp` and `maxnet`:
 
-```{r metrics}
+```{r metrics, eval = can_run}
 # Get common non-NA values
 common <- !is.na(values(pred_cpp)) & !is.na(values(pred_maxnet))
 v_cpp  <- values(pred_cpp)[common]
@@ -210,7 +213,7 @@ cat("maxnet vs truth:    ", round(cor_mn_truth, 4), "\n")
 
 ## Performance Benchmark
 
-```{r benchmark}
+```{r benchmark, eval = can_run}
 # Training time comparison
 t_cpp <- system.time(for (i in 1:5) {
     g1 <- maxent_grid_from_terra(bio1)
@@ -231,7 +234,7 @@ cat("maxnet:    ", round(t_mn / 5 * 1000), "ms/fit\n")
 
 ## Variable Importance
 
-```{r importance}
+```{r importance, eval = can_run}
 cat("=== maxentcpp variable importance ===\n")
 print(result_cpp$contributions)
 cat("\nPermutation importance:\n")
@@ -240,7 +243,7 @@ print(result_cpp$permutation_importance)
 
 ## Response Curves
 
-```{r response-curves, fig.width=10, fig.height=5, fig.alt="Response curves showing predicted suitability as a function of bio1 and bio12 for the virtual species."}
+```{r response-curves, fig.width=10, fig.height=5, fig.alt="Response curves showing predicted suitability as a function of bio1 and bio12 for the virtual species.", eval = can_run}
 par(mfrow = c(1, 2))
 
 rc_bio1 <- maxent_response_curve(
