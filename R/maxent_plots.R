@@ -16,7 +16,7 @@
 #' @param var_indices   Integer vector of 0-based variable indices to plot.
 #'   Defaults to all variables.
 #' @param n_steps       Integer: number of steps in each curve (default 100).
-#' @param thumbnail     Logical: also write a 210 \times 140 pixel thumbnail PNG
+#' @param thumbnail     Logical: also write a 210 x 140 pixel thumbnail PNG
 #'   (default \code{TRUE}).
 #' @param write_dat     Logical: also write a tab-delimited \code{.dat} file
 #'   of the curve data (default \code{FALSE}).

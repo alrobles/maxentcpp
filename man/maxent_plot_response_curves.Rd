@@ -34,7 +34,7 @@ Defaults to all variables.}
 
 \item{n_steps}{Integer: number of steps in each curve (default 100).}
 
-\item{thumbnail}{Logical: also write a 210 \times 140 pixel thumbnail PNG
+\item{thumbnail}{Logical: also write a 210 x 140 pixel thumbnail PNG
 (default \code{TRUE}).}
 
 \item{write_dat}{Logical: also write a tab-delimited \code{.dat} file
