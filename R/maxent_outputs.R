@@ -85,9 +85,8 @@ maxent_write_prediction_png <- function(grid, filename,
 
     grDevices::png(filename, width = as.integer(width),
                    height = as.integer(height))
-    on.exit(grDevices::dev.off(), add = TRUE)
-
-    graphics::par(mar = c(0, 0, 0, 0))
+    oldpar <- graphics::par(mar = c(0, 0, 0, 0))
+    on.exit({graphics::par(oldpar); grDevices::dev.off()}, add = TRUE)
     graphics::plot.new()
     graphics::plot.window(xlim = c(0, ncols), ylim = c(0, nrows),
                           xaxs = "i", yaxs = "i")

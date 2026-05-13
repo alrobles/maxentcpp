@@ -6,7 +6,8 @@
 \usage{
 generate_features(
   data_list,
-  feature_types = as.character(c("linear", "quadratic", "product", "threshold", "hinge")),
+  feature_types = as.character(c("linear", "quadratic", "product", "threshold",
+    "hinge")),
   n_thresholds = 10L,
   n_hinges = 10L
 )
