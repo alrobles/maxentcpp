@@ -27,6 +27,16 @@
 #' @export
 #' @examples
 #' \donttest{
+#' set.seed(42)
+#' n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
+#' env <- list(bio1 = runif(n), bio12 = runif(n))
+#' feats <- maxent_generate_features(env, types = "linear")
+#' model <- maxent_featured_space(n, idx, feats)
+#' maxent_fit(model, max_iter = 100)
+#' g1 <- maxent_grid_from_matrix(matrix(env$bio1, 5, 10),
+#'         -120, 35, 1, name = "bio1")
+#' g2 <- maxent_grid_from_matrix(matrix(env$bio12, 5, 10),
+#'         -120, 35, 1, name = "bio12")
 #' pred <- maxent_project_cloglog(model, list(g1, g2), c("bio1", "bio12"))
 #' maxent_write_prediction_png(pred, tempfile(fileext = ".png"))
 #' }
@@ -158,6 +168,17 @@ maxent_write_prediction_png <- function(grid, filename,
 #' @export
 #' @examples
 #' \donttest{
+#' set.seed(42)
+#' n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
+#' env <- list(bio1 = runif(n), bio12 = runif(n))
+#' feats <- maxent_generate_features(env, types = "linear")
+#' model <- maxent_featured_space(n, idx, feats)
+#' maxent_fit(model, max_iter = 100)
+#' g1 <- maxent_grid_from_matrix(matrix(env$bio1, 5, 10),
+#'         -120, 35, 1, name = "bio1")
+#' g2 <- maxent_grid_from_matrix(matrix(env$bio12, 5, 10),
+#'         -120, 35, 1, name = "bio12")
+#' pres_rows <- c(0L, 1L, 2L); pres_cols <- c(0L, 1L, 2L)
 #' maxent_write_omission_csv(model, list(g1, g2), c("bio1", "bio12"),
 #'   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
 #' }
@@ -345,6 +366,17 @@ maxent_write_omission_csv <- function(model, env_grids, feature_names,
 #' @export
 #' @examples
 #' \donttest{
+#' set.seed(42)
+#' n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
+#' env <- list(bio1 = runif(n), bio12 = runif(n))
+#' feats <- maxent_generate_features(env, types = "linear")
+#' model <- maxent_featured_space(n, idx, feats)
+#' maxent_fit(model, max_iter = 100)
+#' g1 <- maxent_grid_from_matrix(matrix(env$bio1, 5, 10),
+#'         -120, 35, 1, name = "bio1")
+#' g2 <- maxent_grid_from_matrix(matrix(env$bio12, 5, 10),
+#'         -120, 35, 1, name = "bio12")
+#' pres_rows <- c(0L, 1L, 2L); pres_cols <- c(0L, 1L, 2L)
 #' maxent_write_sample_predictions(model, list(g1, g2), c("bio1", "bio12"),
 #'   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
 #' }
@@ -441,6 +473,10 @@ maxent_write_sample_predictions <- function(model, env_grids, feature_names,
 #' @export
 #' @examples
 #' \donttest{
+#' contrib <- data.frame(name = c("bio1", "bio12"),
+#'                       contribution = c(60, 40))
+#' perm_imp <- data.frame(name = c("bio1", "bio12"),
+#'                        permutation_importance = c(55, 45))
 #' maxent_append_results_csv(
 #'   file.path(tempdir(), "maxentResults.csv"),
 #'   species = "Sp1", n_training = 50L, training_gain = 1.23,

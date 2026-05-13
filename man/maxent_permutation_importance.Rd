@@ -47,9 +47,21 @@ Results are normalised so that all importances sum to 100%.
 }
 \examples{
 \donttest{
+set.seed(42)
+n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
+env <- list(temp = runif(n), precip = runif(n))
+feats <- maxent_generate_features(env, types = "linear")
+model <- maxent_featured_space(n, idx, feats)
+maxent_fit(model, max_iter = 100)
+g1 <- maxent_grid_from_matrix(matrix(env$temp, 5, 10),
+        -120, 35, 1, name = "temp")
+g2 <- maxent_grid_from_matrix(matrix(env$precip, 5, 10),
+        -120, 35, 1, name = "precip")
+pres_rows <- c(0L, 1L, 2L); pres_cols <- c(0L, 1L, 2L)
+abs_rows  <- c(3L, 4L, 0L); abs_cols  <- c(5L, 6L, 7L)
 imp <- maxent_permutation_importance(model, list(g1, g2),
          c("temp", "precip"),
          pres_rows, pres_cols, abs_rows, abs_cols)
-imp  # data.frame with name and permutation_importance
+imp
 }
 }

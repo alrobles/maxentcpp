@@ -77,7 +77,11 @@ report for details.
 }
 \examples{
 \donttest{
-fs  <- maxent_featured_space(100L, 90:99, list(f))
+n   <- 100L
+idx <- 90:99
+env <- seq(0, 1, length.out = n)
+f   <- maxent_linear_feature(env, "env1")
+fs  <- maxent_featured_space(n, idx, list(f))
 res <- maxent_sequential_fit(
     fs,
     max_iter                 = 500L,

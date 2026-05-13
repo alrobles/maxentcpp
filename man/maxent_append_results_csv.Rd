@@ -55,6 +55,10 @@ cross-tool compatibility.
 }
 \examples{
 \donttest{
+contrib <- data.frame(name = c("bio1", "bio12"),
+                      contribution = c(60, 40))
+perm_imp <- data.frame(name = c("bio1", "bio12"),
+                       permutation_importance = c(55, 45))
 maxent_append_results_csv(
   file.path(tempdir(), "maxentResults.csv"),
   species = "Sp1", n_training = 50L, training_gain = 1.23,
