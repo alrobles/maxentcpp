@@ -145,22 +145,26 @@ A named list with:
 
 ``` r
 # \donttest{
-stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
-                               package = "maxentcpp")
-example_rasters <- terra::unwrap(readRDS(stack_path))
-grids <- list(
-  bio1  = maxent_grid_from_terra(example_rasters[[1]]),
-  bio12 = maxent_grid_from_terra(example_rasters[[2]])
-)
-data(example_occ_df)
+if (requireNamespace("terra", quietly = TRUE)) {
+  stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
+                                 package = "maxentcpp")
+  example_rasters <- terra::unwrap(readRDS(stack_path))
+  grids <- list(
+    bio1  = maxent_grid_from_terra(example_rasters[[1]]),
+    bio12 = maxent_grid_from_terra(example_rasters[[2]])
+  )
+  data(example_occ_df)
 
-result <- maxent_run(
-  species    = "Abeillia_abeillei",
-  env_grids  = grids,
-  occ_df     = example_occ_df,
-  output_dir = tempdir(),
-  lon_col    = "long",
-  lat_col    = "lat")
+  result <- maxent_run(
+    species    = "Abeillia_abeillei",
+    env_grids  = grids,
+    occ_df     = example_occ_df,
+    output_dir = tempdir(),
+    lon_col    = "long",
+    lat_col    = "lat")
+
+  result$evaluation$auc
+}
 #> class         : MaxEnt
 #> species       : Abeillia_abeillei
 #> n presence    : 73
@@ -176,8 +180,6 @@ result <- maxent_run(
 #>   bio1                              61.3                       54.0
 #>   bio12                             38.7                       46.0
 #> 
-
-result$evaluation$auc
 #> [1] 0.8033487
 # }
 ```

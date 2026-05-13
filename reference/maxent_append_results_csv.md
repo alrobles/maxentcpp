@@ -79,11 +79,14 @@ Invisibly returns `results_file`.
 
 ``` r
 # \donttest{
+contrib <- data.frame(name = c("bio1", "bio12"),
+                      contribution = c(60, 40))
+perm_imp <- data.frame(name = c("bio1", "bio12"),
+                       permutation_importance = c(55, 45))
 maxent_append_results_csv(
   file.path(tempdir(), "maxentResults.csv"),
   species = "Sp1", n_training = 50L, training_gain = 1.23,
   training_auc = 0.95, entropy = 6.7,
   contributions_df = contrib, perm_imp_df = perm_imp)
-#> Error: object 'contrib' not found
 # }
 ```

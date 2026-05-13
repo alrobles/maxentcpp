@@ -59,10 +59,34 @@ A data.frame with columns:
 
 ``` r
 # \donttest{
+set.seed(42)
+n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
+env <- list(temp = runif(n), precip = runif(n))
+feats <- maxent_generate_features(env, types = "linear")
+model <- maxent_featured_space(n, idx, feats)
+maxent_fit(model, max_iter = 100)
+#> $loss
+#> [1] 3.781356
+#> 
+#> $entropy
+#> [1] 3.887762
+#> 
+#> $iterations
+#> [1] 100
+#> 
+#> $converged
+#> [1] FALSE
+#> 
+#> $lambdas
+#> [1] 0.6202339 0.4108689
+#> 
+g1 <- maxent_grid_from_matrix(matrix(env$temp, 5, 10),
+        -120, 35, 1, name = "temp")
+g2 <- maxent_grid_from_matrix(matrix(env$precip, 5, 10),
+        -120, 35, 1, name = "precip")
 curve <- maxent_response_curve(model, list(g1, g2),
            c("temp", "precip"), var_index = 0)
-#> Error: object 'model' not found
 plot(curve$value, curve$prediction, type = "l")
-#> Error in curve$value: object of type 'closure' is not subsettable
+
 # }
 ```

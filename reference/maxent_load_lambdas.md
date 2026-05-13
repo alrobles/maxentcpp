@@ -28,7 +28,29 @@ Invisibly returns the FeaturedSpace external pointer (updated in-place).
 
 ``` r
 # \donttest{
-maxent_load_lambdas(fs, tempfile(fileext = ".lambdas"))
-#> Error: object 'fs' not found
+n   <- 50L
+idx <- c(5L, 15L, 25L, 35L, 45L)
+env <- list(bio1 = runif(n), bio12 = runif(n))
+feats <- maxent_generate_features(env, types = "linear")
+fs  <- maxent_featured_space(n, idx, feats)
+maxent_fit(fs, max_iter = 100)
+#> $loss
+#> [1] 3.912023
+#> 
+#> $entropy
+#> [1] 3.912023
+#> 
+#> $iterations
+#> [1] 21
+#> 
+#> $converged
+#> [1] TRUE
+#> 
+#> $lambdas
+#> [1] 0 0
+#> 
+f <- tempfile(fileext = ".lambdas")
+maxent_save_lambdas(fs, f)
+maxent_load_lambdas(fs, f)
 # }
 ```

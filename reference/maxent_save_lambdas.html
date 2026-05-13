@@ -71,8 +71,28 @@ the standard Maxent .lambdas format.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">n</span>   <span class="op">&lt;-</span> <span class="fl">50L</span></span></span>
+<span class="r-in"><span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5L</span>, <span class="fl">15L</span>, <span class="fl">25L</span>, <span class="fl">35L</span>, <span class="fl">45L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>bio1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, bio12 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxent_generate_features.html">maxent_generate_features</a></span><span class="op">(</span><span class="va">env</span>, types <span class="op">=</span> <span class="st">"linear"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fs</span>  <span class="op">&lt;-</span> <span class="fu"><a href="maxent_featured_space.html">maxent_featured_space</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">idx</span>, <span class="va">feats</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="maxent_fit.html">maxent_fit</a></span><span class="op">(</span><span class="va">fs</span>, max_iter <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $loss</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.767277</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $entropy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.873463</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 81</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $converged</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lambdas</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0000000 0.9002707</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">maxent_save_lambdas</span><span class="op">(</span><span class="va">fs</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".lambdas"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'fs' not found</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

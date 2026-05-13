@@ -113,15 +113,24 @@ Phase C baseline report for details.
 
 ``` r
 # \donttest{
-fs  <- maxent_featured_space(100L, 90:99, list(f))
-#> Error: object 'f' not found
+n   <- 100L
+idx <- 90:99
+env <- seq(0, 1, length.out = n)
+f   <- maxent_linear_feature(env, "env1")
+fs  <- maxent_featured_space(n, idx, list(f))
 res <- maxent_sequential_fit(
     fs,
     max_iter                 = 500L,
     disable_convergence_test = TRUE,
     trajectory_iterations    = c(1L, 2L, 5L, 10L, 50L, 100L, 500L))
-#> Error: object 'fs' not found
 print(res$trajectory)
-#> Error: object 'res' not found
+#>   iteration     loss  entropy   lambda_0
+#> 1         1 4.411687 4.596430  0.4546303
+#> 2         2 4.244694 4.572560  0.8845613
+#> 3         5 3.868155 4.444896  2.0417866
+#> 4        10 3.500539 4.185875  3.6185653
+#> 5        50 2.783462 2.783462 16.6570831
+#> 6       100 2.783462 2.783462 16.6570831
+#> 7       500 2.783462 2.783462 16.6570831
 # }
 ```

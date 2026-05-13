@@ -31,7 +31,8 @@ Invisibly returns the output file path.
 
 ``` r
 # \donttest{
+g <- maxent_grid_from_matrix(matrix(runif(50), 5, 10),
+        -120, 35, 0.1, name = "bio1")
 maxent_write_asc(g, tempfile(fileext = ".asc"))
-#> Error: object 'g' not found
 # }
 ```

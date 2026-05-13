@@ -65,8 +65,33 @@ Invisibly returns the path to the written CSV.
 
 ``` r
 # \donttest{
+set.seed(42)
+n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
+env <- list(bio1 = runif(n), bio12 = runif(n))
+feats <- maxent_generate_features(env, types = "linear")
+model <- maxent_featured_space(n, idx, feats)
+maxent_fit(model, max_iter = 100)
+#> $loss
+#> [1] 3.781356
+#> 
+#> $entropy
+#> [1] 3.887762
+#> 
+#> $iterations
+#> [1] 100
+#> 
+#> $converged
+#> [1] FALSE
+#> 
+#> $lambdas
+#> [1] 0.6202339 0.4108689
+#> 
+g1 <- maxent_grid_from_matrix(matrix(env$bio1, 5, 10),
+        -120, 35, 1, name = "bio1")
+g2 <- maxent_grid_from_matrix(matrix(env$bio12, 5, 10),
+        -120, 35, 1, name = "bio12")
+pres_rows <- c(0L, 1L, 2L); pres_cols <- c(0L, 1L, 2L)
 maxent_write_sample_predictions(model, list(g1, g2), c("bio1", "bio12"),
   pres_rows, pres_cols, output_dir = tempdir(), species = "Sp1")
-#> Error: object 'pres_rows' not found
 # }
 ```

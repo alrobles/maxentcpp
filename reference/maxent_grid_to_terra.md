@@ -47,10 +47,12 @@ For the raster package, an equivalent workflow is:
 
 ``` r
 # \donttest{
-stack_path <- system.file("extdata", "stack_1_12_crop.rds",
-                         package = "maxentcpp")
-r <- terra::unwrap(readRDS(stack_path))
-g <- maxent_grid_from_terra(r[[1]])
-r2 <- maxent_grid_to_terra(g)
+if (requireNamespace("terra", quietly = TRUE)) {
+  stack_path <- system.file("extdata", "stack_1_12_crop.rds",
+                           package = "maxentcpp")
+  r <- terra::unwrap(readRDS(stack_path))
+  g <- maxent_grid_from_terra(r[[1]])
+  r2 <- maxent_grid_to_terra(g)
+}
 # }
 ```

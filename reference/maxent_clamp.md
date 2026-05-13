@@ -40,11 +40,12 @@ A named list with:
 
 ``` r
 # \donttest{
+g1 <- maxent_grid_from_matrix(matrix(runif(50), 5, 10),
+        -120, 35, 1, name = "temp")
+g2 <- maxent_grid_from_matrix(matrix(runif(50, 50, 200), 5, 10),
+        -120, 35, 1, name = "precip")
 result <- maxent_clamp(list(g1, g2), c(0, 50), c(30, 200))
-#> Error: object 'g1' not found
 clamped <- result$clamped_grids
-#> Error: object 'result' not found
 clamp_mat <- maxent_grid_to_matrix(result$clamp_grid)
-#> Error: object 'result' not found
 # }
 ```

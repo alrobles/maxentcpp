@@ -206,22 +206,26 @@ for uniform (unbiased) background.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">stack_path</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"stack_1_12_crop.rds"</span>,</span></span>
-<span class="r-in"><span>                               package <span class="op">=</span> <span class="st">"maxentcpp"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">example_rasters</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/wrap.html" class="external-link">unwrap</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/serialize.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">stack_path</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">grids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  bio1  <span class="op">=</span> <span class="fu"><a href="maxent_grid_from_terra.html">maxent_grid_from_terra</a></span><span class="op">(</span><span class="va">example_rasters</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  bio12 <span class="op">=</span> <span class="fu"><a href="maxent_grid_from_terra.html">maxent_grid_from_terra</a></span><span class="op">(</span><span class="va">example_rasters</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">example_occ_df</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"terra"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">stack_path</span>      <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"stack_1_12_crop.rds"</span>,</span></span>
+<span class="r-in"><span>                                 package <span class="op">=</span> <span class="st">"maxentcpp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">example_rasters</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/wrap.html" class="external-link">unwrap</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/serialize.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="va">stack_path</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">grids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    bio1  <span class="op">=</span> <span class="fu"><a href="maxent_grid_from_terra.html">maxent_grid_from_terra</a></span><span class="op">(</span><span class="va">example_rasters</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    bio12 <span class="op">=</span> <span class="fu"><a href="maxent_grid_from_terra.html">maxent_grid_from_terra</a></span><span class="op">(</span><span class="va">example_rasters</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">example_occ_df</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">maxent_run</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  species    <span class="op">=</span> <span class="st">"Abeillia_abeillei"</span>,</span></span>
-<span class="r-in"><span>  env_grids  <span class="op">=</span> <span class="va">grids</span>,</span></span>
-<span class="r-in"><span>  occ_df     <span class="op">=</span> <span class="va">example_occ_df</span>,</span></span>
-<span class="r-in"><span>  output_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  lon_col    <span class="op">=</span> <span class="st">"long"</span>,</span></span>
-<span class="r-in"><span>  lat_col    <span class="op">=</span> <span class="st">"lat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">maxent_run</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    species    <span class="op">=</span> <span class="st">"Abeillia_abeillei"</span>,</span></span>
+<span class="r-in"><span>    env_grids  <span class="op">=</span> <span class="va">grids</span>,</span></span>
+<span class="r-in"><span>    occ_df     <span class="op">=</span> <span class="va">example_occ_df</span>,</span></span>
+<span class="r-in"><span>    output_dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    lon_col    <span class="op">=</span> <span class="st">"long"</span>,</span></span>
+<span class="r-in"><span>    lat_col    <span class="op">=</span> <span class="st">"lat"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">result</span><span class="op">$</span><span class="va">evaluation</span><span class="op">$</span><span class="va">auc</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> class         : MaxEnt</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> species       : Abeillia_abeillei</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> n presence    : 73</span>
@@ -237,8 +241,6 @@ for uniform (unbiased) background.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   bio1                              61.3                       54.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   bio12                             38.7                       46.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">result</span><span class="op">$</span><span class="va">evaluation</span><span class="op">$</span><span class="va">auc</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.8033487</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>

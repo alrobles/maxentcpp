@@ -42,13 +42,16 @@ A named list with:
 
 ``` r
 # \donttest{
+g1 <- maxent_grid_from_matrix(matrix(runif(50), 5, 10),
+        -120, 35, 1, name = "temp")
+g2 <- maxent_grid_from_matrix(matrix(runif(50, 50, 200), 5, 10),
+        -120, 35, 1, name = "precip")
+temp_train_vals <- runif(20)
+precip_train_vals <- runif(20, 50, 200)
 result <- maxent_mess(list(g1, g2),
             list(temp_train_vals, precip_train_vals),
             c("temp", "precip"))
-#> Error: object 'g1' not found
 mess_mat <- maxent_grid_to_matrix(result$mess_grid)
-#> Error: object 'result' not found
 mod_mat  <- maxent_grid_to_matrix(result$mod_grid)
-#> Error: object 'result' not found
 # }
 ```

@@ -165,16 +165,25 @@ report for details.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
-<span class="r-in"><span><span class="va">fs</span>  <span class="op">&lt;-</span> <span class="fu"><a href="maxent_featured_space.html">maxent_featured_space</a></span><span class="op">(</span><span class="fl">100L</span>, <span class="fl">90</span><span class="op">:</span><span class="fl">99</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'f' not found</span>
+<span class="r-in"><span><span class="va">n</span>   <span class="op">&lt;-</span> <span class="fl">100L</span></span></span>
+<span class="r-in"><span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fl">90</span><span class="op">:</span><span class="fl">99</span></span></span>
+<span class="r-in"><span><span class="va">env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, length.out <span class="op">=</span> <span class="va">n</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">f</span>   <span class="op">&lt;-</span> <span class="fu"><a href="maxent_linear_feature.html">maxent_linear_feature</a></span><span class="op">(</span><span class="va">env</span>, <span class="st">"env1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fs</span>  <span class="op">&lt;-</span> <span class="fu"><a href="maxent_featured_space.html">maxent_featured_space</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">idx</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">maxent_sequential_fit</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">fs</span>,</span></span>
 <span class="r-in"><span>    max_iter                 <span class="op">=</span> <span class="fl">500L</span>,</span></span>
 <span class="r-in"><span>    disable_convergence_test <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    trajectory_iterations    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span>, <span class="fl">5L</span>, <span class="fl">10L</span>, <span class="fl">50L</span>, <span class="fl">100L</span>, <span class="fl">500L</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'fs' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">trajectory</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'res' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   iteration     loss  entropy   lambda_0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1 4.411687 4.596430  0.4546303</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2 4.244694 4.572560  0.8845613</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         5 3.868155 4.444896  2.0417866</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4        10 3.500539 4.185875  3.6185653</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5        50 2.783462 2.783462 16.6570831</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       100 2.783462 2.783462 16.6570831</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       500 2.783462 2.783462 16.6570831</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

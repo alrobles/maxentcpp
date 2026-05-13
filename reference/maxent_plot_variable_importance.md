@@ -44,8 +44,11 @@ Invisibly returns the path to the PNG file.
 
 ``` r
 # \donttest{
+contrib <- data.frame(name = c("bio1", "bio12"),
+                      contribution = c(60, 40))
+perm_imp <- data.frame(name = c("bio1", "bio12"),
+                       permutation_importance = c(55, 45))
 maxent_plot_variable_importance(contrib, perm_imp,
   species = "Sp1", output_dir = tempdir())
-#> Error: object 'contrib' not found
 # }
 ```

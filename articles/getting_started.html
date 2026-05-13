@@ -314,7 +314,7 @@ Maxent:</p>
 <code class="sourceCode R"><span><span class="va">lambdas_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"abeillei_model.lambdas"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/maxent_save_lambdas.html">maxent_save_lambdas</a></span><span class="op">(</span><span class="va">fs</span>, <span class="va">lambdas_file</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Model saved to:"</span>, <span class="va">lambdas_file</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Model saved to: /tmp/RtmpaQRrsN/abeillei_model.lambdas</span></span>
+<span><span class="co">#&gt; Model saved to: /tmp/RtmpXgBC48/abeillei_model.lambdas</span></span>
 <span></span>
 <span><span class="co"># Load it back</span></span>
 <span><span class="va">fs_loaded</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxent_load_lambdas.html">maxent_load_lambdas</a></span><span class="op">(</span>featured_space <span class="op">=</span> <span class="va">fs</span>, file <span class="op">=</span> <span class="va">lambdas_file</span><span class="op">)</span></span>

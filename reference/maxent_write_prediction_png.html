@@ -124,10 +124,33 @@ or <code>"redandyellow"</code>.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">42</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">50L</span>; <span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5L</span>, <span class="fl">15L</span>, <span class="fl">25L</span>, <span class="fl">35L</span>, <span class="fl">45L</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">env</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>bio1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, bio12 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">feats</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxent_generate_features.html">maxent_generate_features</a></span><span class="op">(</span><span class="va">env</span>, types <span class="op">=</span> <span class="st">"linear"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">model</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxent_featured_space.html">maxent_featured_space</a></span><span class="op">(</span><span class="va">n</span>, <span class="va">idx</span>, <span class="va">feats</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="maxent_fit.html">maxent_fit</a></span><span class="op">(</span><span class="va">model</span>, max_iter <span class="op">=</span> <span class="fl">100</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $loss</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.781356</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $entropy</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 3.887762</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $iterations</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $converged</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $lambdas</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6202339 0.4108689</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxent_grid_from_matrix.html">maxent_grid_from_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">env</span><span class="op">$</span><span class="va">bio1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        <span class="op">-</span><span class="fl">120</span>, <span class="fl">35</span>, <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"bio1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">g2</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxent_grid_from_matrix.html">maxent_grid_from_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="va">env</span><span class="op">$</span><span class="va">bio12</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        <span class="op">-</span><span class="fl">120</span>, <span class="fl">35</span>, <span class="fl">1</span>, name <span class="op">=</span> <span class="st">"bio12"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="maxent_project_cloglog.html">maxent_project_cloglog</a></span><span class="op">(</span><span class="va">model</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g1</span>, <span class="va">g2</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bio1"</span>, <span class="st">"bio12"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'model' not found</span>
 <span class="r-in"><span><span class="fu">maxent_write_prediction_png</span><span class="op">(</span><span class="va">pred</span>, <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".png"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'pred' not found</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

@@ -275,7 +275,7 @@ Models are persisted as lambda files, fully compatible with Java Maxent:
 lambdas_file <- file.path(tempdir(), "abeillei_model.lambdas")
 maxent_save_lambdas(fs, lambdas_file)
 cat("Model saved to:", lambdas_file, "\n")
-#> Model saved to: /tmp/RtmpaQRrsN/abeillei_model.lambdas
+#> Model saved to: /tmp/RtmpXgBC48/abeillei_model.lambdas
 
 # Load it back
 fs_loaded <- maxent_load_lambdas(featured_space = fs, file = lambdas_file)
