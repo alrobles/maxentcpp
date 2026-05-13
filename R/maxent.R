@@ -237,7 +237,7 @@ maxent_read_occurrences <- function(file_or_df, dim, lon_col = "longitude",
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' dim <- maxent_dimension(100, 100, -120, 35, 0.1)
 #' grid <- maxent_grid(dim, "env1")
 #' bg <- maxent_background_indices(grid, n = 5000, seed = 42)

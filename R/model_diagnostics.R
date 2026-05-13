@@ -20,7 +20,7 @@
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' imp <- maxent_permutation_importance(model, list(g1, g2),
 #'          c("temp", "precip"),
 #'          pres_rows, pres_cols, abs_rows, abs_cols)
@@ -83,7 +83,7 @@ maxent_percent_contribution <- function(model, feature_names) {
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' curve <- maxent_response_curve(model, list(g1, g2),
 #'            c("temp", "precip"), var_index = 0)
 #' plot(curve$value, curve$prediction, type = "l")
@@ -138,7 +138,7 @@ maxent_response_curve_fixed <- function(model, fixed_values, feature_names,
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' result <- maxent_clamp(list(g1, g2), c(0, 50), c(30, 200))
 #' clamped <- result$clamped_grids
 #' clamp_mat <- maxent_grid_to_matrix(result$clamp_grid)
@@ -177,7 +177,7 @@ maxent_variable_ranges <- function(env_grids) {
 #'   }
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' result <- maxent_mess(list(g1, g2),
 #'             list(temp_train_vals, precip_train_vals),
 #'             c("temp", "precip"))

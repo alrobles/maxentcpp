@@ -76,7 +76,7 @@ at every checkpoint, on both the symmetric and asymmetric fixtures in
 report for details.
 }
 \examples{
-\dontrun{
+\donttest{
 fs  <- maxent_featured_space(100L, 90:99, list(f))
 res <- maxent_sequential_fit(
     fs,
