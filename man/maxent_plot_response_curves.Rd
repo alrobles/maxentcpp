@@ -34,7 +34,7 @@ Defaults to all variables.}
 
 \item{n_steps}{Integer: number of steps in each curve (default 100).}
 
-\item{thumbnail}{Logical: also write a 210 × 140 pixel thumbnail PNG
+\item{thumbnail}{Logical: also write a 210 x 140 pixel thumbnail PNG
 (default \code{TRUE}).}
 
 \item{write_dat}{Logical: also write a tab-delimited \code{.dat} file
@@ -50,6 +50,16 @@ A full-size PNG and an optional thumbnail are written for every variable.
 }
 \examples{
 \donttest{
+set.seed(42)
+n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
+env <- list(bio1 = runif(n), bio12 = runif(n))
+feats <- maxent_generate_features(env, types = "linear")
+model <- maxent_featured_space(n, idx, feats)
+maxent_fit(model, max_iter = 100)
+g1 <- maxent_grid_from_matrix(matrix(env$bio1, 5, 10),
+        -120, 35, 1, name = "bio1")
+g2 <- maxent_grid_from_matrix(matrix(env$bio12, 5, 10),
+        -120, 35, 1, name = "bio12")
 maxent_plot_response_curves(
   model, list(g1, g2), c("bio1", "bio12"),
   output_dir = tempdir(), species = "Sp1")

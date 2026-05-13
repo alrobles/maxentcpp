@@ -7,9 +7,12 @@
 #' @export
 #' @examples
 #' \donttest{
-#' g <- maxent_read_asc("bio1.asc")
-#' info <- maxent_grid_info(g)
-#' print(info)
+#' g <- maxent_grid_from_matrix(matrix(runif(50), 5, 10),
+#'         -120, 35, 0.1, name = "bio1")
+#' f <- tempfile(fileext = ".asc")
+#' maxent_write_asc(g, f)
+#' g2 <- maxent_read_asc(f)
+#' maxent_grid_info(g2)
 #' }
 maxent_read_asc <- function(filename) {
     grid_read_asc(as.character(filename))
@@ -39,6 +42,8 @@ maxent_read_grid <- function(filename) {
 #' @export
 #' @examples
 #' \donttest{
+#' g <- maxent_grid_from_matrix(matrix(runif(50), 5, 10),
+#'         -120, 35, 0.1, name = "bio1")
 #' maxent_write_asc(g, tempfile(fileext = ".asc"))
 #' }
 maxent_write_asc <- function(grid, filename, scientific = TRUE) {
@@ -119,11 +124,13 @@ maxent_grid_from_matrix <- function(mat, xll, yll, cellsize,
 #' @export
 #' @examples
 #' \donttest{
-#' stack_path <- system.file("extdata", "stack_1_12_crop.rds",
-#'                          package = "maxentcpp")
-#' r <- terra::unwrap(readRDS(stack_path))
-#' g <- maxent_grid_from_terra(r[[1]])
-#' maxent_grid_info(g)
+#' if (requireNamespace("terra", quietly = TRUE)) {
+#'   stack_path <- system.file("extdata", "stack_1_12_crop.rds",
+#'                            package = "maxentcpp")
+#'   r <- terra::unwrap(readRDS(stack_path))
+#'   g <- maxent_grid_from_terra(r[[1]])
+#'   maxent_grid_info(g)
+#' }
 #' }
 maxent_grid_from_terra <- function(r, name = NULL) {
     if (!requireNamespace("terra", quietly = TRUE)) {
@@ -185,11 +192,13 @@ maxent_grid_from_terra <- function(r, name = NULL) {
 #' @export
 #' @examples
 #' \donttest{
-#' stack_path <- system.file("extdata", "stack_1_12_crop.rds",
-#'                          package = "maxentcpp")
-#' r <- terra::unwrap(readRDS(stack_path))
-#' g <- maxent_grid_from_terra(r[[1]])
-#' r2 <- maxent_grid_to_terra(g)
+#' if (requireNamespace("terra", quietly = TRUE)) {
+#'   stack_path <- system.file("extdata", "stack_1_12_crop.rds",
+#'                            package = "maxentcpp")
+#'   r <- terra::unwrap(readRDS(stack_path))
+#'   g <- maxent_grid_from_terra(r[[1]])
+#'   r2 <- maxent_grid_to_terra(g)
+#' }
 #' }
 maxent_grid_to_terra <- function(grid, crs = "EPSG:4326") {
     if (!requireNamespace("terra", quietly = TRUE)) {

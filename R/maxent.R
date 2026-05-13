@@ -238,9 +238,9 @@ maxent_read_occurrences <- function(file_or_df, dim, lon_col = "longitude",
 #' @export
 #' @examples
 #' \donttest{
-#' dim <- maxent_dimension(100, 100, -120, 35, 0.1)
-#' grid <- maxent_grid(dim, "env1")
-#' bg <- maxent_background_indices(grid, n = 5000, seed = 42)
+#' g <- maxent_grid_from_matrix(matrix(runif(100), 10, 10),
+#'         -120, 35, 0.1, name = "env1")
+#' bg <- maxent_background_indices(g, n = 50, seed = 42)
 #' bg$indices  # 0-based flat indices for FeaturedSpace
 #' }
 maxent_background_indices <- function(grid, n = 10000L, seed = NULL) {

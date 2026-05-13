@@ -29,24 +29,26 @@ it also works correctly after reloading coefficients with
 }
 \examples{
 \donttest{
-stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
-                               package = "maxentcpp")
-example_rasters <- terra::unwrap(readRDS(stack_path))
-grids <- list(
-  bio1  = maxent_grid_from_terra(example_rasters[[1]]),
-  bio12 = maxent_grid_from_terra(example_rasters[[2]])
-)
-data(example_occ_df)
+if (requireNamespace("terra", quietly = TRUE)) {
+  stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
+                                 package = "maxentcpp")
+  example_rasters <- terra::unwrap(readRDS(stack_path))
+  grids <- list(
+    bio1  = maxent_grid_from_terra(example_rasters[[1]]),
+    bio12 = maxent_grid_from_terra(example_rasters[[2]])
+  )
+  data(example_occ_df)
 
-result <- maxent_run(
-  species    = "Abeillia_abeillei",
-  env_grids  = grids,
-  occ_df     = example_occ_df,
-  output_dir = tempdir(),
-  lon_col    = "long",
-  lat_col    = "lat")
+  result <- maxent_run(
+    species    = "Abeillia_abeillei",
+    env_grids  = grids,
+    occ_df     = example_occ_df,
+    output_dir = tempdir(),
+    lon_col    = "long",
+    lat_col    = "lat")
 
-lambdas <- maxent_extract_lambdas(result)
-print(lambdas)
+  lambdas <- maxent_extract_lambdas(result)
+  print(lambdas)
+}
 }
 }

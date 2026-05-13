@@ -27,6 +27,10 @@ A clamping grid records the total absolute clamping at each cell.
 }
 \examples{
 \donttest{
+g1 <- maxent_grid_from_matrix(matrix(runif(50), 5, 10),
+        -120, 35, 1, name = "temp")
+g2 <- maxent_grid_from_matrix(matrix(runif(50, 50, 200), 5, 10),
+        -120, 35, 1, name = "precip")
 result <- maxent_clamp(list(g1, g2), c(0, 50), c(30, 200))
 clamped <- result$clamped_grids
 clamp_mat <- maxent_grid_to_matrix(result$clamp_grid)

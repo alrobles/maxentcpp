@@ -94,7 +94,12 @@ maxent_fit <- function(featured_space,
 #' @export
 #' @examples
 #' \donttest{
-#' # After training, predict on 5 new points with 2 features each
+#' n   <- 50L
+#' idx <- c(5L, 15L, 25L, 35L, 45L)
+#' env <- list(bio1 = runif(n), bio12 = runif(n))
+#' feats <- maxent_generate_features(env, types = "linear")
+#' fs  <- maxent_featured_space(n, idx, feats)
+#' maxent_fit(fs, max_iter = 100)
 #' newdata <- matrix(runif(10), nrow = 5, ncol = 2)
 #' preds <- maxent_predict_model(fs, newdata)
 #' }
@@ -148,6 +153,12 @@ maxent_model_loss <- function(featured_space) {
 #' @export
 #' @examples
 #' \donttest{
+#' n   <- 50L
+#' idx <- c(5L, 15L, 25L, 35L, 45L)
+#' env <- list(bio1 = runif(n), bio12 = runif(n))
+#' feats <- maxent_generate_features(env, types = "linear")
+#' fs  <- maxent_featured_space(n, idx, feats)
+#' maxent_fit(fs, max_iter = 100)
 #' maxent_save_lambdas(fs, tempfile(fileext = ".lambdas"))
 #' }
 maxent_save_lambdas <- function(featured_space, file) {
@@ -168,7 +179,15 @@ maxent_save_lambdas <- function(featured_space, file) {
 #' @export
 #' @examples
 #' \donttest{
-#' maxent_load_lambdas(fs, tempfile(fileext = ".lambdas"))
+#' n   <- 50L
+#' idx <- c(5L, 15L, 25L, 35L, 45L)
+#' env <- list(bio1 = runif(n), bio12 = runif(n))
+#' feats <- maxent_generate_features(env, types = "linear")
+#' fs  <- maxent_featured_space(n, idx, feats)
+#' maxent_fit(fs, max_iter = 100)
+#' f <- tempfile(fileext = ".lambdas")
+#' maxent_save_lambdas(fs, f)
+#' maxent_load_lambdas(fs, f)
 #' }
 maxent_load_lambdas <- function(featured_space, file) {
     maxent_read_lambdas(featured_space, as.character(file))
@@ -208,25 +227,27 @@ maxent_space_info <- function(featured_space) {
 #' @export
 #' @examples
 #' \donttest{
-#' stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
-#'                                package = "maxentcpp")
-#' example_rasters <- terra::unwrap(readRDS(stack_path))
-#' grids <- list(
-#'   bio1  = maxent_grid_from_terra(example_rasters[[1]]),
-#'   bio12 = maxent_grid_from_terra(example_rasters[[2]])
-#' )
-#' data(example_occ_df)
+#' if (requireNamespace("terra", quietly = TRUE)) {
+#'   stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
+#'                                  package = "maxentcpp")
+#'   example_rasters <- terra::unwrap(readRDS(stack_path))
+#'   grids <- list(
+#'     bio1  = maxent_grid_from_terra(example_rasters[[1]]),
+#'     bio12 = maxent_grid_from_terra(example_rasters[[2]])
+#'   )
+#'   data(example_occ_df)
 #'
-#' result <- maxent_run(
-#'   species    = "Abeillia_abeillei",
-#'   env_grids  = grids,
-#'   occ_df     = example_occ_df,
-#'   output_dir = tempdir(),
-#'   lon_col    = "long",
-#'   lat_col    = "lat")
+#'   result <- maxent_run(
+#'     species    = "Abeillia_abeillei",
+#'     env_grids  = grids,
+#'     occ_df     = example_occ_df,
+#'     output_dir = tempdir(),
+#'     lon_col    = "long",
+#'     lat_col    = "lat")
 #'
-#' lambdas <- maxent_extract_lambdas(result)
-#' print(lambdas)
+#'   lambdas <- maxent_extract_lambdas(result)
+#'   print(lambdas)
+#' }
 #' }
 maxent_extract_lambdas <- function(run_result) {
     if (!is.list(run_result) || !"model" %in% names(run_result)) {
