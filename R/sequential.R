@@ -50,7 +50,7 @@
 #' @seealso \code{\link{maxent_fit}}, \code{\link{maxent_featured_space}}.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' fs  <- maxent_featured_space(100L, 90:99, list(f))
 #' res <- maxent_sequential_fit(
 #'     fs,

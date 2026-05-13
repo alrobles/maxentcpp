@@ -6,7 +6,7 @@
 #' @return External pointer to a GridFloat C++ object.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' g <- maxent_read_asc("bio1.asc")
 #' info <- maxent_grid_info(g)
 #' print(info)
@@ -38,7 +38,7 @@ maxent_read_grid <- function(filename) {
 #' @return Invisibly returns the output file path.
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' maxent_write_asc(g, tempfile(fileext = ".asc"))
 #' }
 maxent_write_asc <- function(grid, filename, scientific = TRUE) {
