@@ -27,7 +27,8 @@ Invisibly returns the FeaturedSpace external pointer (updated in-place).
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 maxent_load_lambdas(fs, tempfile(fileext = ".lambdas"))
-} # }
+#> Error: object 'fs' not found
+# }
 ```

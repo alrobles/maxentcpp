@@ -26,7 +26,8 @@ Invisibly returns the output file path.
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 maxent_save_lambdas(fs, tempfile(fileext = ".lambdas"))
-} # }
+#> Error: object 'fs' not found
+# }
 ```

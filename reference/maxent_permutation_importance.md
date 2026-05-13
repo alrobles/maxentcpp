@@ -69,10 +69,12 @@ A data.frame with columns:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
+# \donttest{
 imp <- maxent_permutation_importance(model, list(g1, g2),
          c("temp", "precip"),
          pres_rows, pres_cols, abs_rows, abs_cols)
+#> Error: object 'model' not found
 imp  # data.frame with name and permutation_importance
-} # }
+#> Error: object 'imp' not found
+# }
 ```
