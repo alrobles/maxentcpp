@@ -5,15 +5,16 @@ Version: 1.0.0
 Authors@R: c(
     person("Angel", "Robles", role = c("aut", "cre"),
            email = "a.l.robles.fernandez@gmail.com"))
-Description: 'C++' implementation of Maximum Entropy ('Maxent') species distribution
+Description: 'C++' implementation of Maximum Entropy (Maxent) species distribution
     modeling with R bindings via 'Rcpp'. Provides a high-performance
-    reimplementation of the 'Maxent' algorithm for modeling species geographic
+    reimplementation of the Maxent algorithm for modeling species geographic
     distributions from occurrence data and environmental variables, following
     Phillips et al. (2006) <doi:10.1016/j.ecolmodel.2005.03.026>. Supports
     linear, quadratic, product, hinge, and threshold feature transformations,
     spatial projection in raw, logistic, and cloglog scales, and model
-    diagnostics including AUC, variable importance, response curves, and
-    MESS maps.
+    diagnostics including Area Under the ROC Curve (AUC), variable importance,
+    response curves, and Multivariate Environmental Similarity Surfaces (MESS)
+    maps.
 URL: https://github.com/alrobles/maxentcpp, https://alrobles.github.io/maxentcpp/
 BugReports: https://github.com/alrobles/maxentcpp/issues
 License: MIT + file LICENSE

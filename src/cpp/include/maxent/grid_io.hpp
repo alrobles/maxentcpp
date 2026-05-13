@@ -334,7 +334,7 @@ private:
         write_header(out, grid);
 
         const auto& dim = grid.getDimension();
-        T nodata = grid.getNodataValue();
+        (void)grid.getNodataValue();  // validated in header
 
         for (int i = 0; i < dim.nrows; ++i) {
             for (int j = 0; j < dim.ncols; ++j) {

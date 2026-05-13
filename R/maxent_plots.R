@@ -57,13 +57,14 @@ maxent_plot_response_curves <- function(model, env_grids, feature_names,
         full_path <- file.path(plots_dir,
                                paste0(species, "_", var_name, ".png"))
         grDevices::png(full_path, width = 600L, height = 400L)
-        graphics::par(mar = c(4, 4, 2, 1))
+        oldpar <- graphics::par(mar = c(4, 4, 2, 1))
         graphics::plot(curve$value, curve$prediction,
                        type = "l", lwd = 2L, col = "#1B7837",
                        xlab = var_name,
                        ylab = "Cloglog prediction",
                        main = paste("Response curve:", var_name),
                        ylim = c(0, 1))
+        graphics::par(oldpar)
         grDevices::dev.off()
         file_list[[paste0(var_name, "_full")]] <- full_path
 
@@ -72,12 +73,13 @@ maxent_plot_response_curves <- function(model, env_grids, feature_names,
             thumb_path <- file.path(plots_dir,
                                     paste0(species, "_", var_name, "_thumb.png"))
             grDevices::png(thumb_path, width = 210L, height = 140L)
-            graphics::par(mar = c(2, 2, 1, 0.5))
+            oldpar_th <- graphics::par(mar = c(2, 2, 1, 0.5))
             graphics::plot(curve$value, curve$prediction,
                            type = "l", lwd = 1L, col = "#1B7837",
                            xlab = "", ylab = "",
                            main = var_name, cex.main = 0.75,
                            ylim = c(0, 1))
+            graphics::par(oldpar_th)
             grDevices::dev.off()
             file_list[[paste0(var_name, "_thumb")]] <- thumb_path
         }
@@ -134,12 +136,13 @@ maxent_plot_variable_importance <- function(contributions_df, perm_imp_df,
 
     fig_height <- max(300L, 60L * n_vars + 100L)
     grDevices::png(png_path, width = 600L, height = fig_height)
+    oldpar <- graphics::par(mar = c(4, max(nchar(merged$name)) * 0.55, 3, 1))
+    on.exit({graphics::par(oldpar); grDevices::dev.off()}, add = TRUE)
 
     bar_mat <- rbind(merged$contribution,
                      merged$permutation_importance)
     colnames(bar_mat) <- merged$name
 
-    graphics::par(mar = c(4, max(nchar(merged$name)) * 0.55, 3, 1))
     graphics::barplot(bar_mat,
                       beside    = TRUE,
                       horiz     = TRUE,
@@ -155,7 +158,5 @@ maxent_plot_variable_importance <- function(contributions_df, perm_imp_df,
                       args.legend = list(x = "bottomright",
                                          bty = "n",
                                          cex = 0.8))
-
-    grDevices::dev.off()
     invisible(png_path)
 }
