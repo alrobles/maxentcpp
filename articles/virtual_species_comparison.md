@@ -340,9 +340,9 @@ t_mn <- system.time(for (i in 1:5) {
 })[3]
 
 cat("maxentcpp: ", round(t_cpp / 5 * 1000), "ms/fit\n")
-#> maxentcpp:  701 ms/fit
+#> maxentcpp:  778 ms/fit
 cat("maxnet:    ", round(t_mn / 5 * 1000), "ms/fit\n")
-#> maxnet:     679 ms/fit
+#> maxnet:     719 ms/fit
 ```
 
 ## Variable Importance
