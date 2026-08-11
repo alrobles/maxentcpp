@@ -217,7 +217,7 @@ maxent_space_info <- function(featured_space) {
 #'
 #' stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
 #'                                package = "maxentcpp")
-#' example_rasters <- terra::rast(readRDS(stack_path))
+#' example_rasters <- terra::unwrap(readRDS(stack_path))
 #' grids <- list(
 #'   bio1  = maxent_grid_from_terra(example_rasters[[1]]),
 #'   bio12 = maxent_grid_from_terra(example_rasters[[2]])
