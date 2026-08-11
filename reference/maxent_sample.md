@@ -33,5 +33,7 @@ Sample object (external pointer)
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 sample <- maxent_sample(lon = -118.5, lat = 36.5, name = "site1")
+} # }
 ```

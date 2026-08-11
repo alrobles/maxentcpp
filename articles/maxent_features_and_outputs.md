@@ -142,7 +142,7 @@ vectors:
 
 library(maxentcpp)
 library(terra)
-#> terra 1.9.27
+#> terra 1.9.34
 
 stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
                                package = "maxentcpp")

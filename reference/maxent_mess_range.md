@@ -3,9 +3,14 @@
 Simplified MESS analysis using only the min/max of the reference data
 rather than the full distribution.
 
+Simplified MESS analysis using only the min/max of the reference data
+rather than the full distribution.
+
 ## Usage
 
 ``` r
+maxent_mess_range(env_grids, var_mins, var_maxs)
+
 maxent_mess_range(env_grids, var_mins, var_maxs)
 ```
 
@@ -24,5 +29,7 @@ maxent_mess_range(env_grids, var_mins, var_maxs)
   Numeric vector of maximum reference values per variable.
 
 ## Value
+
+A named list with mess_grid and mod_grid (external pointers).
 
 A named list with mess_grid and mod_grid (external pointers).

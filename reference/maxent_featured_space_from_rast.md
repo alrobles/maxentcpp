@@ -84,16 +84,15 @@ when the same data, sample indices, and feature configuration are used.
 ## Examples
 
 ``` r
-# \donttest{
-if (requireNamespace("terra", quietly = TRUE)) {
-  stack_path <- system.file("extdata", "stack_1_12_crop.rds",
-                           package = "maxentcpp")
-  r <- terra::unwrap(readRDS(stack_path))
-  fs <- maxent_featured_space_from_rast(
-      r,
-      sample_indices = c(0L, 1L, 2L),
-      feature_types  = c("linear", "quadratic")
-  )
-}
-# }
+if (FALSE) { # \dontrun{
+library(terra)
+r <- rast(system.file("ex/elev.tif", package = "terra"))
+# Pretend the first 3 finite cells are presences:
+fs <- maxent_featured_space_from_rast(
+    r,
+    sample_indices = c(0L, 1L, 2L),
+    feature_types  = c("linear", "quadratic")
+)
+res <- maxent_train(fs)
+} # }
 ```

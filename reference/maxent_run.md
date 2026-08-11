@@ -40,6 +40,8 @@ maxent_run(
   max_iter = 500L,
   seed = 42L,
   bias_weights = NULL,
+  categorical = NULL,
+  nodata_value = -9999,
   response_curves = TRUE,
   pictures = TRUE
 )
@@ -103,6 +105,19 @@ maxent_run(
   weighted by `bias[i] * exp(lp[i] - lpn)`, mirroring Java Maxent's
   `biasFile`. Pass `NULL` (default) for uniform (unbiased) background.
 
+- categorical:
+
+  Character vector of variable names that should be treated as
+  categorical. These variables produce binary indicator features (one
+  per distinct level) instead of continuous feature types. Pass `NULL`
+  (default) for all continuous.
+
+- nodata_value:
+
+  Numeric: sentinel value treated as missing data (default `-9999`).
+  Samples with this value (or `NA`) in any variable are removed before
+  training.
+
 - response_curves:
 
   Logical: write response curve PNGs (default `TRUE`).
@@ -144,42 +159,27 @@ A named list with:
 ## Examples
 
 ``` r
-# \donttest{
-if (requireNamespace("terra", quietly = TRUE)) {
-  stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
-                                 package = "maxentcpp")
-  example_rasters <- terra::unwrap(readRDS(stack_path))
-  grids <- list(
-    bio1  = maxent_grid_from_terra(example_rasters[[1]]),
-    bio12 = maxent_grid_from_terra(example_rasters[[2]])
-  )
-  data(example_occ_df)
+if (FALSE) { # \dontrun{
+library(maxentcpp)
+library(terra)
 
-  result <- maxent_run(
-    species    = "Abeillia_abeillei",
-    env_grids  = grids,
-    occ_df     = example_occ_df,
-    output_dir = tempdir(),
-    lon_col    = "long",
-    lat_col    = "lat")
+stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
+                               package = "maxentcpp")
+example_rasters <- terra::unwrap(readRDS(stack_path))
+grids <- list(
+  bio1  = maxent_grid_from_terra(example_rasters[[1]]),
+  bio12 = maxent_grid_from_terra(example_rasters[[2]])
+)
+data(example_occ_df)
 
-  result$evaluation$auc
-}
-#> class         : MaxEnt
-#> species       : Abeillia_abeillei
-#> n presence    : 73
-#> n background  : 2371
-#> 
-#> Training statistics
-#>   AUC             : 0.8033
-#>   Gain            : 7.2290
-#>   Entropy         : 7.3714
-#> 
-#> Variable contributions
-#>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              61.3                       54.0
-#>   bio12                             38.7                       46.0
-#> 
-#> [1] 0.8033487
-# }
+result <- maxent_run(
+  species    = "Abeillia_abeillei",
+  env_grids  = grids,
+  occ_df     = example_occ_df,
+  output_dir = tempdir(),
+  lon_col    = "long",
+  lat_col    = "lat")
+
+cat("AUC:", result$evaluation$auc, "\n")
+} # }
 ```

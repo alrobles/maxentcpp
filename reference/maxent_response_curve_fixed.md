@@ -5,9 +5,24 @@ for the non-target variables. Applies the Java Maxent cloglog transform,
 matching the output of Java Maxent and dismo: \$\$cloglog = 1 -
 exp(-exp(H) \cdot raw)\$\$
 
+Like `maxent_response_curve` but the user supplies explicit fixed values
+for the non-target variables. Applies the Java Maxent cloglog transform,
+matching the output of Java Maxent and dismo: \$\$cloglog = 1 -
+exp(-exp(H) \cdot raw)\$\$
+
 ## Usage
 
 ``` r
+maxent_response_curve_fixed(
+  model,
+  fixed_values,
+  feature_names,
+  var_index,
+  var_min,
+  var_max,
+  n_steps = 100L
+)
+
 maxent_response_curve_fixed(
   model,
   fixed_values,
@@ -50,6 +65,8 @@ maxent_response_curve_fixed(
   Number of steps (default 100).
 
 ## Value
+
+A data.frame with columns: value, prediction.
 
 A data.frame with columns: value, prediction.
 

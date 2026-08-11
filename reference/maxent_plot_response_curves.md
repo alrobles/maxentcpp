@@ -56,7 +56,7 @@ maxent_plot_response_curves(
 
 - thumbnail:
 
-  Logical: also write a 210 x 140 pixel thumbnail PNG (default `TRUE`).
+  Logical: also write a 210 × 140 pixel thumbnail PNG (default `TRUE`).
 
 - write_dat:
 
@@ -70,34 +70,9 @@ Invisibly returns a named list of file paths written.
 ## Examples
 
 ``` r
-# \donttest{
-set.seed(42)
-n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
-env <- list(bio1 = runif(n), bio12 = runif(n))
-feats <- maxent_generate_features(env, types = "linear")
-model <- maxent_featured_space(n, idx, feats)
-maxent_fit(model, max_iter = 100)
-#> $loss
-#> [1] 3.781356
-#> 
-#> $entropy
-#> [1] 3.887762
-#> 
-#> $iterations
-#> [1] 100
-#> 
-#> $converged
-#> [1] FALSE
-#> 
-#> $lambdas
-#> [1] 0.6202339 0.4108689
-#> 
-g1 <- maxent_grid_from_matrix(matrix(env$bio1, 5, 10),
-        -120, 35, 1, name = "bio1")
-g2 <- maxent_grid_from_matrix(matrix(env$bio12, 5, 10),
-        -120, 35, 1, name = "bio12")
+if (FALSE) { # \dontrun{
 maxent_plot_response_curves(
   model, list(g1, g2), c("bio1", "bio12"),
   output_dir = tempdir(), species = "Sp1")
-# }
+} # }
 ```

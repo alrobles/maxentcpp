@@ -46,8 +46,9 @@ External pointer to a HingeFeature C++ object.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 vals <- c(0, 5, 10, 3)
 f <- maxent_hinge_feature(vals, "temperature_hinge", min_knot = 2, max_knot = 8)
-maxent_feature_eval(f, 2)  # values[2] = 5 -> (5-2)/(8-2) = 0.5
-#> [1] 0.5
+maxent_feature_eval(f, 2)  # values[1] = 5 → (5-2)/(8-2) = 0.5
+} # }
 ```

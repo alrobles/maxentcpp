@@ -26,8 +26,9 @@ Numeric scalar: the feature value at that index.
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 vals <- c(0, 5, 10)
 f <- maxent_linear_feature(vals, "temp")
 maxent_feature_eval(f, 2)  # 5/10 = 0.5
-#> [1] 0.5
+} # }
 ```

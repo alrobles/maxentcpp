@@ -16,7 +16,7 @@ Precipitation (bio12), cropped from WorldClim at ~10 arcmin resolution.
 
 library(maxentcpp)
 library(terra)
-#> terra 1.9.27
+#> terra 1.9.34
 
 stack_path <- system.file("extdata", "stack_1_12_crop.rds",
                           package = "maxentcpp")
@@ -340,9 +340,9 @@ t_mn <- system.time(for (i in 1:5) {
 })[3]
 
 cat("maxentcpp: ", round(t_cpp / 5 * 1000), "ms/fit\n")
-#> maxentcpp:  703 ms/fit
+#> maxentcpp:  700 ms/fit
 cat("maxnet:    ", round(t_mn / 5 * 1000), "ms/fit\n")
-#> maxnet:     699 ms/fit
+#> maxnet:     681 ms/fit
 ```
 
 ## Variable Importance

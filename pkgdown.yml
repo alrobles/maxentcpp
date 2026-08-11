@@ -1,12 +1,13 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   articles/getting_started: getting_started.html
   articles/maxent_features_and_outputs: maxent_features_and_outputs.html
+  species-distribution-example: species-distribution-example.html
   articles/virtual_species_comparison: virtual_species_comparison.html
   articles/why_maxentcpp: why_maxentcpp.html
-last_built: 2026-05-13T03:59Z
+last_built: 2026-08-11T18:02Z
 urls:
   reference: https://alrobles.github.io/maxentcpp/reference
   article: https://alrobles.github.io/maxentcpp/articles

@@ -46,12 +46,10 @@ A named list with:
 ## Examples
 
 ``` r
-# \donttest{
-g <- maxent_grid_from_matrix(matrix(runif(100), 10, 10),
-        -120, 35, 0.1, name = "env1")
-bg <- maxent_background_indices(g, n = 50, seed = 42)
+if (FALSE) { # \dontrun{
+dim <- maxent_dimension(100, 100, -120, 35, 0.1)
+grid <- maxent_grid(dim, "env1")
+bg <- maxent_background_indices(grid, n = 5000, seed = 42)
 bg$indices  # 0-based flat indices for FeaturedSpace
-#>  [1] 84 46 42 37 71 99 64 32  7 88 63 91 52 20  4 62 53 40 33 68 75 14 29 92 24
-#> [26] 41 12 97 70 38 76 59 30 94 49 78 66 50 26 10 15  8 35  2  6 45 73 90 93 28
-# }
+} # }
 ```

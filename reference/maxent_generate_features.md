@@ -1,7 +1,9 @@
 # Generate Features from Environmental Variable Data
 
 Automatically generates all configured feature types from one or more
-environmental variable vectors.
+environmental variable vectors. Categorical variables are expanded into
+binary indicator features (one per distinct level) instead of continuous
+feature types.
 
 ## Usage
 
@@ -10,7 +12,8 @@ maxent_generate_features(
   data,
   types = c("linear", "quadratic", "product", "threshold", "hinge"),
   n_thresholds = 10L,
-  n_hinges = 10L
+  n_hinges = 10L,
+  categorical = NULL
 )
 ```
 
@@ -34,6 +37,13 @@ maxent_generate_features(
 
   Integer; number of hinge knots per variable (default: 10).
 
+- categorical:
+
+  Character vector of variable names that should be treated as
+  categorical. These variables will produce binary indicator features
+  (one per distinct level) instead of the continuous feature types.
+  Default is `NULL` (all variables are continuous).
+
 ## Value
 
 Named list of external pointers to Feature C++ objects.
@@ -41,11 +51,17 @@ Named list of external pointers to Feature C++ objects.
 ## Examples
 
 ``` r
-env_data <- list(
+if (FALSE) { # \dontrun{
+data <- list(
   temperature   = c(15, 20, 25, 18, 22),
-  precipitation = c(100, 200, 150, 80, 300)
+  precipitation = c(100, 200, 150, 80, 300),
+  landcover     = c(1, 2, 3, 1, 2)
 )
-features <- maxent_generate_features(env_data, types = c("linear", "hinge"))
+features <- maxent_generate_features(
+  data,
+  types = c("linear", "hinge"),
+  categorical = "landcover"
+)
 length(features)
-#> [1] 42
+} # }
 ```

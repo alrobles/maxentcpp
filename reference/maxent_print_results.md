@@ -74,31 +74,13 @@ Invisibly returns a named list with all reported metrics.
 ## Examples
 
 ``` r
-# \donttest{
-eval_result <- maxent_evaluate(c(0.9, 0.85, 0.95), c(0.1, 0.15, 0.2))
-contrib <- data.frame(name = c("bio1", "bio12"),
-                      contribution = c(60, 40))
-perm_imp <- data.frame(name = c("bio1", "bio12"),
-                       permutation_importance = c(55, 45))
+if (FALSE) { # \dontrun{
 maxent_print_results(
   species          = "Sp1",
-  eval_result      = eval_result,
+  eval_result      = maxent_evaluate(pres_preds, bg_preds),
   contributions_df = contrib,
   perm_imp_df      = perm_imp,
-  n_presence       = 3L,
-  n_background     = 100L)
-#> class         : MaxEnt
-#> species       : Sp1
-#> n presence    : 3
-#> n background  : 100
-#> 
-#> Training statistics
-#>   AUC             : 1.0000
-#> 
-#> Variable contributions
-#>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              60.0                       55.0
-#>   bio12                             40.0                       45.0
-#> 
-# }
+  n_presence       = length(pres_rows),
+  n_background     = length(bg_rows))
+} # }
 ```

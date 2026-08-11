@@ -47,37 +47,10 @@ For the raster package, an equivalent workflow is:
 ## Examples
 
 ``` r
-# \donttest{
-if (requireNamespace("terra", quietly = TRUE)) {
-  stack_path <- system.file("extdata", "stack_1_12_crop.rds",
-                           package = "maxentcpp")
-  r <- terra::unwrap(readRDS(stack_path))
-  g <- maxent_grid_from_terra(r[[1]])
-  maxent_grid_info(g)
-}
-#> $nrows
-#> [1] 70
-#> 
-#> $ncols
-#> [1] 99
-#> 
-#> $xll
-#> [1] -99.5
-#> 
-#> $yll
-#> [1] 10.66667
-#> 
-#> $cellsize
-#> [1] 0.1666667
-#> 
-#> $nodata
-#> [1] -9999
-#> 
-#> $name
-#> [1] "bio1WH"
-#> 
-#> $count_data
-#> [1] 2371
-#> 
-# }
+if (FALSE) { # \dontrun{
+library(terra)
+r <- rast("bio1.tif")
+g <- maxent_grid_from_terra(r)
+maxent_grid_info(g)
+} # }
 ```

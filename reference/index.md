@@ -14,12 +14,18 @@
   : Compute Permutation Importance
 - [`compute_response_curve()`](https://alrobles.github.io/maxentcpp/reference/compute_response_curve.md)
   : Compute Java-compatible Marginal Response Curve
+- [`compute_response_curve_deprecated()`](https://alrobles.github.io/maxentcpp/reference/compute_response_curve_deprecated.md)
+  : Compute Marginal Response Curve
 - [`compute_response_curve_fixed()`](https://alrobles.github.io/maxentcpp/reference/compute_response_curve_fixed.md)
   : Compute Java-compatible Response Curve with Fixed Values
+- [`compute_response_curve_fixed_deprecated()`](https://alrobles.github.io/maxentcpp/reference/compute_response_curve_fixed_deprecated.md)
+  : Compute Marginal Response Curve with Fixed Values
 - [`compute_variable_ranges()`](https://alrobles.github.io/maxentcpp/reference/compute_variable_ranges.md)
   : Compute Variable Ranges from Grids
 - [`coords_to_rowcol()`](https://alrobles.github.io/maxentcpp/reference/coords_to_rowcol.md)
   : Convert geographic coordinates to row/col
+- [`create_binary_feature()`](https://alrobles.github.io/maxentcpp/reference/create_binary_feature.md)
+  : Create a BinaryFeature object (categorical indicator)
 - [`create_grid_dimension()`](https://alrobles.github.io/maxentcpp/reference/create_grid_dimension.md)
   : Create a GridDimension object
 - [`create_grid_float()`](https://alrobles.github.io/maxentcpp/reference/create_grid_float.md)
@@ -75,6 +81,8 @@
   after download and clean from GBIF. This is a hummingbird example. A
   dataset with three variables. Contains scientific name, longitude and
   latitude.
+- [`extract_predictions_deprecated()`](https://alrobles.github.io/maxentcpp/reference/extract_predictions_deprecated.md)
+  : Extract Predictions at Sample Locations
 - [`extract_predictions_raw()`](https://alrobles.github.io/maxentcpp/reference/extract_predictions_raw.md)
   : Extract Java-compatible Raw Predictions at Sample Locations
 - [`feature_eval()`](https://alrobles.github.io/maxentcpp/reference/feature_eval.md)
@@ -121,12 +129,18 @@
   : Compute AUC (Area Under the ROC Curve)
 - [`maxent_background_indices()`](https://alrobles.github.io/maxentcpp/reference/maxent_background_indices.md)
   : Generate Background Sample Indices
+- [`maxent_binary_feature()`](https://alrobles.github.io/maxentcpp/reference/maxent_binary_feature.md)
+  : Create a Binary (Categorical Indicator) Feature
 - [`maxent_clamp()`](https://alrobles.github.io/maxentcpp/reference/maxent_clamp.md)
   : Clamp Environmental Grids
 - [`maxent_color_ramp()`](https://alrobles.github.io/maxentcpp/reference/maxent_color_ramp.md)
   : Generate the Maxent Canonical Color Ramp
+- [`maxent_complete_cases()`](https://alrobles.github.io/maxentcpp/reference/maxent_complete_cases.md)
+  : Remove Samples with Missing Environmental Data
 - [`maxent_correlation()`](https://alrobles.github.io/maxentcpp/reference/maxent_correlation.md)
   : Compute Pearson Correlation
+- [`maxent_cross_validate()`](https://alrobles.github.io/maxentcpp/reference/maxent_cross_validate.md)
+  : Cross-Validation for Maxent Models
 - [`maxent_csv_close()`](https://alrobles.github.io/maxentcpp/reference/maxent_csv_close.md)
   : Close a CSV Reader
 - [`maxent_csv_headers()`](https://alrobles.github.io/maxentcpp/reference/maxent_csv_headers.md)
@@ -199,6 +213,10 @@
   : Convert a maxentcpp GridFloat to a terra SpatRaster
 - [`maxent_hinge_feature()`](https://alrobles.github.io/maxentcpp/reference/maxent_hinge_feature.md)
   : Create a Hinge Feature
+- [`maxent_impute_means()`](https://alrobles.github.io/maxentcpp/reference/maxent_impute_means.md)
+  : Replace Missing Values with Variable Means
+- [`maxent_jackknife()`](https://alrobles.github.io/maxentcpp/reference/maxent_jackknife.md)
+  : Jackknife Variable Importance Analysis
 - [`maxent_layer()`](https://alrobles.github.io/maxentcpp/reference/maxent_layer.md)
   : Create a Layer Metadata Object
 - [`maxent_layer_info()`](https://alrobles.github.io/maxentcpp/reference/maxent_layer_info.md)
@@ -257,6 +275,8 @@
   : Read feature lambdas from a file
 - [`maxent_read_occurrences()`](https://alrobles.github.io/maxentcpp/reference/maxent_read_occurrences.md)
   : Read Species Occurrence Data
+- [`maxent_replicate()`](https://alrobles.github.io/maxentcpp/reference/maxent_replicate.md)
+  : Replicate Runs for Maxent Models
 - [`maxent_response_curve()`](https://alrobles.github.io/maxentcpp/reference/maxent_response_curve.md)
   : Compute Marginal Response Curve
 - [`maxent_response_curve_fixed()`](https://alrobles.github.io/maxentcpp/reference/maxent_response_curve_fixed.md)
@@ -297,10 +317,16 @@
   : Print Sample Information
 - [`project_cloglog()`](https://alrobles.github.io/maxentcpp/reference/project_cloglog.md)
   : Project Model onto Grids (Java-compatible cloglog output)
+- [`project_cloglog_deprecated()`](https://alrobles.github.io/maxentcpp/reference/project_cloglog_deprecated.md)
+  : Project Model onto Grids (cloglog output)
 - [`project_logistic()`](https://alrobles.github.io/maxentcpp/reference/project_logistic.md)
   : Project Model onto Grids (Java-compatible logistic output)
+- [`project_logistic_deprecated()`](https://alrobles.github.io/maxentcpp/reference/project_logistic_deprecated.md)
+  : Project Model onto Grids (logistic output)
 - [`project_raw()`](https://alrobles.github.io/maxentcpp/reference/project_raw.md)
   : Project Model onto Grids (Java-compatible raw output)
+- [`project_raw_deprecated()`](https://alrobles.github.io/maxentcpp/reference/project_raw_deprecated.md)
+  : Project Model onto Grids (raw output)
 - [`sample_get_feature()`](https://alrobles.github.io/maxentcpp/reference/sample_get_feature.md)
   : Get feature value from a sample
 - [`sample_set_feature()`](https://alrobles.github.io/maxentcpp/reference/sample_set_feature.md)

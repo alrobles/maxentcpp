@@ -22,25 +22,9 @@ Named list with elements: `name`, `type`, `lambda`, `min`, `max`,
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 vals <- c(0, 5, 10)
 f <- maxent_linear_feature(vals, "temp")
 maxent_feature_info(f)
-#> $name
-#> [1] "temp"
-#> 
-#> $type
-#> [1] "linear"
-#> 
-#> $lambda
-#> [1] 0
-#> 
-#> $min
-#> [1] 0
-#> 
-#> $max
-#> [1] 10
-#> 
-#> $size
-#> [1] 3
-#> 
+} # }
 ```
