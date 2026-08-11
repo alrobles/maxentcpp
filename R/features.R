@@ -16,9 +16,11 @@ NULL
 #' @return External pointer to a LinearFeature C++ object.
 #' @export
 #' @examples
+#' \dontrun{
 #' vals <- c(0, 5, 10, 3)
 #' f <- maxent_linear_feature(vals, "temperature")
-#' maxent_feature_eval(f, 1)  # index 1 (R) -> 0-based index 0
+#' maxent_feature_eval(f, 1)  # index 1 (R) → 0-based index 0
+#' }
 maxent_linear_feature <- function(values, name, min_val = NULL, max_val = NULL) {
     values <- as.numeric(values)
     if (is.null(min_val)) min_val <- min(values)
@@ -40,9 +42,11 @@ maxent_linear_feature <- function(values, name, min_val = NULL, max_val = NULL) 
 #' @return External pointer to a QuadraticFeature C++ object.
 #' @export
 #' @examples
+#' \dontrun{
 #' vals <- c(0, 5, 10)
 #' f <- maxent_quadratic_feature(vals, "temperature_sq")
-#' maxent_feature_eval(f, 2)  # evaluates at index 2 (1-based -> 0-based: 1)
+#' maxent_feature_eval(f, 2)  # evaluates at index 2 (1-based → 0-based: 1)
+#' }
 maxent_quadratic_feature <- function(values, name, min_val = NULL, max_val = NULL) {
     values <- as.numeric(values)
     if (is.null(min_val)) min_val <- min(values)
@@ -70,10 +74,11 @@ maxent_quadratic_feature <- function(values, name, min_val = NULL, max_val = NUL
 #' @return External pointer to a ProductFeature C++ object.
 #' @export
 #' @examples
+#' \dontrun{
 #' temp <- c(0, 5, 10)
 #' prec <- c(100, 200, 150)
 #' f <- maxent_product_feature(temp, prec, "temp_x_prec")
-#' maxent_feature_eval(f, 2)
+#' }
 maxent_product_feature <- function(values1, values2, name,
                                    min1 = NULL, max1 = NULL,
                                    min2 = NULL, max2 = NULL) {
@@ -100,9 +105,11 @@ maxent_product_feature <- function(values1, values2, name,
 #' @return External pointer to a ThresholdFeature C++ object.
 #' @export
 #' @examples
+#' \dontrun{
 #' vals <- c(1, 5, 10, 3)
 #' f <- maxent_threshold_feature(vals, "temperature_threshold", threshold = 5)
-#' maxent_feature_eval(f, 3)  # values[3] = 10 > 5 -> 1
+#' maxent_feature_eval(f, 3)  # values[2] = 10 > 5 → 1
+#' }
 maxent_threshold_feature <- function(values, name, threshold) {
     values <- as.numeric(values)
     create_threshold_feature(values, name, threshold)
@@ -128,9 +135,11 @@ maxent_threshold_feature <- function(values, name, threshold) {
 #' @return External pointer to a HingeFeature C++ object.
 #' @export
 #' @examples
+#' \dontrun{
 #' vals <- c(0, 5, 10, 3)
 #' f <- maxent_hinge_feature(vals, "temperature_hinge", min_knot = 2, max_knot = 8)
-#' maxent_feature_eval(f, 2)  # values[2] = 5 -> (5-2)/(8-2) = 0.5
+#' maxent_feature_eval(f, 2)  # values[1] = 5 → (5-2)/(8-2) = 0.5
+#' }
 maxent_hinge_feature <- function(values, name, min_knot, max_knot, reverse = FALSE) {
     values <- as.numeric(values)
     if (min_knot >= max_knot) {
@@ -149,9 +158,11 @@ maxent_hinge_feature <- function(values, name, min_knot, max_knot, reverse = FAL
 #' @return Numeric scalar: the feature value at that index.
 #' @export
 #' @examples
+#' \dontrun{
 #' vals <- c(0, 5, 10)
 #' f <- maxent_linear_feature(vals, "temp")
 #' maxent_feature_eval(f, 2)  # 5/10 = 0.5
+#' }
 maxent_feature_eval <- function(feature, index) {
     if (length(index) != 1L || is.na(index) || !is.finite(index)) {
         stop("index must be a single finite value")
@@ -179,9 +190,11 @@ maxent_feature_eval <- function(feature, index) {
 #'   \code{min}, \code{max}, \code{size}.
 #' @export
 #' @examples
+#' \dontrun{
 #' vals <- c(0, 5, 10)
 #' f <- maxent_linear_feature(vals, "temp")
 #' maxent_feature_info(f)
+#' }
 maxent_feature_info <- function(feature) {
     feature_get_info(feature)
 }
@@ -189,7 +202,9 @@ maxent_feature_info <- function(feature) {
 #' Generate Features from Environmental Variable Data
 #'
 #' Automatically generates all configured feature types from one or more
-#' environmental variable vectors.
+#' environmental variable vectors.  Categorical variables are expanded
+#' into binary indicator features (one per distinct level) instead of
+#' continuous feature types.
 #'
 #' @param data Named list of numeric vectors, one per environmental variable.
 #' @param types Character vector of feature types to generate. Valid values:
@@ -198,24 +213,73 @@ maxent_feature_info <- function(feature) {
 #' @param n_thresholds Integer; number of threshold knots per variable
 #'   (default: 10).
 #' @param n_hinges Integer; number of hinge knots per variable (default: 10).
+#' @param categorical Character vector of variable names that should be
+#'   treated as categorical.  These variables will produce binary indicator
+#'   features (one per distinct level) instead of the continuous feature
+#'   types.  Default is \code{NULL} (all variables are continuous).
 #' @return Named list of external pointers to Feature C++ objects.
 #' @export
 #' @examples
-#' env_data <- list(
+#' \dontrun{
+#' data <- list(
 #'   temperature   = c(15, 20, 25, 18, 22),
-#'   precipitation = c(100, 200, 150, 80, 300)
+#'   precipitation = c(100, 200, 150, 80, 300),
+#'   landcover     = c(1, 2, 3, 1, 2)
 #' )
-#' features <- maxent_generate_features(env_data, types = c("linear", "hinge"))
+#' features <- maxent_generate_features(
+#'   data,
+#'   types = c("linear", "hinge"),
+#'   categorical = "landcover"
+#' )
 #' length(features)
+#' }
 maxent_generate_features <- function(
     data,
     types = c("linear", "quadratic", "product", "threshold", "hinge"),
     n_thresholds = 10L,
-    n_hinges = 10L)
+    n_hinges = 10L,
+    categorical = NULL)
 {
     if (!is.list(data) || is.null(names(data))) {
         stop("data must be a named list of numeric vectors")
     }
     data <- lapply(data, as.numeric)
-    generate_features(data, types, as.integer(n_thresholds), as.integer(n_hinges))
+
+    # Resolve categorical variable names to 0-based indices
+    cat_idx <- integer(0)
+    if (!is.null(categorical)) {
+        nms <- names(data)
+        cat_idx <- match(categorical, nms) - 1L
+        bad <- is.na(cat_idx)
+        if (any(bad)) {
+            stop("categorical variable(s) not found in data: ",
+                 paste(categorical[bad], collapse = ", "))
+        }
+    }
+    generate_features(data, types, as.integer(n_thresholds),
+                      as.integer(n_hinges), as.integer(cat_idx))
+}
+
+#' Create a Binary (Categorical Indicator) Feature
+#'
+#' Creates a binary feature that evaluates to 1.0 when the underlying
+#' value equals the target category, 0.0 otherwise.  This is the
+#' building block for categorical variable support, matching
+#' Java Maxent's \code{BinaryFeature} class.
+#'
+#' @param values Numeric vector of categorical variable values.
+#' @param name Character string: feature name/identifier.
+#' @param target The category value to test for.
+#' @return External pointer to a BinaryFeature C++ object.
+#' @export
+#' @examples
+#' \dontrun{
+#' vals <- c(1, 2, 3, 1, 2)
+#' f <- maxent_binary_feature(vals, "(landcover=1)", target = 1)
+#' maxent_feature_eval(f, 1)  # 1.0 (values[1] == 1)
+#' maxent_feature_eval(f, 2)  # 0.0 (values[2] == 2)
+#' }
+maxent_binary_feature <- function(values, name, target) {
+    values <- as.numeric(values)
+    create_binary_feature(values, name, as.numeric(target))
 }

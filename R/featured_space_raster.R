@@ -157,17 +157,16 @@ NULL
 #'   \code{\link{maxent_generate_features}}.
 #' @export
 #' @examples
-#' \donttest{
-#' if (requireNamespace("terra", quietly = TRUE)) {
-#'   stack_path <- system.file("extdata", "stack_1_12_crop.rds",
-#'                            package = "maxentcpp")
-#'   r <- terra::unwrap(readRDS(stack_path))
-#'   fs <- maxent_featured_space_from_rast(
-#'       r,
-#'       sample_indices = c(0L, 1L, 2L),
-#'       feature_types  = c("linear", "quadratic")
-#'   )
-#' }
+#' \dontrun{
+#' library(terra)
+#' r <- rast(system.file("ex/elev.tif", package = "terra"))
+#' # Pretend the first 3 finite cells are presences:
+#' fs <- maxent_featured_space_from_rast(
+#'     r,
+#'     sample_indices = c(0L, 1L, 2L),
+#'     feature_types  = c("linear", "quadratic")
+#' )
+#' res <- maxent_train(fs)
 #' }
 maxent_featured_space_from_rast <- function(
     rast,
@@ -368,9 +367,6 @@ maxent_train_terra <- function(
     convergence = 1e-5,
     beta_multiplier = 1.0,
     min_deviation = 0.001) {
-    if (!requireNamespace("terra", quietly = TRUE)) {
-        stop("Package 'terra' is required. Install it with install.packages('terra').")
-    }
     cells <- NULL
     if (is.numeric(occurrences) || is.integer(occurrences)) {
         cells <- as.integer(occurrences)

@@ -17,6 +17,8 @@ maxent_run(
   max_iter = 500L,
   seed = 42L,
   bias_weights = NULL,
+  categorical = NULL,
+  nodata_value = -9999,
   response_curves = TRUE,
   pictures = TRUE
 )
@@ -60,6 +62,15 @@ background density is weighted by \code{bias[i] * exp(lp[i] - lpn)},
 mirroring Java Maxent's \code{biasFile}.  Pass \code{NULL} (default)
 for uniform (unbiased) background.}
 
+\item{categorical}{Character vector of variable names that should be
+treated as categorical.  These variables produce binary indicator
+features (one per distinct level) instead of continuous feature types.
+Pass \code{NULL} (default) for all continuous.}
+
+\item{nodata_value}{Numeric: sentinel value treated as missing data
+(default \code{-9999}).  Samples with this value (or \code{NA}) in
+any variable are removed before training.}
+
 \item{response_curves}{Logical: write response curve PNGs
 (default \code{TRUE}).}
 
@@ -95,26 +106,27 @@ occurrence records, the function:
 }
 }
 \examples{
-\donttest{
-if (requireNamespace("terra", quietly = TRUE)) {
-  stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
-                                 package = "maxentcpp")
-  example_rasters <- terra::unwrap(readRDS(stack_path))
-  grids <- list(
-    bio1  = maxent_grid_from_terra(example_rasters[[1]]),
-    bio12 = maxent_grid_from_terra(example_rasters[[2]])
-  )
-  data(example_occ_df)
+\dontrun{
+library(maxentcpp)
+library(terra)
 
-  result <- maxent_run(
-    species    = "Abeillia_abeillei",
-    env_grids  = grids,
-    occ_df     = example_occ_df,
-    output_dir = tempdir(),
-    lon_col    = "long",
-    lat_col    = "lat")
+stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
+                               package = "maxentcpp")
+example_rasters <- terra::rast(readRDS(stack_path))
+grids <- list(
+  bio1  = maxent_grid_from_terra(example_rasters[[1]]),
+  bio12 = maxent_grid_from_terra(example_rasters[[2]])
+)
+data(example_occ_df)
 
-  result$evaluation$auc
-}
+result <- maxent_run(
+  species    = "Abeillia_abeillei",
+  env_grids  = grids,
+  occ_df     = example_occ_df,
+  output_dir = tempdir(),
+  lon_col    = "long",
+  lat_col    = "lat")
+
+cat("AUC:", result$evaluation$auc, "\n")
 }
 }

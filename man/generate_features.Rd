@@ -6,10 +6,10 @@
 \usage{
 generate_features(
   data_list,
-  feature_types = as.character(c("linear", "quadratic", "product", "threshold",
-    "hinge")),
+  feature_types = as.character(c("linear", "quadratic", "product", "threshold", "hinge")),
   n_thresholds = 10L,
-  n_hinges = 10L
+  n_hinges = 10L,
+  categorical_indices = as.integer(c())
 )
 }
 \arguments{
@@ -22,11 +22,16 @@ Defaults to all types.}
 \item{n_thresholds}{Number of threshold knots per variable (default: 10)}
 
 \item{n_hinges}{Number of hinge knots per variable (default: 10)}
+
+\item{categorical_indices}{Integer vector of 0-based indices identifying
+which variables in \code{data_list} are categorical (default: empty).}
 }
 \value{
 List of external pointers to Feature objects
 }
 \description{
 Generates all configured feature types (linear, quadratic, product,
-threshold, hinge) from the supplied data vectors.
+threshold, hinge) from the supplied data vectors.  Categorical variables
+are expanded into binary indicator features (one per distinct level)
+instead of the continuous feature types.
 }

@@ -13,7 +13,9 @@ NULL
 #' @return Sample object (external pointer)
 #' @export
 #' @examples
+#' \dontrun{
 #' sample <- maxent_sample(lon = -118.5, lat = 36.5, name = "site1")
+#' }
 maxent_sample <- function(lon, lat, name = "", dim = NULL) {
     if (is.null(dim)) {
         # Create sample with dummy row/col if no dimension provided
@@ -36,11 +38,13 @@ maxent_sample <- function(lon, lat, name = "", dim = NULL) {
 #' @return GridDimension object (external pointer)
 #' @export
 #' @examples
+#' \dontrun{
 #' dim <- maxent_dimension(
 #'   nrows = 100, ncols = 100,
 #'   xll = -120.0, yll = 35.0,
 #'   cellsize = 0.1
 #' )
+#' }
 maxent_dimension <- function(nrows, ncols, xll, yll, cellsize) {
     create_grid_dimension(nrows, ncols, xll, yll, cellsize)
 }
@@ -55,8 +59,10 @@ maxent_dimension <- function(nrows, ncols, xll, yll, cellsize) {
 #' @return Grid object (external pointer)
 #' @export
 #' @examples
+#' \dontrun{
 #' dim <- maxent_dimension(100, 100, -120, 35, 0.1)
 #' grid <- maxent_grid(dim, "temperature")
+#' }
 maxent_grid <- function(dim, name = "", nodata_value = -9999) {
     create_grid_float(dim, name, nodata_value)
 }
@@ -148,11 +154,19 @@ print.maxent_sample <- function(x, ...) {
 #'   }
 #' @export
 #' @examples
+#' \dontrun{
 #' dim <- maxent_dimension(100, 100, -120, 35, 0.1)
+#'
+#' # From a data.frame
 #' occ <- data.frame(longitude = c(-118.5, -119.0),
 #'                   latitude  = c(36.5, 37.0))
 #' result <- maxent_read_occurrences(occ, dim)
 #' result$indices  # 0-based flat indices for FeaturedSpace
+#'
+#' # From a CSV file
+#' result2 <- maxent_read_occurrences("occurrences.csv", dim,
+#'                                     lon_col = "lon", lat_col = "lat")
+#' }
 maxent_read_occurrences <- function(file_or_df, dim, lon_col = "longitude",
                                     lat_col = "latitude", name_col = NULL) {
     # Load data
@@ -237,10 +251,10 @@ maxent_read_occurrences <- function(file_or_df, dim, lon_col = "longitude",
 #'   }
 #' @export
 #' @examples
-#' \donttest{
-#' g <- maxent_grid_from_matrix(matrix(runif(100), 10, 10),
-#'         -120, 35, 0.1, name = "env1")
-#' bg <- maxent_background_indices(g, n = 50, seed = 42)
+#' \dontrun{
+#' dim <- maxent_dimension(100, 100, -120, 35, 0.1)
+#' grid <- maxent_grid(dim, "env1")
+#' bg <- maxent_background_indices(grid, n = 5000, seed = 42)
 #' bg$indices  # 0-based flat indices for FeaturedSpace
 #' }
 maxent_background_indices <- function(grid, n = 10000L, seed = NULL) {

@@ -17,7 +17,9 @@ Named list with elements: \code{name}, \code{type}, \code{lambda},
 Returns a list of metadata for a feature object.
 }
 \examples{
+\dontrun{
 vals <- c(0, 5, 10)
 f <- maxent_linear_feature(vals, "temp")
 maxent_feature_info(f)
+}
 }

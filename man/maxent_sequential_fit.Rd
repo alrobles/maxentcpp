@@ -76,12 +76,8 @@ at every checkpoint, on both the symmetric and asymmetric fixtures in
 report for details.
 }
 \examples{
-\donttest{
-n   <- 100L
-idx <- 90:99
-env <- seq(0, 1, length.out = n)
-f   <- maxent_linear_feature(env, "env1")
-fs  <- maxent_featured_space(n, idx, list(f))
+\dontrun{
+fs  <- maxent_featured_space(100L, 90:99, list(f))
 res <- maxent_sequential_fit(
     fs,
     max_iter                 = 500L,

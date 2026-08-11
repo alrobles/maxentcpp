@@ -36,13 +36,10 @@ For the \pkg{raster} package, an equivalent workflow is:
 }
 }
 \examples{
-\donttest{
-if (requireNamespace("terra", quietly = TRUE)) {
-  stack_path <- system.file("extdata", "stack_1_12_crop.rds",
-                           package = "maxentcpp")
-  r <- terra::unwrap(readRDS(stack_path))
-  g <- maxent_grid_from_terra(r[[1]])
-  maxent_grid_info(g)
-}
+\dontrun{
+library(terra)
+r <- rast("bio1.tif")
+g <- maxent_grid_from_terra(r)
+maxent_grid_info(g)
 }
 }

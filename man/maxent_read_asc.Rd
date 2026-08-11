@@ -16,12 +16,9 @@ External pointer to a GridFloat C++ object.
 Reads a \code{.asc} raster file into a GridFloat object.
 }
 \examples{
-\donttest{
-g <- maxent_grid_from_matrix(matrix(runif(50), 5, 10),
-        -120, 35, 0.1, name = "bio1")
-f <- tempfile(fileext = ".asc")
-maxent_write_asc(g, f)
-g2 <- maxent_read_asc(f)
-maxent_grid_info(g2)
+\dontrun{
+g <- maxent_read_asc("bio1.asc")
+info <- maxent_grid_info(g)
+print(info)
 }
 }

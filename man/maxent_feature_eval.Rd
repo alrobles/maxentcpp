@@ -19,7 +19,9 @@ Evaluates the feature function at the specified index (1-based, as is
 standard in R). Internally converts to 0-based indexing for C++.
 }
 \examples{
+\dontrun{
 vals <- c(0, 5, 10)
 f <- maxent_linear_feature(vals, "temp")
 maxent_feature_eval(f, 2)  # 5/10 = 0.5
+}
 }

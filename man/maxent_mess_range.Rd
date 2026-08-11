@@ -5,6 +5,8 @@
 \title{Compute MESS from Min/Max Ranges}
 \usage{
 maxent_mess_range(env_grids, var_mins, var_maxs)
+
+maxent_mess_range(env_grids, var_mins, var_maxs)
 }
 \arguments{
 \item{env_grids}{List of external pointers to Grid<float> objects.}
@@ -15,8 +17,13 @@ maxent_mess_range(env_grids, var_mins, var_maxs)
 }
 \value{
 A named list with mess_grid and mod_grid (external pointers).
+
+A named list with mess_grid and mod_grid (external pointers).
 }
 \description{
+Simplified MESS analysis using only the min/max of the reference data
+rather than the full distribution.
+
 Simplified MESS analysis using only the min/max of the reference data
 rather than the full distribution.
 }

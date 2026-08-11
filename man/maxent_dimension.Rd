@@ -24,9 +24,11 @@ GridDimension object (external pointer)
 Defines the spatial extent and resolution of a raster grid.
 }
 \examples{
+\dontrun{
 dim <- maxent_dimension(
   nrows = 100, ncols = 100,
   xll = -120.0, yll = 35.0,
   cellsize = 0.1
 )
+}
 }

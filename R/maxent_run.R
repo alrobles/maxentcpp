@@ -43,6 +43,13 @@
 #'   background density is weighted by \code{bias[i] * exp(lp[i] - lpn)},
 #'   mirroring Java Maxent's \code{biasFile}.  Pass \code{NULL} (default)
 #'   for uniform (unbiased) background.
+#' @param categorical   Character vector of variable names that should be
+#'   treated as categorical.  These variables produce binary indicator
+#'   features (one per distinct level) instead of continuous feature types.
+#'   Pass \code{NULL} (default) for all continuous.
+#' @param nodata_value  Numeric: sentinel value treated as missing data
+#'   (default \code{-9999}).  Samples with this value (or \code{NA}) in
+#'   any variable are removed before training.
 #' @param response_curves Logical: write response curve PNGs
 #'   (default \code{TRUE}).
 #' @param pictures      Logical: write prediction map PNG (default \code{TRUE}).
@@ -57,27 +64,28 @@
 #'   }
 #' @export
 #' @examples
-#' \donttest{
-#' if (requireNamespace("terra", quietly = TRUE)) {
-#'   stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
-#'                                  package = "maxentcpp")
-#'   example_rasters <- terra::unwrap(readRDS(stack_path))
-#'   grids <- list(
-#'     bio1  = maxent_grid_from_terra(example_rasters[[1]]),
-#'     bio12 = maxent_grid_from_terra(example_rasters[[2]])
-#'   )
-#'   data(example_occ_df)
+#' \dontrun{
+#' library(maxentcpp)
+#' library(terra)
 #'
-#'   result <- maxent_run(
-#'     species    = "Abeillia_abeillei",
-#'     env_grids  = grids,
-#'     occ_df     = example_occ_df,
-#'     output_dir = tempdir(),
-#'     lon_col    = "long",
-#'     lat_col    = "lat")
+#' stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
+#'                                package = "maxentcpp")
+#' example_rasters <- terra::rast(readRDS(stack_path))
+#' grids <- list(
+#'   bio1  = maxent_grid_from_terra(example_rasters[[1]]),
+#'   bio12 = maxent_grid_from_terra(example_rasters[[2]])
+#' )
+#' data(example_occ_df)
 #'
-#'   result$evaluation$auc
-#' }
+#' result <- maxent_run(
+#'   species    = "Abeillia_abeillei",
+#'   env_grids  = grids,
+#'   occ_df     = example_occ_df,
+#'   output_dir = tempdir(),
+#'   lon_col    = "long",
+#'   lat_col    = "lat")
+#'
+#' cat("AUC:", result$evaluation$auc, "\n")
 #' }
 maxent_run <- function(species,
                        env_grids,
@@ -91,6 +99,8 @@ maxent_run <- function(species,
                        max_iter       = 500L,
                        seed           = 42L,
                        bias_weights   = NULL,
+                       categorical    = NULL,
+                       nodata_value   = -9999,
                        response_curves = TRUE,
                        pictures        = TRUE) {
 
@@ -134,23 +144,58 @@ maxent_run <- function(species,
     })
     names(env_vals) <- feature_names
 
+    # --- 3b. Handle missing data (NODATA / NA) --------------------------------
+    n_bg_orig  <- length(bg$rows)
+    n_occ_orig <- length(occ$rows)
+    valid_idx  <- maxent_complete_cases(env_vals, nodata_value = nodata_value)
+    n_removed  <- n_total - length(valid_idx)
+    if (n_removed > 0L) {
+        message(sprintf("Removed %d points with missing data (NODATA=%g or NA)",
+                        n_removed, nodata_value))
+        # Re-index: filter env_vals and recompute sample_indices
+        env_vals <- lapply(env_vals, function(v) v[valid_idx])
+        old_to_new <- rep(NA_integer_, n_total)
+        old_to_new[valid_idx] <- seq_along(valid_idx) - 1L  # 0-based
+        sample_indices <- stats::na.omit(old_to_new[sample_indices + 1L])
+        n_total <- length(valid_idx)
+
+        # Recompute rows/cols for evaluation later
+        all_rows <- all_rows[valid_idx]
+        all_cols <- all_cols[valid_idx]
+        int_rows <- as.integer(all_rows)
+        int_cols <- as.integer(all_cols)
+        bg_n <- n_total - length(sample_indices)
+
+        # Update occ/bg coordinates to match filtered dataset (used by
+        # evaluation, permutation importance, and reporting below)
+        occ_1based <- sample_indices + 1L
+        occ$rows   <- all_rows[occ_1based]
+        occ$cols   <- all_cols[occ_1based]
+        bg_mask    <- rep(TRUE, n_total)
+        bg_mask[occ_1based] <- FALSE
+        bg$rows    <- all_rows[bg_mask]
+        bg$cols    <- all_cols[bg_mask]
+    }
+
     features <- maxent_generate_features(env_vals,
                                          types    = as.character(types),
-                                         n_hinges = as.integer(n_hinges))
+                                         n_hinges = as.integer(n_hinges),
+                                         categorical = categorical)
 
     # --- 4. Train -------------------------------------------------------------
     # Extend per-background bias_weights to the full (bg + occ) array.
     # Background bias is user-supplied; occurrence points get weight 1.0.
     full_bias <- NULL
     if (!is.null(bias_weights)) {
-        n_bg <- length(bg$rows)
-        if (length(bias_weights) != n_bg) {
+        if (length(bias_weights) != n_bg_orig) {
             stop(sprintf(
                 "bias_weights must have length %d (background points only, excluding occurrences), got %d",
-                n_bg, length(bias_weights)))
+                n_bg_orig, length(bias_weights)))
         }
-        n_occ <- length(occ$rows)
-        full_bias <- c(as.numeric(bias_weights), rep(1.0, n_occ))
+        full_bias <- c(as.numeric(bias_weights), rep(1.0, n_occ_orig))
+        if (n_removed > 0L) {
+            full_bias <- full_bias[valid_idx]
+        }
     }
     fs         <- maxent_featured_space(n_total,
                                         as.integer(sample_indices),
@@ -167,6 +212,30 @@ maxent_run <- function(species,
     bg_preds   <- maxent_extract_predictions_raw(fs, unname(env_grids),
                                                   feature_names,
                                                   bg$rows, bg$cols)
+
+    # Filter non-finite predictions (NaN from NODATA cells missed by
+    # complete_cases, or Inf from numerical overflow in feature evaluation)
+    pres_ok <- is.finite(pres_preds)
+    bg_ok   <- is.finite(bg_preds)
+    if (!all(pres_ok)) {
+        n_bad <- sum(!pres_ok)
+        message(sprintf("Filtered %d/%d non-finite presence predictions",
+                        n_bad, length(pres_preds)))
+        pres_preds <- pres_preds[pres_ok]
+        occ$rows   <- occ$rows[pres_ok]
+        occ$cols   <- occ$cols[pres_ok]
+    }
+    if (!all(bg_ok)) {
+        n_bad <- sum(!bg_ok)
+        message(sprintf("Filtered %d/%d non-finite background predictions",
+                        n_bad, length(bg_preds)))
+        bg_preds <- bg_preds[bg_ok]
+        bg$rows  <- bg$rows[bg_ok]
+        bg$cols  <- bg$cols[bg_ok]
+    }
+    if (length(pres_preds) == 0L)
+        stop("No finite presence predictions -- model cannot be evaluated")
+
     eval_result <- maxent_evaluate(pres_preds, bg_preds)
 
     # --- 6. Diagnostics -------------------------------------------------------

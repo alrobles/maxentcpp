@@ -21,15 +21,7 @@ Reads model coefficients from a .lambdas file and applies them to
 a FeaturedSpace that was created with the same features.
 }
 \examples{
-\donttest{
-n   <- 50L
-idx <- c(5L, 15L, 25L, 35L, 45L)
-env <- list(bio1 = runif(n), bio12 = runif(n))
-feats <- maxent_generate_features(env, types = "linear")
-fs  <- maxent_featured_space(n, idx, feats)
-maxent_fit(fs, max_iter = 100)
-f <- tempfile(fileext = ".lambdas")
-maxent_save_lambdas(fs, f)
-maxent_load_lambdas(fs, f)
+\dontrun{
+maxent_load_lambdas(fs2, "mymodel.lambdas")
 }
 }

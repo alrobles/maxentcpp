@@ -35,16 +35,6 @@ skip_if_no_java <- function() {
         !file.exists(.java_jar_path()),
         "maxent_mini.jar not compiled; run `cd java && ./build.sh`"
     )
-    # Initialise JVM and verify MaxentJavaRunner is loadable (guards
-    # against Java version mismatch: jar compiled with Java 17 but
-    # runtime may be older).
-    tryCatch({
-        .init_jvm()
-        rJava::.jfindClass("MaxentJavaRunner")
-    }, error = function(e) {
-        skip(paste("Java runtime cannot load MaxentJavaRunner:",
-                   conditionMessage(e)))
-    })
 }
 
 # ---------------------------------------------------------------------------

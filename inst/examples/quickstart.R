@@ -16,7 +16,7 @@ library(terra)
 
 stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
                                package = "maxentcpp")
-example_rasters <- terra::unwrap(readRDS(stack_path))
+example_rasters <- terra::rast(readRDS(stack_path))
 bio1            <- example_rasters[[1]]
 bio12           <- example_rasters[[2]]
 
