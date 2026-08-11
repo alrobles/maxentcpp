@@ -4,6 +4,9 @@
 
 test_that("quickstart example runs without errors", {
     skip_if_not_installed("maxentcpp")
+    skip_if_not_installed("terra")
+    skip_if_not(exists("unwrap", envir = asNamespace("terra")),
+                "terra::unwrap not available")
     skip_if_no_proj()
 
     script <- system.file("examples", "quickstart.R",
