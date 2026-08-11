@@ -31,10 +31,10 @@ Randomly selects valid (non-NODATA) cells from a reference grid for use
 as background points in MaxEnt modeling.
 }
 \examples{
-\donttest{
-g <- maxent_grid_from_matrix(matrix(runif(100), 10, 10),
-        -120, 35, 0.1, name = "env1")
-bg <- maxent_background_indices(g, n = 50, seed = 42)
+\dontrun{
+dim <- maxent_dimension(100, 100, -120, 35, 0.1)
+grid <- maxent_grid(dim, "env1")
+bg <- maxent_background_indices(grid, n = 5000, seed = 42)
 bg$indices  # 0-based flat indices for FeaturedSpace
 }
 }

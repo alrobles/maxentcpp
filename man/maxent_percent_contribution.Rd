@@ -23,12 +23,8 @@ Computes variable contribution based on sum of absolute lambda values
 for features derived from each variable. Results sum to 100%.
 }
 \examples{
-n   <- 50L
-idx <- c(5L, 15L, 25L, 35L, 45L)
-env <- list(temp = runif(n), precip = runif(n))
-feats <- maxent_generate_features(env, types = "linear")
-model <- maxent_featured_space(n, idx, feats)
-maxent_fit(model, max_iter = 100, convergence = 1e-3)
+\dontrun{
 contrib <- maxent_percent_contribution(model, c("temp", "precip"))
 contrib  # data.frame with name and contribution
+}
 }

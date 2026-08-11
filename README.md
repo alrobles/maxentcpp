@@ -1,58 +1,78 @@
 
-# maxentcpp <img src="man/figures/logo.png" align="right" height="139" alt="maxentcpp logo" />
+# maxentcpp
 
-<!-- badges: start -->
+Maximum Entropy Species Distribution Modeling - C++ Implementation with
+R Interface
 
-[![R-CMD-check](https://github.com/alrobles/maxentcpp/actions/workflows/test-r-package.yml/badge.svg)](https://github.com/alrobles/maxentcpp/actions/workflows/test-r-package.yml)
-<!-- badges: end -->
+## Overview
 
-A high-performance C++17 reimplementation of the [Maximum Entropy
-(Maxent)](https://biodiversityinformatics.amnh.org/open_source/maxent/)
-species distribution modeling algorithm, with R bindings via Rcpp.
+`maxentcpp` is a high-performance C++ implementation of the Maxent
+species distribution modeling algorithm, with seamless R integration
+through Rcpp. This package aims to provide:
 
-Maxent estimates species geographic distributions from occurrence
-records and environmental variables (Phillips et al. 2006,
-[doi:10.1016/j.ecolmodel.2005.03.026](https://doi.org/10.1016/j.ecolmodel.2005.03.026)).
-`maxentcpp` reproduces the Java Maxent algorithm — including feature
-transformations, regularization, and output formats — entirely in C++.
+- **Performance**: Faster execution through optimized C++ code
+- **Compatibility**: File format compatibility with the Java Maxent
+- **Integration**: Native R interface for easy use in R workflows
+- **Modern**: Built with modern C++17 and R best practices
 
 ## Installation
 
+### Prerequisites
+
+- R \>= 4.0.0
+- C++17 compatible compiler
+- Eigen3 library (usually installed via Rcpp/RcppEigen)
+
+### From Source
+
 ``` r
-# From GitHub
+# Install dependencies
+install.packages(c("Rcpp", "RcppEigen", "testthat"))
+
+# Build and install
 remotes::install_github("alrobles/maxentcpp")
 ```
 
-**Requirements:** R \>= 3.5, C++17 compiler. The optional `terra`
-package is needed only for raster I/O helpers.
+## Quick Start
 
-## Quick Example
+The package ships with a complete reproducible example in
+[`inst/examples/quickstart.R`](inst/examples/quickstart.R). After
+installing the package you can run the full workflow with:
 
-The package ships with two cropped bioclimatic layers (bio1, bio12) and
-73 GBIF occurrence records for the Emerald-bellied Hummingbird
-(*Abeillia abeillei*).
+``` r
+source(system.file("examples", "quickstart.R", package = "maxentcpp"))
+```
+
+The example uses two bundled bioclimatic layers (bio1 – Annual Mean
+Temperature, bio12 – Annual Precipitation, cropped to the distribution
+range of *Abeillia abeillei*) and GBIF occurrence records for the same
+species.
+
+### Condensed walkthrough
 
 ``` r
 library(maxentcpp)
 library(terra)
 
-# 1. Load environmental rasters
-stack_path <- system.file("extdata", "stack_1_12_crop.rds",
-                          package = "maxentcpp")
-r <- terra::unwrap(readRDS(stack_path))
-g_bio1  <- maxent_grid_from_terra(r[[1]])
-g_bio12 <- maxent_grid_from_terra(r[[2]])
+# --- 1. Load raster data from the package -----------------------------------
+stack_path      <- system.file("extdata", "stack_1_12_crop.rds",
+                               package = "maxentcpp")
+example_rasters <- terra::rast(readRDS(stack_path))
+g_bio1  <- maxent_grid_from_terra(example_rasters[[1]])
+g_bio12 <- maxent_grid_from_terra(example_rasters[[2]])
 
-# 2. Occurrence and background points
-data(example_occ_df)
+# --- 2. Occurrence records ---------------------------------------------------
+data(example_occ_df)   # columns: species, long, lat
 info <- maxent_grid_info(g_bio1)
 dim  <- maxent_dimension(info$nrows, info$ncols,
                          info$xll, info$yll, info$cellsize)
 occ  <- maxent_read_occurrences(example_occ_df, dim,
                                 lon_col = "long", lat_col = "lat")
-bg   <- maxent_background_indices(g_bio1, n = 10000, seed = 42)
 
-# 3. Extract values & generate features
+# --- 3. Background points ----------------------------------------------------
+bg <- maxent_background_indices(g_bio1, n = 10000, seed = 42)
+
+# --- 4. Features -------------------------------------------------------------
 all_rows <- c(bg$rows, occ$rows)
 all_cols <- c(bg$cols, occ$cols)
 n_total  <- length(all_rows)
@@ -67,85 +87,67 @@ features <- maxent_generate_features(
     list(bio1 = bio1_vals, bio12 = bio12_vals),
     types = c("linear", "quadratic", "hinge"), n_hinges = 15)
 
-# 4. Train
+# --- 5. Train ----------------------------------------------------------------
 fs     <- maxent_featured_space(n_total, as.integer(sample_indices), features)
 result <- maxent_fit(fs, max_iter = 500, convergence = 1e-5)
-cat("Converged:", result$converged, "| Iterations:", result$iterations, "\n")
-#> Converged: TRUE | Iterations: 221
-```
+cat("AUC:", maxent_evaluate(
+    maxent_extract_predictions(fs, list(g_bio1, g_bio12),
+                               c("bio1", "bio12"), occ$rows, occ$cols),
+    maxent_extract_predictions(fs, list(g_bio1, g_bio12),
+                               c("bio1", "bio12"), bg$rows,  bg$cols))$auc, "\n")
 
-### Evaluate
-
-``` r
-pres_preds <- maxent_extract_predictions_raw(
-    fs, list(g_bio1, g_bio12), c("bio1", "bio12"), occ$rows, occ$cols)
-bg_preds <- maxent_extract_predictions_raw(
-    fs, list(g_bio1, g_bio12), c("bio1", "bio12"), bg$rows, bg$cols)
-eval_result <- maxent_evaluate(pres_preds, bg_preds)
-cat("AUC:", round(eval_result$auc, 4), "\n")
-#> AUC: 0.8033
-```
-
-### Project and Visualize
-
-``` r
-pred <- maxent_project_cloglog(fs, list(g_bio1, g_bio12), c("bio1", "bio12"))
-terra::plot(maxent_grid_to_terra(pred),
-            main = "Abeillia abeillei - Habitat Suitability",
+# --- 6. Project and visualise ------------------------------------------------
+pred_raster <- maxent_grid_to_terra(
+    maxent_project_cloglog(fs, list(g_bio1, g_bio12), c("bio1", "bio12")))
+terra::plot(pred_raster,
+            main = "Predicted Habitat Suitability (cloglog)",
             col  = hcl.colors(50, "YlOrRd", rev = TRUE))
 ```
 
-<img src="man/figures/README-project-1.png" alt="Predicted habitat suitability map for Abeillia abeillei."  />
+See [`inst/examples/quickstart.R`](inst/examples/quickstart.R) for the
+complete workflow including variable importance, response curves, MESS
+analysis, and clamping.
 
-### Variable Importance
+### Complete workflow functions
 
-``` r
-maxent_percent_contribution(fs, c("bio1", "bio12"))
-#>    name contribution
-#> 1  bio1     61.32901
-#> 2 bio12     38.67099
-```
+    maxent_grid_from_terra()        --- Load raster layers (terra SpatRaster)
+    maxent_read_occurrences()       --- Ingest presence records (data frame / CSV)
+    maxent_background_indices()     --- Sample background points
+    maxent_generate_features()      --- Build feature set
+    maxent_featured_space()         --- Create model object
+    maxent_fit()                    --- Train the MaxEnt model
+    maxent_save_lambdas()           --- Persist model to disk
+    maxent_project_cloglog()        --- Spatial prediction (cloglog output)
+    maxent_grid_to_terra()          --- Convert output to terra SpatRaster
+    maxent_evaluate()               --- Compute AUC + metrics
+    maxent_response_curve()         --- Variable response plots
+    maxent_permutation_importance() --- Variable ranking
+    maxent_mess()                   --- Environmental novelty (MESS)
+    maxent_clamp()                  --- Safe extrapolation
 
-## One-Click Workflow
+    --- Output layer (report / file artifacts) ---
+    maxent_color_ramp()             --- Canonical Java-compatible colour ramp
+    maxent_write_prediction_png()   --- Prediction map PNG with legend + dots
+    maxent_plot_response_curves()   --- Response curve PNGs (full + thumbnail)
+    maxent_plot_variable_importance()--- Variable importance bar chart PNG
+    maxent_write_omission_csv()     --- Omission/threshold CSV (9 thresholds)
+    maxent_write_sample_predictions()--- Sample predictions CSV
+    maxent_print_results()          --- Print dismo-style performance metrics to console
+    maxent_append_results_csv()     --- Append row to maxentResults.csv
+    maxent_run()                    --- One-click full pipeline wrapper
 
-For a complete analysis in a single call, use `maxent_run()`:
+## License
 
-``` r
-result <- maxent_run(
-    species    = "Abeillia_abeillei",
-    env_grids  = list(bio1 = g_bio1, bio12 = g_bio12),
-    occ_df     = example_occ_df,
-    output_dir = tempdir(),
-    lon_col    = "long",
-    lat_col    = "lat"
-)
-```
-
-This produces lambda files, prediction maps, response curves, variable
-importance, and `maxentResults.csv`.
-
-## Learn More
-
-  - [Getting
-    Started](https://alrobles.github.io/maxentcpp/articles/getting_started.html)
-    — full walkthrough with response curves, MESS maps, and model
-    persistence
-  - [Function
-    Reference](https://alrobles.github.io/maxentcpp/reference/) —
-    complete API documentation
+MIT License - See LICENSE file for details
 
 ## Related Projects
 
-  - [Java Maxent](https://github.com/mrmaxent/Maxent) — original Java
-    implementation
-  - [maxnet](https://CRAN.R-project.org/package=maxnet) — R
-    implementation using glmnet
-  - [dismo](https://CRAN.R-project.org/package=dismo) — interface to
-    Java Maxent from R
+- [Java Maxent](https://github.com/mrmaxent/Maxent) - Original Java
+  implementation
+- [maxnet](https://CRAN.R-project.org/package=maxnet) - R implementation
+  using glmnet
 
-## Citation
+## Acknowledgments
 
-Phillips, S.J., Anderson, R.P. & Schapire, R.E. (2006). Maximum entropy
-modeling of species geographic distributions. *Ecological Modelling*,
-190, 231–259.
-[doi:10.1016/j.ecolmodel.2005.03.026](https://doi.org/10.1016/j.ecolmodel.2005.03.026)
+Based on the original Maxent software by Steven Phillips, Miro Dudík,
+and Rob Schapire.

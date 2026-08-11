@@ -5,6 +5,8 @@
 \title{Clamp Environmental Grids}
 \usage{
 maxent_clamp(env_grids, var_mins, var_maxs)
+
+maxent_clamp(env_grids, var_mins, var_maxs)
 }
 \arguments{
 \item{env_grids}{List of external pointers to Grid<float> objects.}
@@ -19,18 +21,29 @@ A named list with:
     \item{clamped_grids}{List of external pointers to clamped grids}
     \item{clamp_grid}{External pointer to clamping magnitude grid}
   }
+
+A named list with:
+  \describe{
+    \item{clamped_grids}{List of external pointers to clamped grids}
+    \item{clamp_grid}{External pointer to clamping magnitude grid}
+  }
 }
 \description{
 Restricts environmental variable values to the range observed during
 training. Values below min are set to min, values above max are set to max.
 A clamping grid records the total absolute clamping at each cell.
+
+Restricts environmental variable values to the range observed during
+training. Values below min are set to min, values above max are set to max.
+A clamping grid records the total absolute clamping at each cell.
 }
 \examples{
-\donttest{
-g1 <- maxent_grid_from_matrix(matrix(runif(50), 5, 10),
-        -120, 35, 1, name = "temp")
-g2 <- maxent_grid_from_matrix(matrix(runif(50, 50, 200), 5, 10),
-        -120, 35, 1, name = "precip")
+\dontrun{
+result <- maxent_clamp(list(g1, g2), c(0, 50), c(30, 200))
+clamped <- result$clamped_grids
+clamp_mat <- maxent_grid_to_matrix(result$clamp_grid)
+}
+\dontrun{
 result <- maxent_clamp(list(g1, g2), c(0, 50), c(30, 200))
 clamped <- result$clamped_grids
 clamp_mat <- maxent_grid_to_matrix(result$clamp_grid)

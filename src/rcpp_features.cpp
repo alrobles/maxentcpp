@@ -158,7 +158,9 @@ List feature_get_info(SEXP feature_ptr) {
 //' Generate features from a list of environmental variable vectors
 //'
 //' Generates all configured feature types (linear, quadratic, product,
-//' threshold, hinge) from the supplied data vectors.
+//' threshold, hinge) from the supplied data vectors.  Categorical variables
+//' are expanded into binary indicator features (one per distinct level)
+//' instead of the continuous feature types.
 //'
 //' @param data_list Named list of numeric vectors, one per environmental variable
 //' @param feature_types Character vector of feature types to generate.
@@ -166,6 +168,8 @@ List feature_get_info(SEXP feature_ptr) {
 //'   Defaults to all types.
 //' @param n_thresholds Number of threshold knots per variable (default: 10)
 //' @param n_hinges Number of hinge knots per variable (default: 10)
+//' @param categorical_indices Integer vector of 0-based indices identifying
+//'   which variables in \code{data_list} are categorical (default: empty).
 //' @return List of external pointers to Feature objects
 //' @export
 // [[Rcpp::export]]
@@ -174,7 +178,8 @@ List generate_features(List data_list,
                            CharacterVector::create("linear", "quadratic",
                                                    "product", "threshold", "hinge"),
                        int n_thresholds = 10,
-                       int n_hinges = 10) {
+                       int n_hinges = 10,
+                       IntegerVector categorical_indices = IntegerVector::create()) {
     // Build data vector
     std::vector<std::pair<std::string, std::vector<double>>> data;
     CharacterVector names = data_list.names();
@@ -203,7 +208,10 @@ List generate_features(List data_list,
         if (t == "hinge")     cfg.hinge     = true;
     }
 
-    auto features = FeatureGenerator::generate(data, cfg);
+    // Convert categorical indices
+    std::vector<int> cat_idx(categorical_indices.begin(), categorical_indices.end());
+
+    auto features = FeatureGenerator::generate(data, cfg, cat_idx);
 
     List result(features.size());
     CharacterVector result_names(features.size());
@@ -216,4 +224,22 @@ List generate_features(List data_list,
     }
     result.attr("names") = result_names;
     return result;
+}
+
+//' Create a BinaryFeature object (categorical indicator)
+//'
+//' Creates a binary feature that evaluates to 1.0 when the underlying
+//' value equals the target category value, 0.0 otherwise.
+//'
+//' @param values Numeric vector of categorical variable values
+//' @param name Feature name/identifier
+//' @param target The category value to test for
+//' @return External pointer to BinaryFeature object
+//' @export
+// [[Rcpp::export]]
+SEXP create_binary_feature(NumericVector values, String name, double target) {
+    auto sp = std::make_shared<std::vector<double>>(values.begin(), values.end());
+    BinaryFeature* f = new BinaryFeature(sp, Rcpp::as<std::string>(Rcpp::wrap(name)), target);
+    XPtr<Feature> ptr(f, true);
+    return ptr;
 }

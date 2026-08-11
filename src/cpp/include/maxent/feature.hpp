@@ -517,6 +517,85 @@ private:
 };
 
 /**
+ * @brief Binary indicator feature for categorical variables
+ *
+ * Returns 1.0 if the underlying feature value equals the target category,
+ * 0.0 otherwise.  One BinaryFeature is created per distinct value of a
+ * categorical environmental variable.
+ *
+ * Ported from density/BinaryFeature.java.
+ */
+class BinaryFeature : public Feature {
+public:
+    /**
+     * @brief Construct a BinaryFeature
+     * @param values Shared pointer to the raw categorical values
+     * @param name Feature name (typically "(varname=value)")
+     * @param target The categorical value this indicator tests for
+     */
+    BinaryFeature(std::shared_ptr<std::vector<double>> values,
+                  const std::string& name,
+                  double target)
+        : target_(target)
+    {
+        values_ = values;
+        name_   = name;
+        min_    = 0.0;
+        max_    = 1.0;
+    }
+
+    double eval(int i) const override {
+        return ((*values_)[i] == target_) ? 1.0 : 0.0;
+    }
+
+    double eval_from_env(const std::vector<double>& env_values) const override {
+        if (var_index_ < 0)
+            throw std::runtime_error("BinaryFeature::eval_from_env: var_index not set");
+        return (env_values[var_index_] == target_) ? 1.0 : 0.0;
+    }
+
+    std::string type() const override { return "binary"; }
+    bool is_binary() const override { return true; }
+
+    double target() const { return target_; }
+
+    /**
+     * @brief Create binary indicator features for all distinct values
+     * @param values Shared pointer to the raw categorical values
+     * @param var_name Variable name (used in feature naming)
+     * @param var_idx  0-based variable index
+     * @return Vector of unique_ptr to BinaryFeature objects
+     */
+    static std::vector<std::unique_ptr<Feature>> make_all(
+        std::shared_ptr<std::vector<double>> values,
+        const std::string& var_name,
+        int var_idx)
+    {
+        // Collect distinct values (sorted)
+        std::vector<double> distinct;
+        for (double v : *values) {
+            if (std::find(distinct.begin(), distinct.end(), v) == distinct.end())
+                distinct.push_back(v);
+        }
+        std::sort(distinct.begin(), distinct.end());
+
+        std::vector<std::unique_ptr<Feature>> result;
+        result.reserve(distinct.size());
+        for (double cat_val : distinct) {
+            std::string fname = "(" + var_name + "=" +
+                std::to_string(static_cast<int>(cat_val)) + ")";
+            auto f = std::make_unique<BinaryFeature>(values, fname, cat_val);
+            f->set_var_index(var_idx);
+            result.push_back(std::move(f));
+        }
+        return result;
+    }
+
+private:
+    double target_; ///< The categorical value this feature tests for
+};
+
+/**
  * @brief Configuration for FeatureGenerator
  */
 struct FeatureConfig {
@@ -545,13 +624,24 @@ public:
      *
      * @param data List of (name, values) pairs, one per environmental variable
      * @param cfg Configuration flags
+     * @param categorical_indices Set of 0-based indices marking categorical variables.
+     *        Categorical variables produce BinaryFeature indicators instead of
+     *        continuous feature types.  Default empty (all continuous).
      * @return Vector of unique_ptr to generated Feature objects
      */
     static std::vector<std::unique_ptr<Feature>> generate(
         const std::vector<std::pair<std::string, std::vector<double>>>& data,
-        const FeatureConfig& cfg = FeatureConfig())
+        const FeatureConfig& cfg = FeatureConfig(),
+        const std::vector<int>& categorical_indices = {})
     {
         std::vector<std::unique_ptr<Feature>> features;
+
+        // Build lookup set for categorical variables
+        std::vector<bool> is_categorical(data.size(), false);
+        for (int idx : categorical_indices) {
+            if (idx >= 0 && idx < static_cast<int>(data.size()))
+                is_categorical[idx] = true;
+        }
 
         // Wrap each variable in a shared_ptr
         std::vector<std::shared_ptr<std::vector<double>>> shared_data;
@@ -572,12 +662,25 @@ public:
             maxs.push_back(vmax);
         }
 
+        // Indices of continuous-only variables (for product features)
+        std::vector<std::size_t> cont_indices;
+
         for (std::size_t i = 0; i < data.size(); ++i) {
             const std::string& vname = data[i].first;
             auto& sp = shared_data[i];
             double vmin = mins[i];
             double vmax = maxs[i];
             int vidx = static_cast<int>(i);
+
+            // Categorical: generate binary indicator features
+            if (is_categorical[i]) {
+                auto bins = BinaryFeature::make_all(sp, vname, vidx);
+                for (auto& b : bins)
+                    features.push_back(std::move(b));
+                continue;
+            }
+
+            cont_indices.push_back(i);
 
             // Linear
             if (cfg.linear) {
@@ -624,10 +727,12 @@ public:
             }
         }
 
-        // Product features (all pairs)
-        if (cfg.product && data.size() >= 2) {
-            for (std::size_t i = 0; i < data.size(); ++i) {
-                for (std::size_t j = i + 1; j < data.size(); ++j) {
+        // Product features (all pairs of continuous variables only)
+        if (cfg.product && cont_indices.size() >= 2) {
+            for (std::size_t ci = 0; ci < cont_indices.size(); ++ci) {
+                for (std::size_t cj = ci + 1; cj < cont_indices.size(); ++cj) {
+                    std::size_t i = cont_indices[ci];
+                    std::size_t j = cont_indices[cj];
                     std::string pname = data[i].first + "_x_" + data[j].first;
                     auto f = std::make_unique<ProductFeature>(
                             shared_data[i], shared_data[j], pname,

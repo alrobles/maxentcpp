@@ -1,0 +1,52 @@
+name: C++ Tests (GoogleTest + Consistency)
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  cpp-tests:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y cmake g++ make libeigen3-dev
+
+      - name: Configure C++ build (with GoogleTest)
+        run: |
+          cmake -S src/cpp -B src/cpp/build \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DBUILD_TESTS=ON
+
+      - name: Build C++ project and GoogleTest suite
+        run: cmake --build src/cpp/build --parallel $(nproc)
+
+      - name: Run GoogleTest unit tests
+        run: ctest --test-dir src/cpp/build --output-on-failure --verbose
+
+      - name: Run consistency test
+        run: |
+          mkdir -p outputs
+          src/cpp/build/tests/consistency_test \
+            --input dataset/test_data.csv \
+            --output outputs/cpp_results.json
+
+      - name: Show consistency test output
+        run: cat outputs/cpp_results.json
+
+      - name: Upload C++ consistency results
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpp-consistency-results
+          path: outputs/cpp_results.json
+          retention-days: 7

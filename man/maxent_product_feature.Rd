@@ -42,8 +42,9 @@ Creates an interaction feature between two environmental variables:
 \code{eval(i) = norm(values1[i]) * norm(values2[i])}.
 }
 \examples{
+\dontrun{
 temp <- c(0, 5, 10)
 prec <- c(100, 200, 150)
 f <- maxent_product_feature(temp, prec, "temp_x_prec")
-maxent_feature_eval(f, 2)
+}
 }

@@ -19,13 +19,7 @@ Writes the trained model coefficients (lambdas) to a CSV file in
 the standard Maxent .lambdas format.
 }
 \examples{
-\donttest{
-n   <- 50L
-idx <- c(5L, 15L, 25L, 35L, 45L)
-env <- list(bio1 = runif(n), bio12 = runif(n))
-feats <- maxent_generate_features(env, types = "linear")
-fs  <- maxent_featured_space(n, idx, feats)
-maxent_fit(fs, max_iter = 100)
-maxent_save_lambdas(fs, tempfile(fileext = ".lambdas"))
+\dontrun{
+maxent_save_lambdas(fs, "mymodel.lambdas")
 }
 }

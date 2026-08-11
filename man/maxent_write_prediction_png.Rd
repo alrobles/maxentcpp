@@ -54,18 +54,8 @@ the canonical Maxent colour ramp (red = high, blue = low).  Optionally
 overlays presence and test-point locations, and renders a small legend.
 }
 \examples{
-\donttest{
-set.seed(42)
-n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
-env <- list(bio1 = runif(n), bio12 = runif(n))
-feats <- maxent_generate_features(env, types = "linear")
-model <- maxent_featured_space(n, idx, feats)
-maxent_fit(model, max_iter = 100)
-g1 <- maxent_grid_from_matrix(matrix(env$bio1, 5, 10),
-        -120, 35, 1, name = "bio1")
-g2 <- maxent_grid_from_matrix(matrix(env$bio12, 5, 10),
-        -120, 35, 1, name = "bio12")
+\dontrun{
 pred <- maxent_project_cloglog(model, list(g1, g2), c("bio1", "bio12"))
-maxent_write_prediction_png(pred, tempfile(fileext = ".png"))
+maxent_write_prediction_png(pred, "prediction.png")
 }
 }

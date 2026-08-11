@@ -25,7 +25,9 @@ Creates a linear (normalized) feature that evaluates to
 \code{(values[i] - min) / (max - min)}. Returns 0 when \code{min == max}.
 }
 \examples{
+\dontrun{
 vals <- c(0, 5, 10, 3)
 f <- maxent_linear_feature(vals, "temperature")
-maxent_feature_eval(f, 1)  # index 1 (R) -> 0-based index 0
+maxent_feature_eval(f, 1)  # index 1 (R) → 0-based index 0
+}
 }

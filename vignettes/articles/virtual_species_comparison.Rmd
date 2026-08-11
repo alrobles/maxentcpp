@@ -32,7 +32,7 @@ library(terra)
 
 stack_path <- system.file("extdata", "stack_1_12_crop.rds",
                           package = "maxentcpp")
-env <- terra::unwrap(readRDS(stack_path))
+env <- terra::rast(readRDS(stack_path))
 bio1  <- env[[1]]
 bio12 <- env[[2]]
 

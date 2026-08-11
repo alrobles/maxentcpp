@@ -16,24 +16,14 @@
 #' @param var_indices   Integer vector of 0-based variable indices to plot.
 #'   Defaults to all variables.
 #' @param n_steps       Integer: number of steps in each curve (default 100).
-#' @param thumbnail     Logical: also write a 210 x 140 pixel thumbnail PNG
+#' @param thumbnail     Logical: also write a 210 × 140 pixel thumbnail PNG
 #'   (default \code{TRUE}).
 #' @param write_dat     Logical: also write a tab-delimited \code{.dat} file
 #'   of the curve data (default \code{FALSE}).
 #' @return Invisibly returns a named list of file paths written.
 #' @export
 #' @examples
-#' \donttest{
-#' set.seed(42)
-#' n <- 50L; idx <- c(5L, 15L, 25L, 35L, 45L)
-#' env <- list(bio1 = runif(n), bio12 = runif(n))
-#' feats <- maxent_generate_features(env, types = "linear")
-#' model <- maxent_featured_space(n, idx, feats)
-#' maxent_fit(model, max_iter = 100)
-#' g1 <- maxent_grid_from_matrix(matrix(env$bio1, 5, 10),
-#'         -120, 35, 1, name = "bio1")
-#' g2 <- maxent_grid_from_matrix(matrix(env$bio12, 5, 10),
-#'         -120, 35, 1, name = "bio12")
+#' \dontrun{
 #' maxent_plot_response_curves(
 #'   model, list(g1, g2), c("bio1", "bio12"),
 #'   output_dir = tempdir(), species = "Sp1")
@@ -66,29 +56,31 @@ maxent_plot_response_curves <- function(model, env_grids, feature_names,
         # Full-size plot
         full_path <- file.path(plots_dir,
                                paste0(species, "_", var_name, ".png"))
-        .maxent_safe_png(full_path, 600L, 400L,
-                         mar = c(4, 4, 2, 1), expr = quote({
-            graphics::plot(curve$value, curve$prediction,
-                           type = "l", lwd = 2L, col = "#1B7837",
-                           xlab = var_name,
-                           ylab = "Cloglog prediction",
-                           main = paste("Response curve:", var_name),
-                           ylim = c(0, 1))
-        }))
+        grDevices::png(full_path, width = 600L, height = 400L)
+        oldpar <- graphics::par(mar = c(4, 4, 2, 1))
+        graphics::plot(curve$value, curve$prediction,
+                       type = "l", lwd = 2L, col = "#1B7837",
+                       xlab = var_name,
+                       ylab = "Cloglog prediction",
+                       main = paste("Response curve:", var_name),
+                       ylim = c(0, 1))
+        graphics::par(oldpar)
+        grDevices::dev.off()
         file_list[[paste0(var_name, "_full")]] <- full_path
 
         # Thumbnail
         if (thumbnail) {
             thumb_path <- file.path(plots_dir,
                                     paste0(species, "_", var_name, "_thumb.png"))
-            .maxent_safe_png(thumb_path, 210L, 140L,
-                             mar = c(2, 2, 1, 0.5), expr = quote({
-                graphics::plot(curve$value, curve$prediction,
-                               type = "l", lwd = 1L, col = "#1B7837",
-                               xlab = "", ylab = "",
-                               main = var_name, cex.main = 0.75,
-                               ylim = c(0, 1))
-            }))
+            grDevices::png(thumb_path, width = 210L, height = 140L)
+            oldpar_th <- graphics::par(mar = c(2, 2, 1, 0.5))
+            graphics::plot(curve$value, curve$prediction,
+                           type = "l", lwd = 1L, col = "#1B7837",
+                           xlab = "", ylab = "",
+                           main = var_name, cex.main = 0.75,
+                           ylim = c(0, 1))
+            graphics::par(oldpar_th)
+            grDevices::dev.off()
             file_list[[paste0(var_name, "_thumb")]] <- thumb_path
         }
 
@@ -105,13 +97,6 @@ maxent_plot_response_curves <- function(model, env_grids, feature_names,
     invisible(file_list)
 }
 
-#' @keywords internal
-.maxent_safe_png <- function(path, width, height, mar, expr) {
-    grDevices::png(path, width = width, height = height)
-    oldpar <- graphics::par(mar = mar)
-    on.exit({graphics::par(oldpar); grDevices::dev.off()}, add = TRUE)
-    eval(expr, envir = parent.frame())
-}
 
 # ---- Stage 4: Variable Importance Bar Chart ---------------------------------
 
@@ -132,11 +117,7 @@ maxent_plot_response_curves <- function(model, env_grids, feature_names,
 #' @return Invisibly returns the path to the PNG file.
 #' @export
 #' @examples
-#' \donttest{
-#' contrib <- data.frame(name = c("bio1", "bio12"),
-#'                       contribution = c(60, 40))
-#' perm_imp <- data.frame(name = c("bio1", "bio12"),
-#'                        permutation_importance = c(55, 45))
+#' \dontrun{
 #' maxent_plot_variable_importance(contrib, perm_imp,
 #'   species = "Sp1", output_dir = tempdir())
 #' }

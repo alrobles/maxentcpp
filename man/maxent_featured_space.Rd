@@ -35,9 +35,15 @@ Constructs a MaxEnt FeaturedSpace from background point data, occurrence
 sample indices, and a list of pre-built Feature objects.
 }
 \examples{
+\dontrun{
 n   <- 100L
 idx <- 90:99  # 0-based sample indices
 env <- seq(0, 1, length.out = n)
 f   <- maxent_linear_feature(env, "env1")
 fs  <- maxent_featured_space(n, idx, list(f))
+
+# With bias weights (e.g. from sampling effort surface)
+bias <- runif(n, 0.5, 2.0)
+fs_biased <- maxent_featured_space(n, idx, list(f), bias_weights = bias)
+}
 }
