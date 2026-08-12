@@ -130,13 +130,13 @@ result_cpp <- maxent_run(
 #> 
 #> Training statistics
 #>   AUC             : 0.8154
-#>   Gain            : 7.0963
-#>   Entropy         : 7.1905
+#>   Gain            : 7.1902
+#>   Entropy         : 7.1902
 #> 
 #> Variable contributions
 #>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              57.3                        0.0
-#>   bio12                             42.7                        0.0
+#>   bio1                              57.0                        0.0
+#>   bio12                             43.0                        0.0
 
 pred_cpp_grid <- maxent_project_cloglog(
     result_cpp$model,
@@ -229,20 +229,20 @@ cor_mn_truth   <- cor(v_mn,  v_true, method = "spearman")
 cat("=== maxentcpp vs maxnet ===\n")
 #> === maxentcpp vs maxnet ===
 cat("Schoener's D:      ", round(schoener_D, 4), "\n")
-#> Schoener's D:       0.9178
+#> Schoener's D:       0.9174
 cat("Spearman rho:       ", round(spearman_rho, 4), "\n")
-#> Spearman rho:        0.9788
+#> Spearman rho:        0.9784
 cat("Pearson r:          ", round(pearson_r, 4), "\n")
-#> Pearson r:           0.9722
+#> Pearson r:           0.972
 cat("Mean |diff|:        ", round(mean(abs(v_cpp - v_mn)), 4), "\n")
-#> Mean |diff|:         0.0525
+#> Mean |diff|:         0.0527
 cat("Max |diff|:         ", round(max(abs(v_cpp - v_mn)), 4), "\n")
-#> Max |diff|:          0.2582
+#> Max |diff|:          0.2576
 cat("\n=== Correlation with true suitability ===\n")
 #> 
 #> === Correlation with true suitability ===
 cat("maxentcpp vs truth: ", round(cor_cpp_truth, 4), "\n")
-#> maxentcpp vs truth:  0.9193
+#> maxentcpp vs truth:  0.919
 cat("maxnet vs truth:    ", round(cor_mn_truth, 4), "\n")
 #> maxnet vs truth:     0.9523
 ```
@@ -266,13 +266,13 @@ t_cpp <- system.time(for (i in 1:5) {
 #> 
 #> Training statistics
 #>   AUC             : 0.8154
-#>   Gain            : 7.0963
-#>   Entropy         : 7.1905
+#>   Gain            : 7.1902
+#>   Entropy         : 7.1902
 #> 
 #> Variable contributions
 #>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              57.3                        0.0
-#>   bio12                             42.7                        0.0
+#>   bio1                              57.0                        0.0
+#>   bio12                             43.0                        0.0
 #> 
 #> class         : MaxEnt
 #> species       : bench
@@ -281,13 +281,13 @@ t_cpp <- system.time(for (i in 1:5) {
 #> 
 #> Training statistics
 #>   AUC             : 0.8154
-#>   Gain            : 7.0963
-#>   Entropy         : 7.1905
+#>   Gain            : 7.1902
+#>   Entropy         : 7.1902
 #> 
 #> Variable contributions
 #>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              57.3                        0.0
-#>   bio12                             42.7                        0.0
+#>   bio1                              57.0                        0.0
+#>   bio12                             43.0                        0.0
 #> 
 #> class         : MaxEnt
 #> species       : bench
@@ -296,13 +296,13 @@ t_cpp <- system.time(for (i in 1:5) {
 #> 
 #> Training statistics
 #>   AUC             : 0.8154
-#>   Gain            : 7.0963
-#>   Entropy         : 7.1905
+#>   Gain            : 7.1902
+#>   Entropy         : 7.1902
 #> 
 #> Variable contributions
 #>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              57.3                        0.0
-#>   bio12                             42.7                        0.0
+#>   bio1                              57.0                        0.0
+#>   bio12                             43.0                        0.0
 #> 
 #> class         : MaxEnt
 #> species       : bench
@@ -311,13 +311,13 @@ t_cpp <- system.time(for (i in 1:5) {
 #> 
 #> Training statistics
 #>   AUC             : 0.8154
-#>   Gain            : 7.0963
-#>   Entropy         : 7.1905
+#>   Gain            : 7.1902
+#>   Entropy         : 7.1902
 #> 
 #> Variable contributions
 #>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              57.3                        0.0
-#>   bio12                             42.7                        0.0
+#>   bio1                              57.0                        0.0
+#>   bio12                             43.0                        0.0
 #> 
 #> class         : MaxEnt
 #> species       : bench
@@ -326,13 +326,13 @@ t_cpp <- system.time(for (i in 1:5) {
 #> 
 #> Training statistics
 #>   AUC             : 0.8154
-#>   Gain            : 7.0963
-#>   Entropy         : 7.1905
+#>   Gain            : 7.1902
+#>   Entropy         : 7.1902
 #> 
 #> Variable contributions
 #>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              57.3                        0.0
-#>   bio12                             42.7                        0.0
+#>   bio1                              57.0                        0.0
+#>   bio12                             43.0                        0.0
 
 t_mn <- system.time(for (i in 1:5) {
     maxnet(pa, env_all,
@@ -340,9 +340,9 @@ t_mn <- system.time(for (i in 1:5) {
 })[3]
 
 cat("maxentcpp: ", round(t_cpp / 5 * 1000), "ms/fit\n")
-#> maxentcpp:  700 ms/fit
+#> maxentcpp:  21 ms/fit
 cat("maxnet:    ", round(t_mn / 5 * 1000), "ms/fit\n")
-#> maxnet:     681 ms/fit
+#> maxnet:     550 ms/fit
 ```
 
 ## Variable Importance
@@ -353,8 +353,8 @@ cat("=== maxentcpp variable importance ===\n")
 #> === maxentcpp variable importance ===
 print(result_cpp$contributions)
 #>    name contribution
-#> 1  bio1     57.32266
-#> 2 bio12     42.67734
+#> 1  bio1     57.00014
+#> 2 bio12     42.99986
 cat("\nPermutation importance:\n")
 #> 
 #> Permutation importance:

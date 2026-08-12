@@ -191,9 +191,9 @@ Maxent:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Converged:"</span>, <span class="va">result</span><span class="op">$</span><span class="va">converged</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Converged: TRUE</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Iterations:"</span>, <span class="va">result</span><span class="op">$</span><span class="va">iterations</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Iterations: 221</span></span>
+<span><span class="co">#&gt; Iterations: 141</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Entropy:"</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">result</span><span class="op">$</span><span class="va">entropy</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Entropy: 7.3714</span></span></code></pre></div>
+<span><span class="co">#&gt; Entropy: 7.3718</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="evaluate-model-performance">Evaluate Model Performance<a class="anchor" aria-label="anchor" href="#evaluate-model-performance"></a>
@@ -213,7 +213,7 @@ comparing predictions at presence sites versus background sites:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"AUC:"</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">eval_result</span><span class="op">$</span><span class="va">auc</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; AUC: 0.8033</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Max Kappa:"</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html" class="external-link">round</a></span><span class="op">(</span><span class="va">eval_result</span><span class="op">$</span><span class="va">max_kappa</span>, <span class="fl">4</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Max Kappa: 0.1848</span></span></code></pre></div>
+<span><span class="co">#&gt; Max Kappa: 0.1834</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="project-onto-the-landscape">Project onto the Landscape<a class="anchor" aria-label="anchor" href="#project-onto-the-landscape"></a>
@@ -243,8 +243,8 @@ model:</p>
 <span><span class="co">#&gt; Percent contribution:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">contrib</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    name contribution</span></span>
-<span><span class="co">#&gt; 1  bio1     61.32901</span></span>
-<span><span class="co">#&gt; 2 bio12     38.67099</span></span>
+<span><span class="co">#&gt; 1  bio1      61.2461</span></span>
+<span><span class="co">#&gt; 2 bio12      38.7539</span></span>
 <span></span>
 <span><span class="va">perm_imp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxent_permutation_importance.html">maxent_permutation_importance</a></span><span class="op">(</span></span>
 <span>    <span class="va">fs</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">g_bio1</span>, <span class="va">g_bio12</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"bio1"</span>, <span class="st">"bio12"</span><span class="op">)</span>,</span>
@@ -255,8 +255,8 @@ model:</p>
 <span><span class="co">#&gt; Permutation importance:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">perm_imp</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    name permutation_importance</span></span>
-<span><span class="co">#&gt; 1  bio1               53.99883</span></span>
-<span><span class="co">#&gt; 2 bio12               46.00117</span></span></code></pre></div>
+<span><span class="co">#&gt; 1  bio1               54.19625</span></span>
+<span><span class="co">#&gt; 2 bio12               45.80375</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="response-curves">Response Curves<a class="anchor" aria-label="anchor" href="#response-curves"></a>
@@ -315,7 +315,7 @@ Maxent:</p>
 <code class="sourceCode R"><span><span class="va">lambdas_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"abeillei_model.lambdas"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/maxent_save_lambdas.html">maxent_save_lambdas</a></span><span class="op">(</span><span class="va">fs</span>, <span class="va">lambdas_file</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"Model saved to:"</span>, <span class="va">lambdas_file</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Model saved to: /tmp/RtmpZycHCY/abeillei_model.lambdas</span></span>
+<span><span class="co">#&gt; Model saved to: /tmp/Rtmpg9yqJq/abeillei_model.lambdas</span></span>
 <span></span>
 <span><span class="co"># Load it back</span></span>
 <span><span class="va">fs_loaded</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/maxent_load_lambdas.html">maxent_load_lambdas</a></span><span class="op">(</span>featured_space <span class="op">=</span> <span class="va">fs</span>, file <span class="op">=</span> <span class="va">lambdas_file</span><span class="op">)</span></span>
@@ -344,13 +344,13 @@ a single call:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Training statistics</span></span>
 <span><span class="co">#&gt;   AUC             : 0.8033</span></span>
-<span><span class="co">#&gt;   Gain            : 7.2290</span></span>
-<span><span class="co">#&gt;   Entropy         : 7.3714</span></span>
+<span><span class="co">#&gt;   Gain            : 7.3714</span></span>
+<span><span class="co">#&gt;   Entropy         : 7.3718</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Variable contributions</span></span>
 <span><span class="co">#&gt;   Variable              Contribution (%)  Permutation importance (%)</span></span>
-<span><span class="co">#&gt;   bio1                              61.3                       54.0</span></span>
-<span><span class="co">#&gt;   bio12                             38.7                       46.0</span></span></code></pre></div>
+<span><span class="co">#&gt;   bio1                              61.2                       54.2</span></span>
+<span><span class="co">#&gt;   bio12                             38.8                       45.8</span></span></code></pre></div>
 <p>This produces all standard outputs: lambda file, prediction PNG,
 response curves, variable importance, omission/commission CSV, and
 <code>maxentResults.csv</code>.</p>

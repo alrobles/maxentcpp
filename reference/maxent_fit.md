@@ -1,7 +1,7 @@
 # Train a MaxEnt Model
 
-Runs the sequential coordinate-ascent MaxEnt optimization on a
-FeaturedSpace.
+Runs the Java-equivalent sequential coordinate-ascent MaxEnt optimizer
+(`density.Sequential`) on a FeaturedSpace.
 
 ## Usage
 
@@ -63,6 +63,12 @@ Named list with:
 - lambdas:
 
   Numeric vector of final lambda (weight) values.
+
+- trajectory:
+
+  Empty `data.frame` by default; use
+  [`maxent_sequential_fit`](https://alrobles.github.io/maxentcpp/reference/maxent_sequential_fit.md)
+  to request per-iteration snapshots.
 
 ## Examples
 

@@ -132,9 +132,9 @@ result <- maxent_fit(fs,
 cat("Converged:", result$converged, "\n")
 #> Converged: TRUE
 cat("Iterations:", result$iterations, "\n")
-#> Iterations: 221
+#> Iterations: 141
 cat("Entropy:", round(result$entropy, 4), "\n")
-#> Entropy: 7.3714
+#> Entropy: 7.3718
 ```
 
 ## Evaluate Model Performance
@@ -156,7 +156,7 @@ eval_result <- maxent_evaluate(pres_preds, bg_preds)
 cat("AUC:", round(eval_result$auc, 4), "\n")
 #> AUC: 0.8033
 cat("Max Kappa:", round(eval_result$max_kappa, 4), "\n")
-#> Max Kappa: 0.1848
+#> Max Kappa: 0.1834
 ```
 
 ## Project onto the Landscape
@@ -191,8 +191,8 @@ cat("Percent contribution:\n")
 #> Percent contribution:
 print(contrib)
 #>    name contribution
-#> 1  bio1     61.32901
-#> 2 bio12     38.67099
+#> 1  bio1      61.2461
+#> 2 bio12      38.7539
 
 perm_imp <- maxent_permutation_importance(
     fs, list(g_bio1, g_bio12), c("bio1", "bio12"),
@@ -203,8 +203,8 @@ cat("\nPermutation importance:\n")
 #> Permutation importance:
 print(perm_imp)
 #>    name permutation_importance
-#> 1  bio1               53.99883
-#> 2 bio12               46.00117
+#> 1  bio1               54.19625
+#> 2 bio12               45.80375
 ```
 
 ## Response Curves
@@ -275,7 +275,7 @@ Models are persisted as lambda files, fully compatible with Java Maxent:
 lambdas_file <- file.path(tempdir(), "abeillei_model.lambdas")
 maxent_save_lambdas(fs, lambdas_file)
 cat("Model saved to:", lambdas_file, "\n")
-#> Model saved to: /tmp/RtmpZycHCY/abeillei_model.lambdas
+#> Model saved to: /tmp/Rtmpg9yqJq/abeillei_model.lambdas
 
 # Load it back
 fs_loaded <- maxent_load_lambdas(featured_space = fs, file = lambdas_file)
@@ -307,13 +307,13 @@ result <- maxent_run(
 #> 
 #> Training statistics
 #>   AUC             : 0.8033
-#>   Gain            : 7.2290
-#>   Entropy         : 7.3714
+#>   Gain            : 7.3714
+#>   Entropy         : 7.3718
 #> 
 #> Variable contributions
 #>   Variable              Contribution (%)  Permutation importance (%)
-#>   bio1                              61.3                       54.0
-#>   bio12                             38.7                       46.0
+#>   bio1                              61.2                       54.2
+#>   bio12                             38.8                       45.8
 ```
 
 This produces all standard outputs: lambda file, prediction PNG,
