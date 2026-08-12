@@ -366,18 +366,15 @@ private:
         const auto& F = X_.feature_matrix();
         const auto& d = X_.density_vector();
         if (F.size() > 0) {
-            // Gather selected columns into a dense n×nh matrix and use BLAS
-            // for the two matrix-vector products and the weighted dot products.
-            Eigen::MatrixXd Fsub(n, nh);
+            // Compute FTu = sum_jj uu[jj] * F.col(idx[jj]) as a temporary
+            // length-n vector without materialising a second n×nh matrix.
+            Eigen::VectorXd FTu = Eigen::VectorXd::Zero(n);
             for (int jj = 0; jj < nh; ++jj)
-                Fsub.col(jj) = F.col(idx[jj]);
-            Eigen::Map<const Eigen::VectorXd> uu_vec(uu.data(), nh);
-            Eigen::VectorXd FTu = Fsub * uu_vec;
-            Eigen::VectorXd sum_vec = Fsub.transpose() * d;
-            uThu = d.dot(FTu.array().square().matrix());
+                FTu.noalias() += uu[jj] * F.col(idx[jj]);
             uTY  = d.dot(FTu);
+            uThu = d.dot(FTu.array().square().matrix());
             for (int jj = 0; jj < nh; ++jj)
-                sum[jj] = sum_vec(jj);
+                sum[jj] = d.dot(F.col(idx[jj]));
         } else {
             for (int i = 0; i < n; ++i) {
                 double FTu = 0.0;
