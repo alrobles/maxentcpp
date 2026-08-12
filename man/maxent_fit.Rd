@@ -35,10 +35,13 @@ Named list with:
     \item{iterations}{Number of training iterations completed.}
     \item{converged}{Logical: whether the convergence threshold was reached.}
     \item{lambdas}{Numeric vector of final lambda (weight) values.}
+    \item{trajectory}{Empty \code{data.frame} by default; use
+      \code{\link{maxent_sequential_fit}} to request per-iteration snapshots.}
   }
 }
 \description{
-Runs the sequential coordinate-ascent MaxEnt optimization on a FeaturedSpace.
+Runs the Java-equivalent sequential coordinate-ascent MaxEnt optimizer
+(\code{density.Sequential}) on a FeaturedSpace.
 }
 \examples{
 \dontrun{

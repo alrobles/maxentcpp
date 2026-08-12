@@ -44,7 +44,8 @@ maxent_featured_space <- function(num_points, sample_indices, features,
 
 #' Train a MaxEnt Model
 #'
-#' Runs the sequential coordinate-ascent MaxEnt optimization on a FeaturedSpace.
+#' Runs the Java-equivalent sequential coordinate-ascent MaxEnt optimizer
+#' (\code{density.Sequential}) on a FeaturedSpace.
 #'
 #' @param featured_space  External pointer to a FeaturedSpace object (from
 #'   \code{maxent_featured_space()}).
@@ -62,6 +63,8 @@ maxent_featured_space <- function(num_points, sample_indices, features,
 #'     \item{iterations}{Number of training iterations completed.}
 #'     \item{converged}{Logical: whether the convergence threshold was reached.}
 #'     \item{lambdas}{Numeric vector of final lambda (weight) values.}
+#'     \item{trajectory}{Empty \code{data.frame} by default; use
+#'       \code{\link{maxent_sequential_fit}} to request per-iteration snapshots.}
 #'   }
 #' @export
 #' @examples
@@ -75,12 +78,12 @@ maxent_fit <- function(featured_space,
                        convergence     = 1e-5,
                        beta_multiplier = 1.0,
                        min_deviation   = 0.001) {
-    maxent_train(
+    maxent_sequential_fit(
         featured_space,
-        as.integer(max_iter),
-        as.double(convergence),
-        as.double(beta_multiplier),
-        as.double(min_deviation)
+        max_iter                  = as.integer(max_iter),
+        convergence               = as.double(convergence),
+        beta_multiplier           = as.double(beta_multiplier),
+        min_deviation             = as.double(min_deviation)
     )
 }
 
