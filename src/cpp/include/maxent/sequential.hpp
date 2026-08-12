@@ -316,17 +316,15 @@ private:
     double newton_step_feature(int j) const {
         const Feature& h = *X_.features()[j];
         const double uTY = h.expectation();
-        double uThu = 0.0;
-        const int n = X_.num_points();
-        const double dn = X_.get_density_normalizer();
-        const auto& F = X_.feature_matrix();
-        const auto& d = X_.density_vector();
+        const double dn  = X_.get_density_normalizer();
+        const auto& F    = X_.feature_matrix();
+        const auto& d    = X_.density_vector();
+        double uThu;
         if (F.size() > 0) {
-            for (int i = 0; i < n; ++i) {
-                const double v = F(i, j);
-                uThu += d(i) * v * v;
-            }
+            uThu = (d.array() * F.col(j).array().square()).sum();
         } else {
+            const int n = X_.num_points();
+            uThu = 0.0;
             for (int i = 0; i < n; ++i) {
                 const double v = h.eval(i);
                 uThu += X_.get_density(i) * v * v;
@@ -368,17 +366,18 @@ private:
         const auto& F = X_.feature_matrix();
         const auto& d = X_.density_vector();
         if (F.size() > 0) {
-            for (int i = 0; i < n; ++i) {
-                double FTu = 0.0;
-                const double density_i = d(i);
-                for (int jj = 0; jj < nh; ++jj) {
-                    const double val = F(i, idx[jj]);
-                    FTu    += uu[jj] * val;
-                    sum[jj] += density_i * val;
-                }
-                uThu += density_i * FTu * FTu;
-                uTY  += density_i * FTu;
-            }
+            // Gather selected columns into a dense n×nh matrix and use BLAS
+            // for the two matrix-vector products and the weighted dot products.
+            Eigen::MatrixXd Fsub(n, nh);
+            for (int jj = 0; jj < nh; ++jj)
+                Fsub.col(jj) = F.col(idx[jj]);
+            Eigen::Map<const Eigen::VectorXd> uu_vec(uu.data(), nh);
+            Eigen::VectorXd FTu = Fsub * uu_vec;
+            Eigen::VectorXd sum_vec = Fsub.transpose() * d;
+            uThu = d.dot(FTu.array().square().matrix());
+            uTY  = d.dot(FTu);
+            for (int jj = 0; jj < nh; ++jj)
+                sum[jj] = sum_vec(jj);
         } else {
             for (int i = 0; i < n; ++i) {
                 double FTu = 0.0;
@@ -424,14 +423,14 @@ private:
         // compatibility with the Java Sequential.java:104..142 interface.
         (void) square;
         const Feature& h = *X_.features()[j];
-        double Z = 0.0;
-        const int n = X_.num_points();
         const auto& F = X_.feature_matrix();
         const auto& d = X_.density_vector();
+        double Z;
         if (F.size() > 0) {
-            for (int i = 0; i < n; ++i)
-                Z += d(i) * std::exp(alpha * F(i, j));
+            Z = (d.array() * (alpha * F.col(j).array()).exp()).sum();
         } else {
+            const int n = X_.num_points();
+            Z = 0.0;
             for (int i = 0; i < n; ++i)
                 Z += X_.get_density(i) * std::exp(alpha * h.eval(i));
         }
@@ -532,7 +531,6 @@ private:
     // =========================================================================
 
     void refresh_expectations_for(const std::vector<int>& j_to_update) {
-        const int n = X_.num_points();
         const double dn = X_.get_density_normalizer();
         if (dn <= 0.0) return;
         const auto& feats = X_.features();
@@ -540,13 +538,12 @@ private:
         const auto& d = X_.density_vector();
         if (F.size() > 0) {
             for (int j : j_to_update) {
-                double sum = 0.0;
-                for (int i = 0; i < n; ++i)
-                    sum += d(i) * F(i, j);
+                const double sum = d.dot(F.col(j));
                 feats[j]->set_expectation(sum / dn);
                 state_[j].last_expectation_update = iteration_;
             }
         } else {
+            const int n = X_.num_points();
             for (int j : j_to_update) {
                 double sum = 0.0;
                 const Feature& h = *feats[j];
@@ -559,16 +556,16 @@ private:
     }
 
     void set_feature_expectation(int j) {
-        const int n = X_.num_points();
         const double dn = X_.get_density_normalizer();
         if (dn <= 0.0) return;
-        double sum = 0.0;
         const auto& F = X_.feature_matrix();
         const auto& d = X_.density_vector();
+        double sum;
         if (F.size() > 0) {
-            for (int i = 0; i < n; ++i)
-                sum += d(i) * F(i, j);
+            sum = d.dot(F.col(j));
         } else {
+            const int n = X_.num_points();
+            sum = 0.0;
             const Feature& h = *X_.features()[j];
             for (int i = 0; i < n; ++i)
                 sum += X_.get_density(i) * h.eval(i);

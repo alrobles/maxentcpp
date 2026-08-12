@@ -346,10 +346,7 @@ public:
     /** Set linearPredictorNormalizer = max(linearPredictor). */
     void set_linear_predictor_normalizer() {
         if (num_points_ == 0) { linear_predictor_normalizer_ = 0.0; return; }
-        double mx = linear_predictor_(0);
-        for (int i = 1; i < num_points_; ++i)
-            if (linear_predictor_(i) > mx) mx = linear_predictor_(i);
-        linear_predictor_normalizer_ = mx;
+        linear_predictor_normalizer_ = linear_predictor_.maxCoeff();
     }
 
     /**
@@ -385,20 +382,14 @@ public:
         // Apply bias weights if present
         if (bias_weights_.size() > 0)
             density_.array() *= bias_weights_.array();
-        // Sequential sum to preserve bit-identity with streaming path
-        density_normalizer_ = 0.0;
-        for (int i = 0; i < num_points_; ++i)
-            density_normalizer_ += density_(i);
+        density_normalizer_ = density_.sum();
         if (density_normalizer_ > 0.0 && !to_update.empty()) {
             if (streaming_eval_) {
                 set_expectations_streaming(to_update);
             } else if (feature_matrix_.size() > 0) {
-                // Direct matrix access eliminates virtual dispatch.
-                // Sequential per-point reduction preserves accumulation order.
+                // BLAS-accelerated dot products for each updated feature.
                 for (int j : to_update) {
-                    double sum = 0.0;
-                    for (int i = 0; i < num_points_; ++i)
-                        sum += density_(i) * feature_matrix_(i, j);
+                    const double sum = density_.dot(feature_matrix_.col(j));
                     features_[j]->set_expectation(sum / density_normalizer_);
                 }
             } else {
@@ -443,9 +434,9 @@ public:
             // Eigen-vectorised per-column LP update (element-wise, no reduction).
             linear_predictor_.noalias() += alpha * feature_matrix_.col(feature_index);
             // Preserve "only increase" normalizer semantics with sequential max.
-            for (int i = 0; i < num_points_; ++i)
-                if (linear_predictor_(i) > linear_predictor_normalizer_)
-                    linear_predictor_normalizer_ = linear_predictor_(i);
+            if (num_points_ > 0)
+                linear_predictor_normalizer_ = std::max(linear_predictor_normalizer_,
+                                                         linear_predictor_.maxCoeff());
         } else {
             for (int i = 0; i < num_points_; ++i) {
                 linear_predictor_(i) += alpha * f->eval(i);
@@ -486,6 +477,8 @@ public:
                 if (alphas[j] == 0.0) continue;
                 linear_predictor_.noalias() += alphas[j] * feature_matrix_.col(static_cast<int>(j));
             }
+            if (num_points_ > 0)
+                linear_predictor_normalizer_ = linear_predictor_.maxCoeff();
         } else {
             for (std::size_t j = 0; j < features_.size(); ++j) {
                 if (alphas[j] == 0.0) continue;

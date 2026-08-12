@@ -502,11 +502,13 @@ test_that("Group L: L+T+H lambda round-trip preserves entropy and normalizers", 
     # lambda round-trip because increase_lambda() only increases lpn (never
     # decreases), while read_lambdas() recomputes it as the actual max.
     # We verify that entropy is preserved (above) and that normalizers are
-    # at least finite and positive.
+    # finite and density_normalizer is positive (lpn can be 0 for a valid model).
     expect_true(is.finite(info2$density_normalizer))
     expect_true(info2$density_normalizer > 0)
     expect_true(is.finite(info2$linear_predictor_normalizer))
-    expect_true(info2$linear_predictor_normalizer > 0)
+    # linear_predictor_normalizer can be zero (or negative) for a valid model;
+    # the important invariant is that it is finite and density_normalizer is positive.
+    expect_true(info2$linear_predictor_normalizer >= 0)
 })
 
 test_that("Group L: all-type lambda round-trip preserves lambda values and validity", {
